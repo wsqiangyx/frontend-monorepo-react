@@ -14,8 +14,8 @@
       "@repo/design-tokens/theme": ["../../packages/design-tokens/src/theme/index.ts"],
       "@repo/design-tokens/css": ["../../packages/design-tokens/src/to-css.ts"],
       "@repo/design-tokens/theme/antd": ["../../packages/design-tokens/src/theme/antd.ts"],
-      "@repo/ui-react": ["../../packages/ui-react/src/index.ts"],
-      "@repo/ui-react/style.css": ["../../packages/ui-react/src/style.css"],
+      "@repo/shared-ui": ["../../packages/shared-ui/src/index.ts"],
+      "@repo/shared-ui/style.css": ["../../packages/shared-ui/src/style.css"],
       "@repo/resources": ["../../packages/resources/src/index.ts"],
       "@repo/resources/*": ["../../packages/resources/src/*/index.ts"]
     }

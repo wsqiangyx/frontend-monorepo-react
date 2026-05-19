@@ -19,7 +19,7 @@
     "@repo/platform-core": "workspace:*",
     "@repo/resources": "workspace:*",
     "@repo/shared": "workspace:*",
-    "@repo/ui-react": "workspace:*",
+    "@repo/shared-ui": "workspace:*",
     "@repo/design-tokens": "workspace:*",
     "antd": "6.3.7",
     "react": "19.2.5",

@@ -7,7 +7,7 @@ import '@/styles/global.scss'
 
 import '@unocss/reset/tailwind.css'
 import 'virtual:uno.css'
-import '@repo/ui-react/style.css'
+import '@repo/shared-ui/style.css'
 
 export function bootstrap() {
   applyThemeToDocument({

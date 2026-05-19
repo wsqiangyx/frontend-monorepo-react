@@ -36,12 +36,12 @@ const sourceAlias = [
     ),
   },
   {
-    find: '@repo/ui-react/style.css',
-    replacement: fileURLToPath(new URL('../../packages/ui-react/src/style.css', import.meta.url)),
+    find: '@repo/shared-ui/style.css',
+    replacement: fileURLToPath(new URL('../../packages/shared-ui/src/style.css', import.meta.url)),
   },
   {
-    find: '@repo/ui-react',
-    replacement: fileURLToPath(new URL('../../packages/ui-react/src/index.ts', import.meta.url)),
+    find: '@repo/shared-ui',
+    replacement: fileURLToPath(new URL('../../packages/shared-ui/src/index.ts', import.meta.url)),
   },
   {
     find: '@repo/resources',

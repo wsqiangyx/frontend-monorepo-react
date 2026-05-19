@@ -8,7 +8,7 @@ export default defineConfig({
       'packages/design-tokens/vitest.config.ts',
       'packages/resources/vitest.config.ts',
       'packages/mock/vitest.config.ts',
-      'packages/ui-react/vitest.config.ts',
+      'packages/shared-ui/vitest.config.ts',
       'apps/react-app/vitest.config.ts',
     ],
   },

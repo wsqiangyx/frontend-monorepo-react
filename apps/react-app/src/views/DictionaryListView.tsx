@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DataPanel, PageContainer } from '@repo/ui-react'
+import { DataPanel, PageContainer } from '@repo/shared-ui'
 import {
   fetchDictionaryItems,
   fetchDictionaryTypes,
