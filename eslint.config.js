@@ -5,7 +5,7 @@ import pluginReact from 'eslint-plugin-react'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
 import configPrettier from 'eslint-config-prettier'
 
-const reactFiles = ['apps/react-*/**/*.{ts,tsx}', 'packages/ui-react/**/*.{ts,tsx}']
+const reactFiles = ['apps/react-*/**/*.{ts,tsx}', 'packages/shared-ui/**/*.{ts,tsx}']
 
 export default defineConfig(
   {

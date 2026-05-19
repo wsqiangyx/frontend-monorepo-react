@@ -18,5 +18,5 @@ packages:
     status: stable
   mock:
     status: stable
-  ui-react:
+  shared-ui:
     status: stable

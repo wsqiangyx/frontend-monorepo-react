@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
-import { ThemeProvider } from '@repo/ui-react'
+import { ThemeProvider } from '@repo/shared-ui'
 import { I18nProvider } from '@/i18n'
 import { router } from '@/router'
 import { useThemeStore } from '@/stores/theme'

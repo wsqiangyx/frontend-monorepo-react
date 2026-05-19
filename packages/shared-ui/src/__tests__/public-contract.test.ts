@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import * as rootExports from '../index'
 import * as hookExports from '../hooks'
 
-describe('@repo/ui-react public contract', () => {
+describe('@repo/shared-ui public contract', () => {
   it('keeps the root entry focused on stable shared UI APIs', () => {
     expect(rootExports).toHaveProperty('ThemeProvider')
     expect(rootExports).toHaveProperty('useThemeSnapshot')

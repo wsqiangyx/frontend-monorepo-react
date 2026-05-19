@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DataPanel, PageContainer } from '@repo/ui-react'
+import { DataPanel, PageContainer } from '@repo/shared-ui'
 import { fetchSystemMeta, type SystemMetaRecord } from '@/services/system-meta-service'
 
 export default function SystemMetaView() {

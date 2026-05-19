@@ -13,7 +13,7 @@ const STABLE_PACKAGE_NAMES = [
   'design-tokens',
   'resources',
   'mock',
-  'ui-react',
+  'shared-ui',
 ]
 
 function listWorkspaceDirectories(rootDir, relativeDir) {

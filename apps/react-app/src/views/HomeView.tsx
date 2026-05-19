@@ -1,4 +1,4 @@
-import { ThemeModeSwitch } from '@repo/ui-react'
+import { ThemeModeSwitch } from '@repo/shared-ui'
 import { useI18n } from '@/i18n'
 import { useThemeStore } from '@/stores/theme'
 

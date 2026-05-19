@@ -6,7 +6,7 @@ import '@/styles/global.scss'
 
 import '@unocss/reset/tailwind.css'
 import 'virtual:uno.css'
-import '@repo/ui-react/style.css'
+import '@repo/shared-ui/style.css'
 import { useThemeStore } from '@/stores/theme'
 
 export function bootstrap() {
