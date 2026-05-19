@@ -21,8 +21,8 @@ importers:
         specifier: 20.5.2
         version: 20.5.2(@types/node@24.12.2)(conventional-commits-parser@6.4.0)(typescript@6.0.3)
       '@commitlint/config-conventional':
-        specifier: 20.5.0
-        version: 20.5.0
+        specifier: 20.5.3
+        version: 20.5.3
       '@eslint/js':
         specifier: 9.39.4
         version: 9.39.4
@@ -362,6 +362,7 @@ packages:
 
   '@antv/component@2.3.11':
     resolution: {integrity: sha512-iiOeThxJouNjvlueXsF/ukOLVgN3CWH69B3w8vr9PwvL8JDPUKhacqaBrEHIzk20nyKVsUCue3jQR2ssKzGIAQ==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/coord@0.4.7':
     resolution: {integrity: sha512-UTbrMLhwJUkKzqJx5KFnSRpU3BqrdLORJbwUbHK2zHSCT3q3bjcFA//ZYLVfIlwqFDXp/hzfMyRtp0c77A9ZVA==}
@@ -371,9 +372,11 @@ packages:
 
   '@antv/expr@1.2.2':
     resolution: {integrity: sha512-9jkUFTyCZByqyek92mJ1DFS7UmtJwp/8mI1rn2iPn62KXJ9K3xWthD9733Yhgui3G2vDuCqT6SqcU19hjRsHPA==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/g-canvas@2.4.0':
     resolution: {integrity: sha512-AEAJwpza82K5kbbRMONWIWe6T2pt7D98M+DkDIKhFZbgOtqpwssBpzuRUyHqZJVIMRYNUw6qmQfuGDKG2B6fFA==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/g-lite@2.7.0':
     resolution: {integrity: sha512-uSzgHYa5bwR5L2Au7/5tsOhFmXKZKLPBH90+Q9bP9teVs5VT4kOAi0isPSpDI8uhdDC2/VrfTWu5K9HhWI6FWw==}
@@ -383,9 +386,11 @@ packages:
 
   '@antv/g-plugin-dragndrop@2.3.1':
     resolution: {integrity: sha512-VosceOqTjDGMJy74pjPNoJ84QmPKaGXFYqXX2Hlrs18ygeHXuJWbgOfQrfT5AqhcPy2N58CcM7yo4kvonFzq3g==}
+    deprecated: This version has been deprecated. Please upgrade to the latest version.
 
   '@antv/g2@5.6.8':
     resolution: {integrity: sha512-ZR4rfCBGYFs1+afEsfWWCwRNe/JRG+yiEF4MVFMgY1a5nVEriva8F1T7FWNCGk7ET2FMTQK0P6AvK3iv3pkkRQ==}
+    deprecated: risk
 
   '@antv/g@6.5.1':
     resolution: {integrity: sha512-zGNOPBpwwHiy60AcDIRuHGYvmmhX1iOXJh4pmTjZVxyPDtzHzuHOXRhQs64WpOkBpXYzNMqCGr/GjeHNNGC6JQ==}
@@ -510,8 +515,8 @@ packages:
     engines: {node: '>=v18'}
     hasBin: true
 
-  '@commitlint/config-conventional@20.5.0':
-    resolution: {integrity: sha512-t3Ni88rFw1XMa4nZHgOKJ8fIAT9M2j5TnKyTqJzsxea7FUetlNdYFus9dz+MhIRZmc16P0PPyEfh6X2d/qw8SA==}
+  '@commitlint/config-conventional@20.5.3':
+    resolution: {integrity: sha512-j34Qqeaa152chJgz2ysyk0BCpHenJn1lV0Rx0VXf8k3ccQcED+48EZrzMvo9jLmJUyBrrBwvu89I+2er4gW7QQ==}
     engines: {node: '>=v18'}
 
   '@commitlint/config-validator@20.5.0':
@@ -4569,7 +4574,7 @@ snapshots:
       - conventional-commits-parser
       - typescript
 
-  '@commitlint/config-conventional@20.5.0':
+  '@commitlint/config-conventional@20.5.3':
     dependencies:
       '@commitlint/types': 20.5.0
       conventional-changelog-conventionalcommits: 9.3.1
