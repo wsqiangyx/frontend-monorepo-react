@@ -1,0 +1,45 @@
+{
+  "name": "@repo/ui-react",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./style.css": {
+      "default": "./dist/index.css"
+    }
+  },
+  "scripts": {
+    "build": "node -e \"import{rmSync,copyFileSync}from'node:fs';rmSync('dist',{recursive:true,force:true});rmSync('tsconfig.build.tsbuildinfo',{force:true});\" && node ../../scripts/vite.cjs build && node -e \"import{copyFileSync}from'node:fs';copyFileSync('src/style.css','dist/index.css');\" && tsc --emitDeclarationOnly -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node ../../scripts/vitest.cjs run",
+    "test:watch": "node ../../scripts/vitest.cjs",
+    "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
+  },
+  "dependencies": {
+    "@repo/platform-core": "workspace:*",
+    "@repo/shared": "workspace:*",
+    "@repo/ui-tokens": "workspace:*",
+    "antd": "6.3.7",
+    "react": "19.2.5",
+    "react-dom": "19.2.5"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/node": "24.12.2",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.1",
+    "vite": "8.0.10"
+  }
+}

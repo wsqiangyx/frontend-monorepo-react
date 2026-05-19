@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@repo/platform-core": ["../../packages/platform-core/src/index.ts"],
+      "@repo/shared/routes/react": ["../../packages/shared/src/routes/react-adapter.ts"],
+      "@repo/shared/routes": ["../../packages/shared/src/routes/index.ts"],
+      "@repo/shared/http": ["../../packages/shared/src/http/index.ts"],
+      "@repo/shared/ui-contract": ["../../packages/shared/src/ui-contract/index.ts"],
+      "@repo/shared/i18n": ["../../packages/shared/src/i18n/index.ts"],
+      "@repo/mock/browser": ["../../packages/mock/src/browser.ts"],
+      "@repo/mock/server": ["../../packages/mock/src/server.ts"],
+      "@repo/ui-tokens/theme": ["../../packages/ui-tokens/src/theme/index.ts"],
+      "@repo/ui-tokens/css": ["../../packages/ui-tokens/src/to-css.ts"],
+      "@repo/ui-tokens/theme/antd": ["../../packages/ui-tokens/src/theme/antd.ts"],
+      "@repo/ui-react": ["../../packages/ui-react/src/index.ts"],
+      "@repo/ui-react/style.css": ["../../packages/ui-react/src/style.css"],
+      "@repo/resources": ["../../packages/resources/src/index.ts"],
+      "@repo/resources/*": ["../../packages/resources/src/*/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

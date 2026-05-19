@@ -1,0 +1,40 @@
+{
+  "name": "@repo/react-screen-designer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node ../../scripts/write-theme-init.mjs && node ../../scripts/vite.cjs",
+    "build": "node ../../scripts/write-theme-init.mjs && node ../../scripts/vite.cjs build",
+    "preview": "node ../../scripts/write-theme-init.mjs && node ../../scripts/vite.cjs preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node ../../scripts/vitest.cjs run",
+    "test:watch": "node ../../scripts/vitest.cjs",
+    "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
+  },
+  "dependencies": {
+    "@ant-design/icons": "6.2.2",
+    "@antv/g2": "^5.3.3",
+    "@repo/mock": "workspace:*",
+    "@repo/platform-core": "workspace:*",
+    "@repo/resources": "workspace:*",
+    "@repo/shared": "workspace:*",
+    "@repo/ui-react": "workspace:*",
+    "@repo/ui-tokens": "workspace:*",
+    "antd": "6.3.7",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "react-router-dom": "^7.15.0",
+    "zustand": "^5.0.13"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/node": "24.12.2",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.1",
+    "vite": "8.0.10"
+  }
+}
