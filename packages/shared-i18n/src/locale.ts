@@ -1,3 +1,16 @@
+// ============================================================================
+// @repo/shared-i18n — Locale 检测与持久化
+// ============================================================================
+// 提供 locale 的检测、规范化、存储与恢复功能。
+//
+// resolveInitialLocale() 是应用启动时的入口函数，优先级：
+//   1. localStorage 中存储的用户手动选择（readStoredLocale）
+//   2. 浏览器 navigator.languages 自动检测（detectBrowserLocale）
+//   3. 默认值 zh-CN（DEFAULT_LOCALE）
+//
+// 支持的 locale 值：'zh-CN' | 'en-US'（双语基线）。
+// ============================================================================
+
 import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY } from './constants'
 import type { Locale } from './types'
 
