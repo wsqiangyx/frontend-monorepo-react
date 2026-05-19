@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import type { PermissionSet } from '@repo/platform-core'
+import type { PermissionSet } from '@repo/shared-service'
 import {
   hasPermission,
   hasAnyPermission,
   hasAllPermissions,
   asPermissionCode,
-} from '@repo/platform-core'
+} from '@repo/shared-service'
 
 interface PermissionGateProps {
   permissionSet: PermissionSet

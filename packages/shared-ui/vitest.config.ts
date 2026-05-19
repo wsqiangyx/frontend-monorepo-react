@@ -12,8 +12,8 @@ export default defineProject({
   },
   resolve: {
     alias: {
-      '@repo/platform-core': fileURLToPath(
-        new URL('../platform-core/src/index.ts', import.meta.url),
+      '@repo/shared-service': fileURLToPath(
+        new URL('../shared-service/src/index.ts', import.meta.url),
       ),
       '@repo/shared/ui-contract': fileURLToPath(
         new URL('../shared/src/ui-contract/index.ts', import.meta.url),

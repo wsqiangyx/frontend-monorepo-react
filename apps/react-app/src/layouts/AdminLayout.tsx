@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Navigate, Outlet, useLocation, useMatches, useNavigate } from 'react-router-dom'
 import { AdminShell, AppBreadcrumb, ExceptionState, PageContainer } from '@repo/shared-ui'
-import { isAuthenticated, flattenMenuNodes, type PlatformMenuNode } from '@repo/platform-core'
+import { isAuthenticated, flattenMenuNodes, type PlatformMenuNode } from '@repo/shared-service'
 import { useAuthStore, useNavigationStore, usePermissionStore, useTabStore } from '@/platform'
 
 interface RouteHandle {

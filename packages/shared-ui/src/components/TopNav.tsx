@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
-import type { PlatformSession } from '@repo/platform-core'
+import type { PlatformSession } from '@repo/shared-service'
 
 interface TopNavProps extends HTMLAttributes<HTMLElement> {
   session: PlatformSession
