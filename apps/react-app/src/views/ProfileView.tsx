@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DataPanel, PageContainer, PermissionGate } from '@repo/ui-react'
+import { DataPanel, PageContainer, PermissionGate } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
 import { fetchProfile, updateProfile, type ProfileRecord } from '@/services/profile-service'
 import { useLocaleStore } from '@/stores/locale'

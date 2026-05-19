@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DataPanel, FilterBar, PageContainer, PermissionGate, StatusTag } from '@repo/ui-react'
+import { DataPanel, FilterBar, PageContainer, PermissionGate, StatusTag } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
 import { fetchUsers, type UserRecord } from '@/services/user-service'
 
