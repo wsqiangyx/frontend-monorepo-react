@@ -1,6 +1,8 @@
 {
   "files": [],
   "references": [
+    { "path": "./packages/shared-utils/tsconfig.build.json" },
+    { "path": "./packages/shared-i18n/tsconfig.build.json" },
     { "path": "./packages/shared/tsconfig.build.json" },
     { "path": "./packages/shared-service/tsconfig.build.json" },
     { "path": "./packages/design-tokens/tsconfig.build.json" },

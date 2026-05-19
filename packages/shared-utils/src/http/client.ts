@@ -1,5 +1,5 @@
 // ============================================================================
-// @repo/shared — Axios HTTP 客户端封装
+// @repo/shared-utils — Axios HTTP 客户端封装
 // ============================================================================
 // 框架无关的 HTTP 客户端，基于 axios 封装。
 // - 请求拦截器：自动注入 token
@@ -22,13 +22,6 @@ export interface HttpClient {
 
 /**
  * 创建 HTTP 客户端实例。
- *
- * @param config - 客户端配置（baseURL 必填）
- * @returns 封装后的客户端，提供 get/post/put/patch/delete 方法
- *
- * 消费者使用方式：
- *   const api = createHttpClient({ baseURL: '/api' })
- *   const user = await api.get<User>('/user')  // 直接拿到 User，无需 .data
  */
 export function createHttpClient(config: HttpClientConfig): HttpClient {
   const { baseURL, timeout = 10_000, getToken = () => null } = config
@@ -38,7 +31,6 @@ export function createHttpClient(config: HttpClientConfig): HttpClient {
     timeout,
   })
 
-  // 请求拦截器：注入 token
   client.interceptors.request.use((req) => {
     const token = getToken()
     if (token) {
@@ -47,7 +39,6 @@ export function createHttpClient(config: HttpClientConfig): HttpClient {
     return req
   })
 
-  // 响应拦截器：提取平台业务错误信息
   client.interceptors.response.use(
     (res: AxiosResponse) => res,
     (error) => {
@@ -75,19 +66,15 @@ export function createHttpClient(config: HttpClientConfig): HttpClient {
     get<T>(url: string, params?: Record<string, unknown>): Promise<T> {
       return unwrap<T>(client.get(url, { params }))
     },
-
     post<T>(url: string, data?: unknown): Promise<T> {
       return unwrap<T>(client.post(url, data))
     },
-
     put<T>(url: string, data?: unknown): Promise<T> {
       return unwrap<T>(client.put(url, data))
     },
-
     patch<T>(url: string, data?: unknown): Promise<T> {
       return unwrap<T>(client.patch(url, data))
     },
-
     delete<T>(url: string): Promise<T> {
       return unwrap<T>(client.delete(url))
     },

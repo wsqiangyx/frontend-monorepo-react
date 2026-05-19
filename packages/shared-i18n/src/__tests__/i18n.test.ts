@@ -10,7 +10,7 @@ import {
   sharedMessages,
   writeStoredLocale,
   type Messages,
-} from '../i18n'
+} from '..'
 
 function createMemoryStorage(seed: Record<string, string> = {}) {
   const store = new Map(Object.entries(seed))

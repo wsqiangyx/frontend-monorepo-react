@@ -1,7 +1,9 @@
 // ============================================================================
-// @repo/shared — HTTP 模块统一导出
+// @repo/shared — HTTP 模块重导出（向后兼容）
 // ============================================================================
-export { createHttpClient } from './client'
-export type { HttpClient } from './client'
-export type { HttpClientConfig } from './types'
-export { ApiError } from './types'
+// HTTP 客户端已收敛到 @repo/shared-utils/http，此处保留重导出。
+// ============================================================================
+export { createHttpClient } from '@repo/shared-utils/http'
+export type { HttpClient } from '@repo/shared-utils/http'
+export type { HttpClientConfig } from '@repo/shared-utils/http'
+export { ApiError } from '@repo/shared-utils/http'

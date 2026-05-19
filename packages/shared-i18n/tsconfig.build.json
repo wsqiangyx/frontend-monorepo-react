@@ -4,11 +4,7 @@
     "noEmit": false,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "paths": {
-      "@repo/shared-utils": ["../shared-utils/dist/index.d.ts"],
-      "@repo/shared-utils/*": ["../shared-utils/dist/*/index.d.ts"]
-    }
+    "sourceMap": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.test.ts"]

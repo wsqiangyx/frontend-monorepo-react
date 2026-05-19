@@ -18,7 +18,9 @@ export default defineConfig({
       '@repo/design-tokens/theme': fileURLToPath(
         new URL('../design-tokens/src/theme/index.ts', import.meta.url),
       ),
-      '@repo/design-tokens': fileURLToPath(new URL('../design-tokens/src/index.ts', import.meta.url)),
+      '@repo/design-tokens': fileURLToPath(
+        new URL('../design-tokens/src/index.ts', import.meta.url),
+      ),
     },
   },
   build: {
