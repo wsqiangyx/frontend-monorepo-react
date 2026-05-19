@@ -3,7 +3,7 @@
   "references": [
     { "path": "./packages/shared/tsconfig.build.json" },
     { "path": "./packages/platform-core/tsconfig.build.json" },
-    { "path": "./packages/ui-tokens/tsconfig.build.json" },
+    { "path": "./packages/design-tokens/tsconfig.build.json" },
     { "path": "./packages/resources/tsconfig.build.json" },
     { "path": "./packages/mock/tsconfig.build.json" },
     { "path": "./packages/ui-react/tsconfig.build.json" }

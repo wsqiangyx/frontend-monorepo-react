@@ -4,7 +4,7 @@ import App from '@/App'
 import { useLocaleStore } from '@/stores/locale'
 import { useThemeStore } from '@/stores/theme'
 import { useAuthStore } from '@/platform'
-import { applyThemeToDocument } from '@repo/ui-tokens/theme'
+import { applyThemeToDocument } from '@repo/design-tokens/theme'
 
 function stubBrowserLocale(locale: 'zh-CN' | 'en-US') {
   vi.stubGlobal('navigator', {

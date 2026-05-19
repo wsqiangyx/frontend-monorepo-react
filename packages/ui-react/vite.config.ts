@@ -12,13 +12,13 @@ export default defineConfig({
       '@repo/shared/ui-contract': fileURLToPath(
         new URL('../shared/src/ui-contract/index.ts', import.meta.url),
       ),
-      '@repo/ui-tokens/theme/antd': fileURLToPath(
-        new URL('../ui-tokens/src/theme/antd.ts', import.meta.url),
+      '@repo/design-tokens/theme/antd': fileURLToPath(
+        new URL('../design-tokens/src/theme/antd.ts', import.meta.url),
       ),
-      '@repo/ui-tokens/theme': fileURLToPath(
-        new URL('../ui-tokens/src/theme/index.ts', import.meta.url),
+      '@repo/design-tokens/theme': fileURLToPath(
+        new URL('../design-tokens/src/theme/index.ts', import.meta.url),
       ),
-      '@repo/ui-tokens': fileURLToPath(new URL('../ui-tokens/src/index.ts', import.meta.url)),
+      '@repo/design-tokens': fileURLToPath(new URL('../design-tokens/src/index.ts', import.meta.url)),
     },
   },
   build: {
@@ -35,9 +35,9 @@ export default defineConfig({
         'react-dom',
         'antd',
         '@repo/platform-core',
-        '@repo/ui-tokens',
-        '@repo/ui-tokens/theme/antd',
-        '@repo/ui-tokens/theme',
+        '@repo/design-tokens',
+        '@repo/design-tokens/theme/antd',
+        '@repo/design-tokens/theme',
         '@repo/shared/ui-contract',
       ],
     },

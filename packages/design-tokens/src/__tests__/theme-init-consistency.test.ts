@@ -5,7 +5,7 @@
 // getThemeInitScript() 输出一致。token 数据变更时若不同步此测试会失败。
 //
 // 本测试是 write-theme-init.mjs 自包含 token 数据的临时一致性保障。
-// 待该脚本收敛为直接复用 @repo/ui-tokens 后，本测试可移除。
+// 待该脚本收敛为直接复用 @repo/design-tokens 后，本测试可移除。
 // 收敛前提见 scripts/write-theme-init.mjs 头部注释。
 // ============================================================================
 import { describe, it, expect } from 'vitest'
