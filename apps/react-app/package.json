@@ -21,7 +21,7 @@
     "@repo/design-tokens": "workspace:*",
     "antd": "6.3.7",
     "react": "19.2.5",
-    "react-dom": "19.2.5",
+    "react-dom": "19.2.6",
     "react-router-dom": "^7.15.0",
     "zustand": "^5.0.13"
   },

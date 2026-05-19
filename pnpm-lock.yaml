@@ -164,13 +164,10 @@ importers:
         version: 6.2.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@antv/g2':
         specifier: ^5.3.3
-        version: 5.6.8
+        version: 5.4.8
       '@repo/design-tokens':
         specifier: workspace:*
         version: link:../../packages/design-tokens
-      '@repo/mock':
-        specifier: workspace:*
-        version: link:../../packages/mock
       '@repo/resources':
         specifier: workspace:*
         version: link:../../packages/resources
@@ -199,6 +196,9 @@ importers:
         specifier: ^5.0.13
         version: 5.0.13(@types/react@19.2.14)(react@19.2.5)
     devDependencies:
+      '@repo/mock':
+        specifier: workspace:*
+        version: link:../../packages/mock
       '@testing-library/dom':
         specifier: 10.4.1
         version: 10.4.1
@@ -362,6 +362,7 @@ packages:
 
   '@antv/component@2.3.11':
     resolution: {integrity: sha512-iiOeThxJouNjvlueXsF/ukOLVgN3CWH69B3w8vr9PwvL8JDPUKhacqaBrEHIzk20nyKVsUCue3jQR2ssKzGIAQ==}
+    deprecated: This version has been deprecated. Please use the latest version.
 
   '@antv/coord@0.4.7':
     resolution: {integrity: sha512-UTbrMLhwJUkKzqJx5KFnSRpU3BqrdLORJbwUbHK2zHSCT3q3bjcFA//ZYLVfIlwqFDXp/hzfMyRtp0c77A9ZVA==}
@@ -371,9 +372,11 @@ packages:
 
   '@antv/expr@1.2.2':
     resolution: {integrity: sha512-9jkUFTyCZByqyek92mJ1DFS7UmtJwp/8mI1rn2iPn62KXJ9K3xWthD9733Yhgui3G2vDuCqT6SqcU19hjRsHPA==}
+    deprecated: This version has been deprecated. Please use the latest version.
 
   '@antv/g-canvas@2.4.0':
     resolution: {integrity: sha512-AEAJwpza82K5kbbRMONWIWe6T2pt7D98M+DkDIKhFZbgOtqpwssBpzuRUyHqZJVIMRYNUw6qmQfuGDKG2B6fFA==}
+    deprecated: This version has been deprecated. Please use the latest version.
 
   '@antv/g-lite@2.7.0':
     resolution: {integrity: sha512-uSzgHYa5bwR5L2Au7/5tsOhFmXKZKLPBH90+Q9bP9teVs5VT4kOAi0isPSpDI8uhdDC2/VrfTWu5K9HhWI6FWw==}
@@ -383,12 +386,14 @@ packages:
 
   '@antv/g-plugin-dragndrop@2.3.1':
     resolution: {integrity: sha512-VosceOqTjDGMJy74pjPNoJ84QmPKaGXFYqXX2Hlrs18ygeHXuJWbgOfQrfT5AqhcPy2N58CcM7yo4kvonFzq3g==}
+    deprecated: This version has been deprecated. Please use the latest version.
 
-  '@antv/g2@5.6.8':
-    resolution: {integrity: sha512-ZR4rfCBGYFs1+afEsfWWCwRNe/JRG+yiEF4MVFMgY1a5nVEriva8F1T7FWNCGk7ET2FMTQK0P6AvK3iv3pkkRQ==}
+  '@antv/g2@5.4.8':
+    resolution: {integrity: sha512-IvgIpwmT4M5/QAd3Mn2WiHIDeBqFJ4WA2gcZhRRSZuZ2KmgCqZWZwwIT0hc+kIGxwYeDoCQqf//t6FMVu3ryBg==}
 
   '@antv/g@6.5.1':
     resolution: {integrity: sha512-zGNOPBpwwHiy60AcDIRuHGYvmmhX1iOXJh4pmTjZVxyPDtzHzuHOXRhQs64WpOkBpXYzNMqCGr/GjeHNNGC6JQ==}
+    deprecated: This version has been deprecated. Please use the latest version.
 
   '@antv/scale@0.4.16':
     resolution: {integrity: sha512-5wg/zB5kXHxpTV5OYwJD3ja6R8yTiqIOkjOhmpEJiowkzRlbEC/BOyMvNUq5fqFIHnMCE9woO7+c3zxEQCKPjw==}
@@ -401,9 +406,11 @@ packages:
 
   '@antv/util@3.5.11':
     resolution: {integrity: sha512-/7rbadB2VzwNqJjOcuW5sHW0t4n/9+Fm27q6AQWCYwFVueWHYPMzxWnbpJsxqo0EVs2dmjiAIeoeRkUBmqtmQQ==}
+    deprecated: This version has been deprecated. Please use the latest version.
 
   '@antv/vendor@1.2.11':
     resolution: {integrity: sha512-CRyHSo/idK8SBEeGAjRC358ck7R/j8RDXM2JlDM/3oZ7hVALHAkmyXL93SHlQwJkzWV/Si/wSnq2/gGsCVpbbA==}
+    deprecated: This version has been deprecated. Please use the latest version.
 
   '@asamuzakjp/css-color@5.1.11':
     resolution: {integrity: sha512-KVw6qIiCTUQhByfTd78h2yD1/00waTmm9uy/R7Ck/ctUyAPj+AEDLkQIdJW0T8+qGgj3j5bpNKK7Q3G+LedJWg==}
@@ -4320,7 +4327,7 @@ snapshots:
       bun: 1.3.14
       tslib: 2.8.1
 
-  '@antv/g2@5.6.8':
+  '@antv/g2@5.4.8':
     dependencies:
       '@antv/component': 2.3.11
       '@antv/coord': 0.4.7
@@ -4332,7 +4339,6 @@ snapshots:
       '@antv/scale': 0.5.2
       '@antv/util': 3.5.11
       '@antv/vendor': 1.2.11
-      bun: 1.3.14
       flru: 1.0.2
       pdfast: 0.2.0
 
