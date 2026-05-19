@@ -5,7 +5,7 @@ export default defineConfig({
     projects: [
       'packages/shared/vitest.config.ts',
       'packages/platform-core/vitest.config.ts',
-      'packages/ui-tokens/vitest.config.ts',
+      'packages/design-tokens/vitest.config.ts',
       'packages/resources/vitest.config.ts',
       'packages/mock/vitest.config.ts',
       'packages/ui-react/vitest.config.ts',

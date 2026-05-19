@@ -10,9 +10,9 @@
     "paths": {
       "@repo/platform-core": ["../platform-core/dist/index.d.ts"],
       "@repo/shared/ui-contract": ["../shared/dist/ui-contract/index.d.ts"],
-      "@repo/ui-tokens": ["../ui-tokens/dist/index.d.ts"],
-      "@repo/ui-tokens/theme": ["../ui-tokens/dist/theme/index.d.ts"],
-      "@repo/ui-tokens/theme/antd": ["../ui-tokens/dist/theme/antd.d.ts"]
+      "@repo/design-tokens": ["../design-tokens/dist/index.d.ts"],
+      "@repo/design-tokens/theme": ["../design-tokens/dist/theme/index.d.ts"],
+      "@repo/design-tokens/theme/antd": ["../design-tokens/dist/theme/antd.d.ts"]
     }
   },
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test/**/*"]

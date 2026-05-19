@@ -1,12 +1,12 @@
 // ============================================================================
 // write-theme-init.mjs — 生成 theme-init.js（首屏主题预注入脚本）
 // ============================================================================
-// 【过渡方案】本脚本自包含 token 数据，未能直接复用 @repo/ui-tokens 的正式导出。
+// 【过渡方案】本脚本自包含 token 数据，未能直接复用 @repo/design-tokens 的正式导出。
 //
 // 原因：tsconfig.base.json 使用 moduleResolution: "bundler"，编译产物中的
 // 相对导入缺少 .js 扩展名，Node.js ESM 无法直接加载 dist 文件。
 //
-// 当前一致性保障：通过 packages/ui-tokens/src/__tests__/theme-init-consistency.test.ts
+// 当前一致性保障：通过 packages/design-tokens/src/__tests__/theme-init-consistency.test.ts
 // 在 vitest 环境下比对本脚本与 ui-tokens 源码的 getThemeInitScript() 输出。
 //
 // 收敛前提（任一即可）：

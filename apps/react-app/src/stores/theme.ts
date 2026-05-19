@@ -6,7 +6,7 @@ import {
   setStoredThemePreference,
   subscribeToSystemThemeChange,
   type ThemePreference,
-} from '@repo/ui-tokens/theme'
+} from '@repo/design-tokens/theme'
 import type { ThemeMode, ThemeName } from '@repo/shared/ui-contract'
 
 const DEFAULT_THEME_NAME: ThemeName = 'default'

@@ -63,13 +63,13 @@ function createWorkspaceRoot() {
         scripts: {
           build: 'pnpm build:shared && pnpm --filter @repo/react-app build',
           'build:shared':
-            'pnpm --filter @repo/shared build && pnpm --filter @repo/platform-core build && pnpm --filter @repo/ui-tokens build && pnpm --filter @repo/resources build && pnpm --filter @repo/mock build && pnpm --filter @repo/ui-react build',
+            'pnpm --filter @repo/shared build && pnpm --filter @repo/platform-core build && pnpm --filter @repo/design-tokens build && pnpm --filter @repo/resources build && pnpm --filter @repo/mock build && pnpm --filter @repo/ui-react build',
           'build:react': 'pnpm build:shared && pnpm -F @repo/react-app build',
           typecheck:
-            'pnpm --filter @repo/shared typecheck && pnpm --filter @repo/platform-core typecheck && pnpm --filter @repo/ui-tokens typecheck && pnpm --filter @repo/resources typecheck && pnpm --filter @repo/mock typecheck && pnpm --filter @repo/ui-react typecheck && pnpm --filter @repo/react-app typecheck',
-          test: 'pnpm --filter @repo/shared test && pnpm --filter @repo/platform-core test && pnpm --filter @repo/ui-tokens test && pnpm --filter @repo/resources test && pnpm --filter @repo/mock test && pnpm --filter @repo/ui-react test && pnpm --filter @repo/react-app test',
+            'pnpm --filter @repo/shared typecheck && pnpm --filter @repo/platform-core typecheck && pnpm --filter @repo/design-tokens typecheck && pnpm --filter @repo/resources typecheck && pnpm --filter @repo/mock typecheck && pnpm --filter @repo/ui-react typecheck && pnpm --filter @repo/react-app typecheck',
+          test: 'pnpm --filter @repo/shared test && pnpm --filter @repo/platform-core test && pnpm --filter @repo/design-tokens test && pnpm --filter @repo/resources test && pnpm --filter @repo/mock test && pnpm --filter @repo/ui-react test && pnpm --filter @repo/react-app test',
           'test:coverage':
-            'pnpm --filter @repo/shared test:coverage && pnpm --filter @repo/platform-core test:coverage && pnpm --filter @repo/ui-tokens test:coverage && pnpm --filter @repo/resources test:coverage && pnpm --filter @repo/mock test:coverage && pnpm --filter @repo/ui-react test:coverage && pnpm --filter @repo/react-app test:coverage',
+            'pnpm --filter @repo/shared test:coverage && pnpm --filter @repo/platform-core test:coverage && pnpm --filter @repo/design-tokens test:coverage && pnpm --filter @repo/resources test:coverage && pnpm --filter @repo/mock test:coverage && pnpm --filter @repo/ui-react test:coverage && pnpm --filter @repo/react-app test:coverage',
           'test:scripts': 'node --test "scripts/__tests__/*.test.mjs"',
           verify: 'pnpm check:status && pnpm test:scripts',
         },
@@ -89,7 +89,7 @@ function createWorkspaceRoot() {
       '    projects: [',
       "      'packages/shared/vitest.config.ts',",
       "      'packages/platform-core/vitest.config.ts',",
-      "      'packages/ui-tokens/vitest.config.ts',",
+      "      'packages/design-tokens/vitest.config.ts',",
       "      'packages/resources/vitest.config.ts',",
       "      'packages/mock/vitest.config.ts',",
       "      'packages/ui-react/vitest.config.ts',",
@@ -121,7 +121,7 @@ test('checkStatusConsistency fails when an experimental app leaks into the root 
       '    projects: [',
       "      'packages/shared/vitest.config.ts',",
       "      'packages/platform-core/vitest.config.ts',",
-      "      'packages/ui-tokens/vitest.config.ts',",
+      "      'packages/design-tokens/vitest.config.ts',",
       "      'packages/resources/vitest.config.ts',",
       "      'packages/mock/vitest.config.ts',",
       "      'packages/ui-react/vitest.config.ts',",

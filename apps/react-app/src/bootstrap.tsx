@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { applyThemeToDocument } from '@repo/ui-tokens/theme'
+import { applyThemeToDocument } from '@repo/design-tokens/theme'
 import App from '@/App'
 import '@/styles/global.scss'
 

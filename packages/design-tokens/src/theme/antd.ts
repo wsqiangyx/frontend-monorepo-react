@@ -1,5 +1,5 @@
 // ============================================================================
-// @repo/ui-tokens — Ant Design 主题适配器
+// @repo/design-tokens — Ant Design 主题适配器
 // ============================================================================
 // 将 ui-tokens 的设计令牌映射到 Ant Design 的 Design Token 格式。
 // 被 react-app 的 bootstrap.tsx 通过 <ConfigProvider theme={...} /> 消费。

@@ -42,19 +42,19 @@ const sourceAlias = [
     replacement: fileURLToPath(new URL('../../packages/mock/src/server.ts', import.meta.url)),
   },
   {
-    find: '@repo/ui-tokens/css',
-    replacement: fileURLToPath(new URL('../../packages/ui-tokens/src/to-css.ts', import.meta.url)),
+    find: '@repo/design-tokens/css',
+    replacement: fileURLToPath(new URL('../../packages/design-tokens/src/to-css.ts', import.meta.url)),
   },
   {
-    find: '@repo/ui-tokens/theme/antd',
+    find: '@repo/design-tokens/theme/antd',
     replacement: fileURLToPath(
-      new URL('../../packages/ui-tokens/src/theme/antd.ts', import.meta.url),
+      new URL('../../packages/design-tokens/src/theme/antd.ts', import.meta.url),
     ),
   },
   {
-    find: '@repo/ui-tokens/theme',
+    find: '@repo/design-tokens/theme',
     replacement: fileURLToPath(
-      new URL('../../packages/ui-tokens/src/theme/index.ts', import.meta.url),
+      new URL('../../packages/design-tokens/src/theme/index.ts', import.meta.url),
     ),
   },
   {

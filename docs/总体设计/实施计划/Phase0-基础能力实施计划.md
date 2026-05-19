@@ -66,7 +66,7 @@
 
 验证命令：
 
-- `pnpm -F @repo/ui-tokens test && pnpm -F @repo/ui-tokens typecheck && pnpm -F @repo/ui-tokens build`
+- `pnpm -F @repo/design-tokens test && pnpm -F @repo/design-tokens typecheck && pnpm -F @repo/design-tokens build`
 - `pnpm -F @repo/ui-react test && pnpm -F @repo/ui-react typecheck && pnpm -F @repo/ui-react build`
 
 ### 任务 3：国际化

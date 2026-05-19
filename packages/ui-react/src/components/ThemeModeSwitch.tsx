@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import type { ThemePreference } from '@repo/ui-tokens/theme'
+import type { ThemePreference } from '@repo/design-tokens/theme'
 
 interface ThemeModeSwitchProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
   preference: ThemePreference

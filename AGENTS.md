@@ -116,7 +116,7 @@
 - 保持 `serve -> sourceAlias`、`build -> buildAlias`、`vitest -> sourceAlias` 的分层契约
 - 当前已使用到的共享包源码入口，必须在 `tsconfig.app.json` 中镜像 path mappings
 - `paths.config.ts` 与 `tsconfig.app.json` 的共享包源码映射必须能通过根脚本 `pnpm check:alias`
-- `@repo/shared/routes`、`@repo/shared/routes/react` 与 `@repo/ui-tokens/theme` 这类显式子路径变更时，必须同步四处检查
+- `@repo/shared/routes`、`@repo/shared/routes/react` 与 `@repo/design-tokens/theme` 这类显式子路径变更时，必须同步四处检查
 
 ### 5. 保持 `main` 与 `bootstrap` 分层
 
@@ -142,7 +142,7 @@
 
 - CSS 变量必须继续输出为 `kebab-case`
 - `./css`、`./theme`、`./theme/antd` 这些正式导出路径除非明确迁移，否则不要随意破坏
-- `@repo/ui-tokens` 根入口优先承载 token、CSS 与框架主题适配；主题运行时能力优先收敛到 `@repo/ui-tokens/theme`
+- `@repo/design-tokens` 根入口优先承载 token、CSS 与框架主题适配；主题运行时能力优先收敛到 `@repo/design-tokens/theme`
 - 不要在 app 内复制 token 逻辑
 - 当前正式主题偏好语义是 `ThemePreference = 'system' | 'light' | 'dark'`
 
