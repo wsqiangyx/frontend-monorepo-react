@@ -22,12 +22,16 @@ export function asPermissionCode(code: string): PermissionCode {
   return code as PermissionCode
 }
 
+export function toPermissionCodes(codes: string[]): PermissionCode[] {
+  return codes.map(asPermissionCode)
+}
+
 export interface PermissionSet {
   codes: Set<PermissionCode>
 }
 
-export function createPermissionSet(codes: PermissionCode[] = []): PermissionSet {
-  return { codes: new Set(codes) }
+export function createPermissionSet(codes: readonly string[] = []): PermissionSet {
+  return { codes: new Set(codes.map(asPermissionCode)) }
 }
 
 export function hasPermission(set: PermissionSet, code: PermissionCode): boolean {

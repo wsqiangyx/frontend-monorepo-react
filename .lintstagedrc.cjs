@@ -12,5 +12,5 @@ module.exports = {
   '*.{scss,css}': ['stylelint --fix'],
 
   // 配置/文档文件：仅 Prettier 格式化
-  '*.{json,md,yml}': ['prettier --write'],
+  '*.{json,md,yml,yaml}': ['prettier --write'],
 }

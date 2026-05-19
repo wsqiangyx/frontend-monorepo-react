@@ -32,7 +32,8 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       output: {
-        entryFileNames: '[name]/index.js',
+        entryFileNames: (chunkInfo) =>
+          chunkInfo.name === 'index' ? 'index.js' : '[name]/index.js',
       },
     },
   },

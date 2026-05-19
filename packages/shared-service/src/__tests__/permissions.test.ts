@@ -4,6 +4,7 @@ import {
   hasPermission,
   hasAnyPermission,
   hasAllPermissions,
+  asPermissionCode,
 } from '../permissions'
 
 describe('createPermissionSet', () => {
@@ -22,11 +23,11 @@ describe('hasPermission', () => {
   const set = createPermissionSet(['user:read', 'user:write'])
 
   it('should return true for existing permission', () => {
-    expect(hasPermission(set, 'user:read')).toBe(true)
+    expect(hasPermission(set, asPermissionCode('user:read'))).toBe(true)
   })
 
   it('should return false for missing permission', () => {
-    expect(hasPermission(set, 'admin:delete')).toBe(false)
+    expect(hasPermission(set, asPermissionCode('admin:delete'))).toBe(false)
   })
 })
 
@@ -34,11 +35,15 @@ describe('hasAnyPermission', () => {
   const set = createPermissionSet(['user:read', 'user:write'])
 
   it('should return true if any permission matches', () => {
-    expect(hasAnyPermission(set, ['admin:delete', 'user:read'])).toBe(true)
+    expect(
+      hasAnyPermission(set, [asPermissionCode('admin:delete'), asPermissionCode('user:read')]),
+    ).toBe(true)
   })
 
   it('should return false if no permission matches', () => {
-    expect(hasAnyPermission(set, ['admin:delete', 'admin:create'])).toBe(false)
+    expect(
+      hasAnyPermission(set, [asPermissionCode('admin:delete'), asPermissionCode('admin:create')]),
+    ).toBe(false)
   })
 
   it('should return false for empty codes', () => {
@@ -50,11 +55,15 @@ describe('hasAllPermissions', () => {
   const set = createPermissionSet(['user:read', 'user:write', 'role:read'])
 
   it('should return true if all permissions match', () => {
-    expect(hasAllPermissions(set, ['user:read', 'user:write'])).toBe(true)
+    expect(
+      hasAllPermissions(set, [asPermissionCode('user:read'), asPermissionCode('user:write')]),
+    ).toBe(true)
   })
 
   it('should return false if any permission is missing', () => {
-    expect(hasAllPermissions(set, ['user:read', 'admin:delete'])).toBe(false)
+    expect(
+      hasAllPermissions(set, [asPermissionCode('user:read'), asPermissionCode('admin:delete')]),
+    ).toBe(false)
   })
 
   it('should return true for empty codes', () => {

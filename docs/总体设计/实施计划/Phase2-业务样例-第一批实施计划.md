@@ -2,7 +2,7 @@
 
 > 制定日期：2026-05-15
 > 适用阶段：Phase 2
-> 上游设计：`docs/专题文档/设计/Phase2-业务样例-第一批详细设计.md`
+> 上游设计：`docs/总体设计/详细设计/Phase2-业务样例-第一批详细设计.md`
 > 文档性质：面向未来执行的实施计划，不记录已完成事项或复盘
 
 ## 文档定位
@@ -11,8 +11,8 @@
 
 ## 输入 / 前置条件
 
-- Phase 1 平台基座已稳定：`packages/platform-core`、`packages/mock`、`apps/react-app`
-- React 共享 UI 壳已稳定：`packages/ui-react`
+- Phase 1 平台基座已稳定：`packages/shared-service`、`packages/mock`、`apps/react-app`
+- React 共享 UI 壳已稳定：`packages/shared-ui`
 - 第一批数据接口已由 `@repo/mock` 提供：
   - `GET /api/system/users`
   - `GET /api/system/roles`
@@ -47,7 +47,7 @@
 - 不做新增、编辑、删除的完整持久化闭环
 - 不做复杂弹窗表单、审批流、导入导出
 - 不在页面内新增平台级状态机或权限模型
-- 不反向修改 `packages/platform-core` 与 `packages/mock` 的正式边界
+- 不反向修改 `packages/shared-service` 与 `packages/mock` 的正式边界
 
 ## 实施原则
 
