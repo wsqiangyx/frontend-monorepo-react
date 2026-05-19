@@ -13,7 +13,7 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
-    "@ant-design/icons": "6.2.2",
+    "@ant-design/icons": "6.2.3",
     "@repo/shared-service": "workspace:*",
     "@repo/resources": "workspace:*",
     "@repo/shared": "workspace:*",
