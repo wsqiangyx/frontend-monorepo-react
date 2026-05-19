@@ -1,0 +1,26 @@
+[
+  {
+    "path": "/system/users",
+    "title": "用户管理",
+    "menuKey": "user-list",
+    "permissionCodes": ["system:user:list"]
+  },
+  {
+    "path": "/system/roles",
+    "title": "角色管理",
+    "menuKey": "role-list",
+    "permissionCodes": ["system:role:list"]
+  },
+  {
+    "path": "/system/dictionaries",
+    "title": "字典管理",
+    "menuKey": "dict-list",
+    "permissionCodes": ["system:dict:list"]
+  },
+  {
+    "path": "/system/meta",
+    "title": "系统元信息",
+    "menuKey": "meta",
+    "permissionCodes": ["system:meta:view"]
+  }
+]

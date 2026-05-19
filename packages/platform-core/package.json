@@ -1,0 +1,55 @@
+{
+  "name": "@repo/platform-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "default": "./dist/auth/index.js"
+    },
+    "./permissions": {
+      "types": "./dist/permissions/index.d.ts",
+      "default": "./dist/permissions/index.js"
+    },
+    "./navigation": {
+      "types": "./dist/navigation/index.d.ts",
+      "default": "./dist/navigation/index.js"
+    },
+    "./workspace-tabs": {
+      "types": "./dist/workspace-tabs/index.d.ts",
+      "default": "./dist/workspace-tabs/index.js"
+    },
+    "./request": {
+      "types": "./dist/request/index.d.ts",
+      "default": "./dist/request/index.js"
+    },
+    "./contracts": {
+      "types": "./dist/contracts/index.d.ts",
+      "default": "./dist/contracts/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "default": "./dist/runtime/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node -e \"import{rmSync}from'node:fs';rmSync('dist',{recursive:true,force:true});rmSync('tsconfig.build.tsbuildinfo',{force:true});\" && node ../../scripts/vite.cjs build && tsc --emitDeclarationOnly -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "node ../../scripts/vitest.cjs run --config vitest.config.ts",
+    "test:watch": "node ../../scripts/vitest.cjs --config vitest.config.ts",
+    "test:coverage": "node ../../scripts/vitest.cjs run --coverage --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@repo/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "8.0.10"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "paths": {
+      "@repo/platform-core": ["../platform-core/src/index.ts"],
+      "@repo/shared/ui-contract": ["../shared/src/ui-contract/index.ts"],
+      "@repo/ui-tokens": ["../ui-tokens/src/index.ts"],
+      "@repo/ui-tokens/theme": ["../ui-tokens/src/theme/index.ts"],
+      "@repo/ui-tokens/theme/antd": ["../ui-tokens/src/theme/antd.ts"]
+    }
+  },
+  "include": ["src"]
+}

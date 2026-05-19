@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "paths": {
+      "@repo/platform-core": ["../platform-core/dist/index.d.ts"],
+      "@repo/shared/ui-contract": ["../shared/dist/ui-contract/index.d.ts"],
+      "@repo/ui-tokens": ["../ui-tokens/dist/index.d.ts"],
+      "@repo/ui-tokens/theme": ["../ui-tokens/dist/theme/index.d.ts"],
+      "@repo/ui-tokens/theme/antd": ["../ui-tokens/dist/theme/antd.d.ts"]
+    }
+  },
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test/**/*"]
+}
