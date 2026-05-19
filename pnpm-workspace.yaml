@@ -1,0 +1,28 @@
+# pnpm workspace 定义 — React 中后台前端平台 Monorepo
+
+packages:
+  - 'packages/*'
+  - 'apps/*'
+
+catalog:
+  react: ^19.0
+  react-dom: ^19.0
+  '@types/react': ^19.0
+  '@types/react-dom': ^19.0
+  'react-router-dom': ^7.0
+  zustand: ^5.0
+  antd: ^5.22
+  '@ant-design/icons': ^5.6
+  axios: ^1.7
+  msw: ^2.5
+  '@antv/g2': ^5.2
+  bpmn-js: ^17.0
+
+overrides:
+  axios: '1.16.0'
+  typescript: '6.0.3'
+  vitest: '4.1.5'
+  eslint: '9.39.4'
+  sass: '1.99.0'
+  unocss: '66.6.8'
+  jsdom: '29.1.0'
