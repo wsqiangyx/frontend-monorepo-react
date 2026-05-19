@@ -2,7 +2,7 @@
 
 > 制定日期：2026-05-15
 > 适用阶段：Phase 0
-> 上游设计：`docs/专题文档/设计/Phase0-基础能力详细设计.md`
+> 上游设计：`docs/总体设计/详细设计/Phase0-基础能力详细设计.md`
 > 文档性质：面向未来执行的实施计划，不记录已完成事项或复盘
 
 ## 1. 文档定位
@@ -11,9 +11,9 @@
 
 ## 2. 输入 / 前置条件
 
-- 总体边界：`docs/总体设计/项目总体设计方案.md`
-- 上游设计：`docs/专题文档/设计/Phase0-基础能力详细设计.md`
-- 正式主线为 `apps/react-app`、`packages/shared`、`packages/platform-core`、`packages/ui-tokens`、`packages/resources`、`packages/mock`、`packages/ui-react`
+- 总体边界：`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`
+- 上游设计：`docs/总体设计/详细设计/Phase0-基础能力详细设计.md`
+- 正式主线为 `apps/react-app`、`packages/shared`、`packages/shared-i18n`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock`、`packages/shared-ui`
 - 根脚本继续使用包装器：`scripts/vite.cjs`、`scripts/vitest.cjs`、`scripts/run-vite-bin.cjs`、`scripts/write-theme-init.mjs`
 
 ## 3. 范围 / 非目标
@@ -21,7 +21,7 @@
 ### 范围
 
 - 根级仓库约定、workspace 结构与验证链路
-- `packages/ui-tokens` 与 `packages/ui-react` 的主题 / 共享 UI 基线
+- `packages/design-tokens` 与 `packages/shared-ui` 的主题 / 共享 UI 基线
 - `packages/shared` 与 `apps/react-app` 的国际化基线
 - 文档入口与导航关系收敛
 
@@ -58,16 +58,16 @@
 
 ### 任务 2：主题与共享 UI
 
-- 在 `packages/ui-tokens` 落地主题注册表、主题运行时、CSS 变量生成和 Ant Design 主题适配
+- 在 `packages/design-tokens` 落地主题注册表、主题运行时、CSS 变量生成和 Ant Design 主题适配
 - 在 `packages/shared` 收敛跨层主题文案契约 `@repo/shared/ui-contract`
-- 在 `packages/ui-react` 落地 `ThemeProvider`、首批业务壳组件和显式样式子路径 `./style.css`
+- 在 `packages/shared-ui` 落地 `ThemeProvider`、首批业务壳组件和显式样式子路径 `./style.css`
 - 在 `apps/react-app` 中接入主题 store、`theme-init.js` 预注入、`ThemeProvider` 和示例页面替换
 - 同步根级脚本、测试聚合和主文档约束
 
 验证命令：
 
 - `pnpm -F @repo/design-tokens test && pnpm -F @repo/design-tokens typecheck && pnpm -F @repo/design-tokens build`
-- `pnpm -F @repo/ui-react test && pnpm -F @repo/ui-react typecheck && pnpm -F @repo/ui-react build`
+- `pnpm -F @repo/shared-ui test && pnpm -F @repo/shared-ui typecheck && pnpm -F @repo/shared-ui build`
 
 ### 任务 3：国际化
 
@@ -85,7 +85,7 @@
 
 - 工程基线、主题、共享 UI 与国际化基线按阶段边界完成收敛
 - `main -> bootstrap -> App` 启动链路稳定
-- 根文档、总体设计与专题文档入口一致
+- 根文档、总体设计与分阶段文档入口一致
 
 ## 7. 总体验证命令
 

@@ -49,7 +49,7 @@ describe('normalizeMenuNode', () => {
 
 describe('flattenMenuNodes', () => {
   it('should flatten nested menu nodes', () => {
-    const nodes: PlatformMenuNode[] = [
+    const nodes = [
       {
         key: 'system',
         title: 'System',
@@ -60,17 +60,17 @@ describe('flattenMenuNodes', () => {
           { key: 'roles', title: 'Roles', type: 'route', order: 0 },
         ],
       },
-    ]
+    ] satisfies PlatformMenuNode[]
     const flat = flattenMenuNodes(nodes)
     expect(flat).toHaveLength(3)
     expect(flat.map((n) => n.key)).toEqual(['system', 'users', 'roles'])
   })
 
   it('should exclude hidden nodes', () => {
-    const nodes: PlatformMenuNode[] = [
+    const nodes = [
       { key: 'visible', title: 'Visible', type: 'route', order: 0 },
       { key: 'hidden', title: 'Hidden', type: 'route', order: 0, hidden: true },
-    ]
+    ] satisfies PlatformMenuNode[]
     const flat = flattenMenuNodes(nodes)
     expect(flat).toHaveLength(1)
     expect(flat[0].key).toBe('visible')
@@ -79,17 +79,17 @@ describe('flattenMenuNodes', () => {
 
 describe('sortMenuNodes', () => {
   it('should sort nodes by order', () => {
-    const nodes: PlatformMenuNode[] = [
+    const nodes = [
       { key: 'c', title: 'C', type: 'route', order: 3 },
       { key: 'a', title: 'A', type: 'route', order: 1 },
       { key: 'b', title: 'B', type: 'route', order: 2 },
-    ]
+    ] satisfies PlatformMenuNode[]
     const sorted = sortMenuNodes(nodes)
     expect(sorted.map((n) => n.key)).toEqual(['a', 'b', 'c'])
   })
 
   it('should sort children recursively', () => {
-    const nodes: PlatformMenuNode[] = [
+    const nodes = [
       {
         key: 'parent',
         title: 'Parent',
@@ -100,16 +100,16 @@ describe('sortMenuNodes', () => {
           { key: 'child-a', title: 'A', type: 'route', order: 1 },
         ],
       },
-    ]
+    ] satisfies PlatformMenuNode[]
     const sorted = sortMenuNodes(nodes)
     expect(sorted[0].children?.map((n) => n.key)).toEqual(['child-a', 'child-b'])
   })
 
   it('should not mutate original array', () => {
-    const nodes: PlatformMenuNode[] = [
+    const nodes = [
       { key: 'b', title: 'B', type: 'route', order: 2 },
       { key: 'a', title: 'A', type: 'route', order: 1 },
-    ]
+    ] satisfies PlatformMenuNode[]
     sortMenuNodes(nodes)
     expect(nodes[0].key).toBe('b')
   })

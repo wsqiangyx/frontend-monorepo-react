@@ -13,7 +13,7 @@
 
 - [ ] 确认仓库将继续以 React 技术栈为正式范围
 - [ ] 阅读根 `README.md`
-- [ ] 阅读 `docs/总体设计/项目总体设计方案.md`
+- [ ] 阅读 `docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`
 - [ ] 确认你理解当前正式架构是“宿主层 + 平台内核层 + 共享运行时层 + 交付适配层”
 - [ ] 阅读根 `STATUS.yaml`，确认哪些目录是 `stable`、哪些只是 `experimental`
 - [ ] 阅读 `docs/教程/模板初始化与裁剪指南.md`
@@ -66,7 +66,7 @@
 - 根 `README.md`
 - 根 `AGENTS.md`
 - 根 `TEMPLATE.md`
-- `docs/总体设计/项目总体设计方案.md`
+- `docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`
 - `docs/教程/模板初始化与裁剪指南.md`
 - `docs/规范/测试规范.md`
 

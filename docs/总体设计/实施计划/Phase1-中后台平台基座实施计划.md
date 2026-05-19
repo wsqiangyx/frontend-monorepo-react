@@ -2,7 +2,7 @@
 
 > 制定日期：2026-05-15
 > 适用阶段：Phase 1
-> 上游设计：`docs/专题文档/设计/Phase1-中后台平台基座详细设计.md`
+> 上游设计：`docs/总体设计/详细设计/Phase1-中后台平台基座详细设计.md`
 > 文档性质：面向未来执行的实施计划，不记录已完成事项或复盘
 
 ## 1. 文档定位
@@ -11,8 +11,8 @@
 
 ## 2. 输入 / 前置条件
 
-- 总体边界：`docs/总体设计/项目总体设计方案.md`
-- 上游设计：`docs/专题文档/设计/Phase1-中后台平台基座详细设计.md`
+- 总体边界：`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`
+- 上游设计：`docs/总体设计/详细设计/Phase1-中后台平台基座详细设计.md`
 - Phase 0 已稳定：工程基线、主题内核、React 共享 UI、国际化基线
 - `main` 只负责 MSW 启动判断，`bootstrap` 只负责主题 / Provider / 挂载
 - `packages/*` 对外 `exports` 只指向 `dist`
@@ -22,9 +22,9 @@
 
 ### 范围
 
-- `packages/platform-core` 的平台共享内核
+- `packages/shared-service` 的平台共享内核
 - `packages/mock` 的平台正式后端替身
-- `packages/ui-react` 的平台壳组件
+- `packages/shared-ui` 的平台壳组件
 - `apps/react-app` 的平台接线、路由、布局、启动链路和最小页面
 - 必要时同步根文档与总体设计文档
 
@@ -39,10 +39,10 @@
 
 ### M1 到 M4
 
-- M1：`packages/platform-core` 的骨架、模型和测试先稳定
+- M1：`packages/shared-service` 的骨架、模型和测试先稳定
 - M2：`packages/mock` 的平台级接口和场景人格先稳定
 - M3：React 侧能在纯 Mock 环境下完成登录、初始化、菜单和多标签页主链路
-- M4：根文档、专题文档和全仓验证结果一致
+- M4：根文档、分阶段文档和全仓验证结果一致
 
 ## 5. 任务拆解
 
@@ -56,7 +56,7 @@
 
 - `pnpm -F @repo/react-app test && pnpm -F @repo/react-app typecheck`
 
-### 任务 2：`packages/platform-core`
+### 任务 2：`packages/shared-service`
 
 - 落地 `app`、`auth`、`navigation`、`permissions`、`workspace-tabs`、`request`、`contracts`、`runtime`
 - 收敛平台初始化、认证、导航、权限、多标签页与请求契约的共享规则
@@ -64,9 +64,9 @@
 
 验证命令：
 
-- `pnpm -F @repo/platform-core test`
-- `pnpm -F @repo/platform-core typecheck`
-- `pnpm -F @repo/platform-core build`
+- `pnpm -F @repo/shared-service test`
+- `pnpm -F @repo/shared-service typecheck`
+- `pnpm -F @repo/shared-service build`
 
 ### 任务 3：`packages/mock`
 
@@ -92,7 +92,7 @@
 
 - 平台共享内核、Mock 替身后端与 React 宿主接线按阶段边界完成收敛
 - 平台规则仍集中在共享层，不回流到 app 私有实现
-- 根文档、总体设计与专题文档入口一致
+- 根文档、总体设计与分阶段文档入口一致
 
 ## 7. 总体验证命令
 

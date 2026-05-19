@@ -41,7 +41,7 @@
   },
   "scripts": {
     "build": "node -e \"import{rmSync}from'node:fs';rmSync('dist',{recursive:true,force:true});rmSync('tsconfig.build.tsbuildinfo',{force:true});\" && node ../../scripts/vite.cjs build && tsc --emitDeclarationOnly -p tsconfig.build.json",
-    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node ../../scripts/vitest.cjs run --config vitest.config.ts",
     "test:watch": "node ../../scripts/vitest.cjs --config vitest.config.ts",
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage --config vitest.config.ts"
