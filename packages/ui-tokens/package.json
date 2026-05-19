@@ -1,0 +1,33 @@
+{
+  "name": "@repo/ui-tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./css": {
+      "types": "./dist/to-css.d.ts",
+      "default": "./dist/to-css.js"
+    },
+    "./theme": {
+      "types": "./dist/theme/index.d.ts",
+      "default": "./dist/theme/index.js"
+    },
+    "./theme/antd": {
+      "types": "./dist/theme/antd.d.ts",
+      "default": "./dist/theme/antd.js"
+    }
+  },
+  "scripts": {
+    "build": "node -e \"import{rmSync}from'node:fs';rmSync('dist',{recursive:true,force:true});rmSync('tsconfig.build.tsbuildinfo',{force:true});\" && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node ../../scripts/vitest.cjs run",
+    "test:watch": "node ../../scripts/vitest.cjs",
+    "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
+  }
+}

@@ -1,0 +1,28 @@
+# ============================================================================
+# .editorconfig — 跨编辑器/IDE 的统一格式化规则
+# ============================================================================
+# 确保所有开发者无论使用什么编辑器，都产出一致的文件格式。
+# 与 Prettier 配合：.editorconfig 处理编辑器默认行为，Prettier 处理保存时格式化。
+# ============================================================================
+
+# 标记此文件为最顶层的 .editorconfig，编辑器不再向上查找。
+root = true
+
+[*]
+# 文件编码统一 UTF-8
+charset = utf-8
+# 换行符统一 LF，避免 Windows CRLF 导致跨平台 diff 问题
+end_of_line = lf
+# 使用空格缩进（非 Tab）
+indent_style = space
+# 缩进宽度 2 个空格，与 prettier.config.js 的 tabWidth 保持一致
+indent_size = 2
+# 文件末尾插入空行，符合 POSIX 标准
+insert_final_newline = true
+# 自动去除行尾空白字符，避免无意义的 diff
+
+trim_trailing_whitespace = true
+
+[*.md]
+# Markdown 中行尾空格有语义（两个空格 = 换行），因此不做裁剪
+trim_trailing_whitespace = false

@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - staging
+      - test
+      - develop
+  pull_request:
+    branches:
+      - master
+      - staging
+      - test
+      - develop
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Prepare pnpm
+        run: corepack prepare pnpm@10.33.1 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          HUSKY: 0
+
+      - name: Verify
+        run: pnpm verify
+
+  smoke-test:
+    name: Template Smoke Test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Prepare pnpm
+        run: corepack prepare pnpm@10.33.1 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          HUSKY: 0
+
+      - name: Clone to temp directory
+        run: |
+          TEMP_DIR=$(mktemp -d)
+          git clone "$GITHUB_WORKSPACE" "$TEMP_DIR/repo"
+          cd "$TEMP_DIR/repo"
+          corepack enable
+          corepack prepare pnpm@10.33.1 --activate
+          pnpm install --frozen-lockfile
+          pnpm template:init -- --root . --project-name smoke-test --display-name "Smoke Test" --storage-key-prefix smoke --app-title "Smoke Test"
+          pnpm verify
+        env:
+          HUSKY: 0

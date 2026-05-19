@@ -1,0 +1,14 @@
+// @repo/mock 的 TypeScript 配置 — 开发和类型检查用
+// 继承根目录的 tsconfig.base.json，添加本包的路径和 composite 构建。
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": true,
+    // MSW 浏览器端（browser.ts）使用 ServiceWorker API，
+    // 需要 DOM 和 DOM.Iterable lib 提供类型定义（如 navigator.serviceWorker）
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src"]
+}

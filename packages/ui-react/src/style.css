@@ -1,0 +1,456 @@
+.repo-app-shell {
+  min-height: 100%;
+  color: var(--theme-color-text-primary);
+  background: var(--theme-color-bg-page);
+}
+
+.repo-app-shell-content {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--theme-spacing-panel-y) var(--theme-spacing-panel-x);
+}
+
+.repo-app-shell-content-fluid {
+  max-width: none;
+}
+
+.repo-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.repo-page-header-meta {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.repo-page-header-title {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.repo-page-header-subtitle {
+  margin: 0;
+  color: var(--theme-color-text-secondary);
+}
+
+.repo-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.repo-filter-bar-start {
+  justify-content: flex-start;
+}
+
+.repo-filter-bar-no-wrap,
+.repo-filter-bar-no-wrap .repo-filter-bar-content {
+  flex-wrap: nowrap;
+}
+
+.repo-filter-bar-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.repo-data-panel {
+  padding: var(--theme-spacing-panel-y) var(--theme-spacing-panel-x);
+  background: var(--theme-color-bg-card);
+  border: 1px solid var(--theme-color-border);
+  border-radius: var(--theme-radius-lg);
+  box-shadow: var(--theme-shadow-panel);
+}
+
+.repo-data-panel-borderless {
+  border: 0;
+  box-shadow: none;
+}
+
+.repo-data-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.repo-data-panel-description {
+  margin: 0.25rem 0 0;
+  color: var(--theme-color-text-secondary);
+}
+
+.repo-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
+}
+
+.repo-metric-card {
+  padding: 1rem;
+  background: var(--theme-color-bg-elevated);
+  border: 1px solid var(--theme-color-border);
+  border-radius: var(--theme-radius-md);
+}
+
+.repo-metric-card[data-trend='up'] {
+  border-color: var(--theme-color-success);
+}
+
+.repo-metric-card[data-trend='down'] {
+  border-color: var(--theme-color-error);
+}
+
+.repo-metric-card[data-trend='flat'] {
+  border-color: var(--theme-color-border-strong);
+}
+
+.repo-empty-state {
+  display: grid;
+  gap: 0.75rem;
+  place-items: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--theme-color-text-secondary);
+}
+
+.repo-empty-state-compact {
+  padding: 1rem 0;
+}
+
+.repo-status-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: var(--theme-color-bg-elevated);
+  border: 1px solid var(--theme-color-border);
+  border-radius: 999px;
+}
+
+.repo-status-tag[data-status='success'] {
+  color: var(--theme-color-success);
+  border-color: var(--theme-color-success);
+}
+
+.repo-status-tag[data-status='warning'] {
+  color: var(--theme-color-warning);
+  border-color: var(--theme-color-warning);
+}
+
+.repo-status-tag[data-status='error'] {
+  color: var(--theme-color-error);
+  border-color: var(--theme-color-error);
+}
+
+.repo-status-tag[data-status='info'] {
+  color: var(--theme-color-info);
+  border-color: var(--theme-color-info);
+}
+
+.repo-status-tag[data-status='neutral'] {
+  color: var(--theme-color-text-secondary);
+  border-color: var(--theme-color-border-strong);
+}
+
+.repo-theme-mode-switch {
+  display: inline-grid;
+  gap: 0.5rem;
+}
+
+.repo-theme-mode-switch-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.repo-theme-mode-switch-options {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: var(--theme-color-bg-elevated);
+  border: 1px solid var(--theme-color-border);
+  border-radius: 999px;
+}
+
+.repo-theme-mode-switch-option {
+  padding: 0.375rem 0.75rem;
+  color: var(--theme-color-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.repo-theme-mode-switch-option[data-active='true'] {
+  color: var(--theme-color-text-primary);
+  background: var(--theme-color-bg-card);
+  box-shadow: var(--theme-shadow-panel);
+}
+
+/* AdminShell */
+.repo-admin-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: var(--theme-color-text-primary);
+  background: var(--theme-color-bg-page);
+}
+
+.repo-admin-shell-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.repo-admin-shell-main {
+  flex: 1;
+  overflow: auto;
+}
+
+/* TopNav */
+.repo-top-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 3rem;
+  padding: 0 1rem;
+  color: var(--theme-color-text-primary);
+  background: var(--theme-color-bg-elevated);
+  border-bottom: 1px solid var(--theme-color-border);
+}
+
+.repo-top-nav-brand {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.repo-top-nav-extra {
+  flex: 1;
+}
+
+.repo-top-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.repo-top-nav-username {
+  font-size: 0.875rem;
+}
+
+.repo-top-nav-logout {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--theme-color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--theme-color-border);
+  border-radius: var(--theme-radius-sm);
+  cursor: pointer;
+}
+
+/* SideMenu */
+.repo-side-menu {
+  width: 13rem;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+  color: var(--theme-color-text-primary);
+  background: var(--theme-color-bg-elevated);
+  border-right: 1px solid var(--theme-color-border);
+}
+
+.repo-side-menu-list,
+.repo-side-menu-sub {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.repo-side-menu-sub {
+  padding-left: 1rem;
+}
+
+.repo-side-menu-item {
+  margin: 0;
+}
+
+.repo-side-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: var(--theme-color-text-primary);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.repo-side-menu-link:hover {
+  background: var(--theme-color-bg-page);
+}
+
+.repo-side-menu-link-active {
+  color: var(--theme-color-primary);
+  background: var(--theme-color-bg-page);
+}
+
+.repo-side-menu-link:disabled {
+  color: var(--theme-color-text-tertiary);
+  cursor: not-allowed;
+}
+
+.repo-side-menu-icon {
+  font-size: 1rem;
+}
+
+.repo-side-menu-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--theme-color-border);
+}
+
+/* AppBreadcrumb */
+.repo-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--theme-color-text-secondary);
+}
+
+.repo-breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.repo-breadcrumb-sep {
+  margin: 0 0.25rem;
+}
+
+.repo-breadcrumb-current {
+  color: var(--theme-color-text-primary);
+}
+
+/* TabWorkspace */
+.repo-tab-workspace {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.repo-tab-workspace-bar {
+  display: flex;
+  gap: 0;
+  padding: 0 0.5rem;
+  overflow-x: auto;
+  background: var(--theme-color-bg-elevated);
+  border-bottom: 1px solid var(--theme-color-border);
+}
+
+.repo-tab-workspace-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  border-right: 1px solid var(--theme-color-border);
+  background: var(--theme-color-bg-elevated);
+}
+
+.repo-tab-workspace-tab-active {
+  background: var(--theme-color-bg-page);
+}
+
+.repo-tab-workspace-tab-title {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.repo-tab-workspace-tab-close {
+  padding: 0 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--theme-color-text-tertiary);
+  background: transparent;
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.repo-tab-workspace-tab-close:hover {
+  color: var(--theme-color-text-primary);
+  background: var(--theme-color-bg-page);
+}
+
+.repo-tab-workspace-content {
+  flex: 1;
+  overflow: auto;
+}
+
+/* PageContainer */
+.repo-page-container {
+  padding: 1rem;
+}
+
+.repo-page-container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.repo-page-container-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.repo-page-container-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.repo-page-container-body {
+  min-height: 0;
+}
+
+/* ExceptionState */
+.repo-exception-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.repo-exception-state-code {
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--theme-color-text-tertiary);
+}
+
+.repo-exception-state-desc {
+  color: var(--theme-color-text-secondary);
+}
+
+.repo-exception-state-action {
+  margin-top: 0.5rem;
+}

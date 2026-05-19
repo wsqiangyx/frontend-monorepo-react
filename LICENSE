@@ -1,0 +1,14 @@
+Template License Notice
+
+This repository currently ships with a placeholder license notice.
+
+Copyright (c) 2026 The repository owner.
+All rights reserved.
+
+Why this file is a placeholder:
+
+1. This repository is being productized as a reusable Git template.
+2. The final legal owner and distribution model may differ for each consumer.
+3. A template should not silently imply an open-source license that has not been approved.
+
+Before external distribution, open-source publication, or commercial release, replace this file with the final license approved for your organization and update the related project metadata and documentation.

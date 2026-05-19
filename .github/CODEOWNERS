@@ -1,0 +1,19 @@
+# 模板使用方应在初始化仓库后，将此处替换为自己的 GitHub 用户或团队。
+
+# 根配置与 CI
+* @wsqiangyx
+.github/workflows/ @wsqiangyx
+
+# 应用壳
+apps/react-app/ @wsqiangyx
+
+# 共享包
+packages/shared/ @wsqiangyx
+packages/platform-core/ @wsqiangyx
+packages/ui-tokens/ @wsqiangyx
+packages/resources/ @wsqiangyx
+packages/mock/ @wsqiangyx
+packages/ui-react/ @wsqiangyx
+
+# 文档
+docs/ @wsqiangyx

@@ -1,0 +1,13 @@
+node_modules
+dist
+.DS_Store
+.idea
+*.local
+*.log
+coverage
+.vitest
+*.tsbuildinfo
+.superpowers/
+.codex/
+*.tgz
+.env

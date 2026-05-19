@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="repo-workspace-mark" viewBox="0 0 64 64">
+    <rect x="10" y="10" width="44" height="44" rx="14" fill="#185c37"/>
+    <path d="M22 24h20v16H22z" fill="#f4f7f1"/>
+    <path d="M20 42h24" stroke="#cbe1c0" stroke-width="4" stroke-linecap="round"/>
+  </symbol>
+</svg>

@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+pnpm-lock.yaml
+*.min.js
+**/mockServiceWorker.js
+**/theme-init.js
+.codex/
