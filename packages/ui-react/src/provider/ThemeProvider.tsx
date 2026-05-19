@@ -8,8 +8,8 @@ import {
   type ThemeName,
   type ThemePreference,
   type ThemeSnapshot,
-} from '@repo/ui-tokens/theme'
-import { createAntdTheme } from '@repo/ui-tokens/theme/antd'
+} from '@repo/design-tokens/theme'
+import { createAntdTheme } from '@repo/design-tokens/theme/antd'
 
 const ThemeContext = createContext<ThemeSnapshot | null>(null)
 

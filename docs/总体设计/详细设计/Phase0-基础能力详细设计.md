@@ -121,8 +121,8 @@ packages/
 ### 4.3 主题与共享 UI 正式契约
 
 - `ThemePreference = 'system' | 'light' | 'dark'`
-- 主题运行时优先收敛到 `@repo/ui-tokens/theme`
-- `@repo/ui-tokens` 根入口承载 token、CSS 变量和主题适配
+- 主题运行时优先收敛到 `@repo/design-tokens/theme`
+- `@repo/design-tokens` 根入口承载 token、CSS 变量和主题适配
 - 共享 UI 样式只能由 React app 在 `bootstrap.tsx` 中显式引入 `@repo/ui-react/style.css`
 - `main -> bootstrap -> App` 分层不得破坏
 - `index.html` 必须在 `main.tsx` 前加载 `/theme-init.js`

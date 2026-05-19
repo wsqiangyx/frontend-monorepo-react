@@ -115,7 +115,7 @@ test('checkTemplateResidue detects repo-theme-preference in code', () => {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-template-residue-'))
 
   writeFile(
-    join(workspaceRoot, 'packages/ui-tokens/src/theme.ts'),
+    join(workspaceRoot, 'packages/design-tokens/src/theme.ts'),
     "export const THEME_KEY = 'repo-theme-preference'\n",
   )
 
@@ -130,7 +130,7 @@ test('checkTemplateResidue detects repo-theme-style in code', () => {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-template-residue-'))
 
   writeFile(
-    join(workspaceRoot, 'packages/ui-tokens/src/theme.ts'),
+    join(workspaceRoot, 'packages/design-tokens/src/theme.ts'),
     "export const STYLE_KEY = 'repo-theme-style'\n",
   )
 

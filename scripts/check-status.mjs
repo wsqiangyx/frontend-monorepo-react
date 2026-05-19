@@ -10,7 +10,7 @@ const EXPERIMENTAL_APP_NAMES = ['react-screen-designer']
 const STABLE_PACKAGE_NAMES = [
   'shared',
   'platform-core',
-  'ui-tokens',
+  'design-tokens',
   'resources',
   'mock',
   'ui-react',
