@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
-import type { PlatformSession, PlatformMenuNode, WorkspaceTab } from '@repo/platform-core'
+import type { PlatformSession, PlatformMenuNode, WorkspaceTab } from '@repo/shared-service'
 import { TopNav } from './TopNav'
 import { SideMenu } from './SideMenu'
 import { TabWorkspace } from './TabWorkspace'

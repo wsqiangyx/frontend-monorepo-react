@@ -4,7 +4,7 @@
     "jsx": "react-jsx",
     "types": ["vite/client"],
     "paths": {
-      "@repo/platform-core": ["../platform-core/src/index.ts"],
+      "@repo/shared-service": ["../shared-service/src/index.ts"],
       "@repo/shared/ui-contract": ["../shared/src/ui-contract/index.ts"],
       "@repo/design-tokens": ["../design-tokens/src/index.ts"],
       "@repo/design-tokens/theme": ["../design-tokens/src/theme/index.ts"],

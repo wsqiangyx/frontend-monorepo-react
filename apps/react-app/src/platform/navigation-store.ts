@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import type { PlatformMenuNode } from '@repo/platform-core'
-import { sortMenuNodes, normalizeMenuNode } from '@repo/platform-core'
+import type { PlatformMenuNode } from '@repo/shared-service'
+import { sortMenuNodes, normalizeMenuNode } from '@repo/shared-service'
 import { createHttpClient } from '@repo/shared/http'
 
 interface NavigationState {

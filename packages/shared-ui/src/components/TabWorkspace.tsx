@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
-import type { WorkspaceTab } from '@repo/platform-core'
+import type { WorkspaceTab } from '@repo/shared-service'
 
 interface TabWorkspaceProps extends HTMLAttributes<HTMLDivElement> {
   tabs: WorkspaceTab[]

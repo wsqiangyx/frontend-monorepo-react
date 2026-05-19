@@ -28,9 +28,9 @@ const sourceAlias = [
     replacement: fileURLToPath(new URL('../../packages/shared/src/i18n/index.ts', import.meta.url)),
   },
   {
-    find: '@repo/platform-core',
+    find: '@repo/shared-service',
     replacement: fileURLToPath(
-      new URL('../../packages/platform-core/src/index.ts', import.meta.url),
+      new URL('../../packages/shared-service/src/index.ts', import.meta.url),
     ),
   },
   {

@@ -16,7 +16,7 @@
     "@ant-design/icons": "6.2.2",
     "@antv/g2": "^5.3.3",
     "@repo/mock": "workspace:*",
-    "@repo/platform-core": "workspace:*",
+    "@repo/shared-service": "workspace:*",
     "@repo/resources": "workspace:*",
     "@repo/shared": "workspace:*",
     "@repo/shared-ui": "workspace:*",

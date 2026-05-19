@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import type { PlatformSession, AuthStatus, PlatformUser } from '@repo/platform-core'
-import { createAnonymousSession, isAuthenticated } from '@repo/platform-core'
+import type { PlatformSession, AuthStatus, PlatformUser } from '@repo/shared-service'
+import { createAnonymousSession, isAuthenticated } from '@repo/shared-service'
 import { createHttpClient } from '@repo/shared/http'
 
 interface LoginParams {

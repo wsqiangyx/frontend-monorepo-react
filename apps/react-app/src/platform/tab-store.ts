@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import type { WorkspaceTab } from '@repo/platform-core'
-import { createTab, closeTab, findTabByKey } from '@repo/platform-core'
+import type { WorkspaceTab } from '@repo/shared-service'
+import { createTab, closeTab, findTabByKey } from '@repo/shared-service'
 
 interface TabState {
   tabs: WorkspaceTab[]

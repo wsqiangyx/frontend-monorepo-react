@@ -8,7 +8,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@repo/shared": ["../../packages/shared/src/index.ts"],
-      "@repo/platform-core": ["../../packages/platform-core/src/index.ts"],
+      "@repo/shared-service": ["../../packages/shared-service/src/index.ts"],
       "@repo/mock/browser": ["../../packages/mock/src/browser.ts"],
       "@repo/mock/server": ["../../packages/mock/src/server.ts"],
       "@repo/design-tokens/theme": ["../../packages/design-tokens/src/theme/index.ts"],

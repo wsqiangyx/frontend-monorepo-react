@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
-import type { PlatformMenuNode } from '@repo/platform-core'
+import type { PlatformMenuNode } from '@repo/shared-service'
 
 interface SideMenuProps extends Omit<HTMLAttributes<HTMLElement>, 'onSelect'> {
   nodes: PlatformMenuNode[]
