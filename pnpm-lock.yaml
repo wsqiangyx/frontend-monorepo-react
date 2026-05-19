@@ -151,8 +151,8 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
       '@vitejs/plugin-react':
-        specifier: 6.0.1
-        version: 6.0.1(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))
+        specifier: 6.0.2
+        version: 6.0.2(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))
       vite:
         specifier: 8.0.10
         version: 8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)
@@ -218,8 +218,8 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
       '@vitejs/plugin-react':
-        specifier: 6.0.1
-        version: 6.0.1(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))
+        specifier: 6.0.2
+        version: 6.0.2(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))
       vite:
         specifier: 8.0.10
         version: 8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)
@@ -305,8 +305,8 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
       '@vitejs/plugin-react':
-        specifier: 6.0.1
-        version: 6.0.1(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))
+        specifier: 6.0.2
+        version: 6.0.2(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))
       vite:
         specifier: 8.0.10
         version: 8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)
@@ -362,6 +362,7 @@ packages:
 
   '@antv/component@2.3.11':
     resolution: {integrity: sha512-iiOeThxJouNjvlueXsF/ukOLVgN3CWH69B3w8vr9PwvL8JDPUKhacqaBrEHIzk20nyKVsUCue3jQR2ssKzGIAQ==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/coord@0.4.7':
     resolution: {integrity: sha512-UTbrMLhwJUkKzqJx5KFnSRpU3BqrdLORJbwUbHK2zHSCT3q3bjcFA//ZYLVfIlwqFDXp/hzfMyRtp0c77A9ZVA==}
@@ -371,9 +372,11 @@ packages:
 
   '@antv/expr@1.2.2':
     resolution: {integrity: sha512-9jkUFTyCZByqyek92mJ1DFS7UmtJwp/8mI1rn2iPn62KXJ9K3xWthD9733Yhgui3G2vDuCqT6SqcU19hjRsHPA==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/g-canvas@2.4.0':
     resolution: {integrity: sha512-AEAJwpza82K5kbbRMONWIWe6T2pt7D98M+DkDIKhFZbgOtqpwssBpzuRUyHqZJVIMRYNUw6qmQfuGDKG2B6fFA==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/g-lite@2.7.0':
     resolution: {integrity: sha512-uSzgHYa5bwR5L2Au7/5tsOhFmXKZKLPBH90+Q9bP9teVs5VT4kOAi0isPSpDI8uhdDC2/VrfTWu5K9HhWI6FWw==}
@@ -383,9 +386,11 @@ packages:
 
   '@antv/g-plugin-dragndrop@2.3.1':
     resolution: {integrity: sha512-VosceOqTjDGMJy74pjPNoJ84QmPKaGXFYqXX2Hlrs18ygeHXuJWbgOfQrfT5AqhcPy2N58CcM7yo4kvonFzq3g==}
+    deprecated: This version has been deprecated. Please upgrade to the latest version.
 
   '@antv/g2@5.6.8':
     resolution: {integrity: sha512-ZR4rfCBGYFs1+afEsfWWCwRNe/JRG+yiEF4MVFMgY1a5nVEriva8F1T7FWNCGk7ET2FMTQK0P6AvK3iv3pkkRQ==}
+    deprecated: risk
 
   '@antv/g@6.5.1':
     resolution: {integrity: sha512-zGNOPBpwwHiy60AcDIRuHGYvmmhX1iOXJh4pmTjZVxyPDtzHzuHOXRhQs64WpOkBpXYzNMqCGr/GjeHNNGC6JQ==}
@@ -1511,8 +1516,8 @@ packages:
   '@rolldown/pluginutils@1.0.0-rc.17':
     resolution: {integrity: sha512-n8iosDOt6Ig1UhJ2AYqoIhHWh/isz0xpicHTzpKBeotdVsTEcxsSA/i3EVM7gQAj0rU27OLAxCjzlj15IWY7bg==}
 
-  '@rolldown/pluginutils@1.0.0-rc.7':
-    resolution: {integrity: sha512-qujRfC8sFVInYSPPMLQByRh7zhwkGFS4+tyMQ83srV1qrxL4g8E2tyxVVyxd0+8QeBM1mIk9KbWxkegRr76XzA==}
+  '@rolldown/pluginutils@1.0.1':
+    resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
   '@simple-libs/child-process-utils@1.0.2':
     resolution: {integrity: sha512-/4R8QKnd/8agJynkNdJmNw2MBxuFTRcNFnE5Sg/G+jkSsV8/UBgULMzhizWWW42p8L5H7flImV2ATi79Ove2Tw==}
@@ -1778,8 +1783,8 @@ packages:
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0 || ^6.0.0-0 || ^7.0.0-0 || ^8.0.0-0
 
-  '@vitejs/plugin-react@6.0.1':
-    resolution: {integrity: sha512-l9X/E3cDb+xY3SWzlG1MOGt2usfEHGMNIaegaUGFsLkb3RCn/k8/TOXBcab+OndDI4TBtktT8/9BwwW8Vi9KUQ==}
+  '@vitejs/plugin-react@6.0.2':
+    resolution: {integrity: sha512-DlSMqo4WhThw4vB8Mpn0Woe9J+Jfq1geJ61AKW0QEgLzGMNwtIMdxbDUzLxcun8W7NbJO0e2Jg/Nxm3cCSVzzg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@rolldown/plugin-babel': ^0.1.7 || ^0.2.0
@@ -5475,7 +5480,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-rc.17': {}
 
-  '@rolldown/pluginutils@1.0.0-rc.7': {}
+  '@rolldown/pluginutils@1.0.1': {}
 
   '@simple-libs/child-process-utils@1.0.2':
     dependencies:
@@ -5828,9 +5833,9 @@ snapshots:
       unplugin-utils: 0.3.1
       vite: 8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)
 
-  '@vitejs/plugin-react@6.0.1(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))':
+  '@vitejs/plugin-react@6.0.2(vite@8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))':
     dependencies:
-      '@rolldown/pluginutils': 1.0.0-rc.7
+      '@rolldown/pluginutils': 1.0.1
       vite: 8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)
 
   '@vitest/coverage-v8@4.1.5(vitest@4.1.5)':
