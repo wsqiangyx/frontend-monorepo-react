@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@repo/platform-core': fileURLToPath(
-        new URL('../platform-core/src/index.ts', import.meta.url),
+      '@repo/shared-service': fileURLToPath(
+        new URL('../shared-service/src/index.ts', import.meta.url),
       ),
       '@repo/shared/ui-contract': fileURLToPath(
         new URL('../shared/src/ui-contract/index.ts', import.meta.url),
@@ -34,7 +34,7 @@ export default defineConfig({
         'react',
         'react-dom',
         'antd',
-        '@repo/platform-core',
+        '@repo/shared-service',
         '@repo/design-tokens',
         '@repo/design-tokens/theme/antd',
         '@repo/design-tokens/theme',

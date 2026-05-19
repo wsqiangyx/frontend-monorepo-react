@@ -10,7 +10,7 @@ apps:
 packages:
   shared:
     status: stable
-  platform-core:
+  shared-service:
     status: stable
   design-tokens:
     status: stable
