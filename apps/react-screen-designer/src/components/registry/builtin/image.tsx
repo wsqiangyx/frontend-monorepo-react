@@ -2,7 +2,7 @@
 // 图片组件
 // ============================================================================
 
-import type { ComponentMeta, Node } from '@repo/shared'
+import type { ComponentMeta, Node } from '@/types'
 
 export const IMAGE_META: ComponentMeta = {
   componentType: 'image',

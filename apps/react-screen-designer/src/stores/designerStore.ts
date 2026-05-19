@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { create } from 'zustand'
-import type { CanvasConfig, Node, Screen } from '@repo/shared'
+import type { CanvasConfig, Node, Screen } from '@/types'
 
 const MAX_NODES_PER_ROUTE = 200
 

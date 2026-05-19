@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { useCallback, useRef } from 'react'
-import { clamp } from '@repo/shared'
+import { clamp } from '@/utils/clamp'
 import { useDesignerStore } from '@/stores/designerStore'
 
 const ZOOM_MIN = 0.1

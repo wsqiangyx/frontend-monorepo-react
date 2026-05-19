@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { create } from 'zustand'
-import type { Route } from '@repo/shared'
+import type { Route } from '@/types'
 import { createHttpClient } from '@repo/shared/http'
 
 const api = createHttpClient({ baseURL: '/api' })

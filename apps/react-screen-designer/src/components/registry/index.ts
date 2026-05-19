@@ -5,7 +5,7 @@
 // 组件元数据必须是纯 JSON 可序列化，跨框架可复用。
 // ============================================================================
 
-import type { ComponentMeta, Node } from '@repo/shared'
+import type { ComponentMeta, Node } from '@/types'
 import type { ComponentType } from 'react'
 
 interface RegistryEntry {

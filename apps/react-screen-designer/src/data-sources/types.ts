@@ -2,5 +2,5 @@
 // 数据源类型重导出
 // ============================================================================
 
-export type { DataProvider } from '@repo/shared'
-export { registerProvider, getProvider } from '@repo/shared'
+export type { DataProvider } from '@/utils'
+export { registerProvider, getProvider } from '@/utils'

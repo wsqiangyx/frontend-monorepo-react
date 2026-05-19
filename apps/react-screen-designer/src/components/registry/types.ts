@@ -2,4 +2,4 @@
 // 组件注册中心类型重导出
 // ============================================================================
 
-export type { ComponentMeta, PropSchema } from '@repo/shared'
+export type { ComponentMeta, PropSchema } from '@/types'

@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { useEffect, useRef } from 'react'
-import type { ComponentMeta, Node } from '@repo/shared'
+import type { ComponentMeta, Node } from '@/types'
 
 export const CHART_META: ComponentMeta = {
   componentType: 'chart',

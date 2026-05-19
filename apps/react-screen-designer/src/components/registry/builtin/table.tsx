@@ -2,7 +2,7 @@
 // 表格组件
 // ============================================================================
 
-import type { ComponentMeta, Node } from '@repo/shared'
+import type { ComponentMeta, Node } from '@/types'
 
 export const TABLE_META: ComponentMeta = {
   componentType: 'table',

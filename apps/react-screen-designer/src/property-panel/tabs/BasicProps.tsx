@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { InputNumber, Switch, Form } from 'antd'
-import type { Node } from '@repo/shared'
+import type { Node } from '@/types'
 import { useDesignerStore } from '@/stores/designerStore'
 
 interface BasicPropsProps {

@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useRef } from 'react'
 import { Form, Input, InputNumber, Select, Switch, ColorPicker } from 'antd'
-import type { ComponentMeta, Node, PropSchema } from '@repo/shared'
+import type { ComponentMeta, Node, PropSchema } from '@/types'
 import { useDesignerStore } from '@/stores/designerStore'
 import { useHistoryStore } from '@/stores/historyStore'
 import { UpdateNodePropsCommand } from '@/commands/UpdateNodePropsCommand'

@@ -2,6 +2,26 @@ import { fileURLToPath, URL } from 'node:url'
 
 const sourceAlias = [
   {
+    find: '@repo/shared-utils/http',
+    replacement: fileURLToPath(
+      new URL('../../packages/shared-utils/src/http/index.ts', import.meta.url),
+    ),
+  },
+  {
+    find: '@repo/shared-utils',
+    replacement: fileURLToPath(
+      new URL('../../packages/shared-utils/src/index.ts', import.meta.url),
+    ),
+  },
+  {
+    find: '@repo/shared-i18n',
+    replacement: fileURLToPath(new URL('../../packages/shared-i18n/src/index.ts', import.meta.url)),
+  },
+  {
+    find: '@repo/shared/http',
+    replacement: fileURLToPath(new URL('../../packages/shared/src/http/index.ts', import.meta.url)),
+  },
+  {
     find: '@repo/shared',
     replacement: fileURLToPath(new URL('../../packages/shared/src/index.ts', import.meta.url)),
   },
@@ -21,7 +41,9 @@ const sourceAlias = [
   },
   {
     find: '@repo/design-tokens/css',
-    replacement: fileURLToPath(new URL('../../packages/design-tokens/src/to-css.ts', import.meta.url)),
+    replacement: fileURLToPath(
+      new URL('../../packages/design-tokens/src/to-css.ts', import.meta.url),
+    ),
   },
   {
     find: '@repo/design-tokens/theme/antd',

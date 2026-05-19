@@ -16,25 +16,27 @@
 这是一个以 React 为正式宿主应用的前端 monorepo 基线仓库，不是单应用仓库，也不是通用前端空白模板。
 
 - `apps/react-app`：React 19 + Ant Design 5 应用壳
-- `packages/shared`：共享类型、HTTP、i18n 运行时、路由与 UI 文案契约
-- `packages/platform-core`：平台共享内核，承载初始化、认证、菜单、权限、多标签页与平台请求契约
-- `packages/ui-tokens`：设计令牌、CSS 变量、主题快照、Ant Design 主题适配、共享主题运行时
+- `packages/shared-utils`：通用工具（格式化、校验、HTTP 客户端、日志）
+- `packages/shared-i18n`：国际化运行时与语言包
+- `packages/shared`：路由定义、UI 文案契约、向后兼容重导出
+- `packages/shared-service`：平台共享内核，承载初始化、认证、菜单、权限、多标签页与平台请求契约
+- `packages/design-tokens`：设计令牌、CSS 变量、主题快照、Ant Design 主题适配、共享主题运行时
 - `packages/resources`：统一静态资源、图标、SVG、SVG Sprite 与资源索引
 - `packages/mock`：MSW handlers、browser worker、Node server
-- `packages/ui-react`：React 共享主题 Provider 与公共业务壳组件
+- `packages/shared-ui`：React 共享主题 Provider 与公共业务壳组件
 
 当前工作区与正式基线：
 
-- 正式默认基线：`apps/react-app` + 6 个共享包
+- 正式默认基线：`apps/react-app` + 8 个共享包
 - 当前工作区现状：`apps/` 下额外存在 `apps/react-screen-designer/` 目录，用于可视化专题子应用预研 / 占位
 - `react-screen-designer` 尚未进入仓库级默认验收矩阵
 
 ## 当前架构
 
 - `apps/react-app`：正式宿主应用，也是 composition root
-- `packages/platform-core`：平台领域模型与应用规则
-- `packages/shared`、`packages/ui-tokens`、`packages/resources`：基础共享运行时
-- `packages/ui-react`、`packages/mock`：交付与边界适配层
+- `packages/shared-service`：平台领域模型与应用规则
+- `packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/design-tokens`、`packages/resources`：基础共享运行时
+- `packages/shared-ui`、`packages/mock`：交付与边界适配层
 
 ## 快速开始
 
@@ -64,16 +66,16 @@ pnpm verify
 
 ## 常用脚本
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm dev:react` | 启动 React 应用 |
-| `pnpm build:shared` | 构建共享包 |
-| `pnpm build:react` | 先构建共享包，再构建 React 应用 |
-| `pnpm build` | 执行仓库完整构建链路 |
-| `pnpm typecheck` | 执行全仓类型检查 |
-| `pnpm lint` | 执行 ESLint |
-| `pnpm test` | 执行全仓测试 |
-| `pnpm verify` | 聚合执行所有校验 |
+| 命令                | 说明                            |
+| ------------------- | ------------------------------- |
+| `pnpm dev:react`    | 启动 React 应用                 |
+| `pnpm build:shared` | 构建共享包                      |
+| `pnpm build:react`  | 先构建共享包，再构建 React 应用 |
+| `pnpm build`        | 执行仓库完整构建链路            |
+| `pnpm typecheck`    | 执行全仓类型检查                |
+| `pnpm lint`         | 执行 ESLint                     |
+| `pnpm test`         | 执行全仓测试                    |
+| `pnpm verify`       | 聚合执行所有校验                |
 
 ## 目录结构
 
@@ -83,12 +85,14 @@ react-admin-monorepo/
 │  ├─ react-app/                 # React 正式宿主应用
 │  └─ react-screen-designer/     # 专题子应用（experimental）
 ├─ packages/
-│  ├─ shared/                    # 共享类型、HTTP、i18n、路由
-│  ├─ platform-core/             # 平台共享内核
-│  ├─ ui-tokens/                 # 设计令牌与主题
+│  ├─ shared-utils/              # 通用工具与 HTTP 客户端
+│  ├─ shared-i18n/               # 国际化运行时
+│  ├─ shared/                    # 路由定义、UI 契约、向后兼容重导出
+│  ├─ shared-service/            # 平台共享内核
+│  ├─ design-tokens/             # 设计令牌与主题
 │  ├─ resources/                 # 静态资源
 │  ├─ mock/                      # MSW handlers
-│  └─ ui-react/                  # React 共享 UI 组件
+│  └─ shared-ui/                 # React 共享 UI 组件
 ├─ docs/
 │  └─ 总体设计/                   # React 架构设计方案
 ├─ scripts/
@@ -101,7 +105,7 @@ react-admin-monorepo/
 - 主题启动顺序保持 `index.html -> /theme-init.js -> main -> bootstrap`
 - `main.tsx` 负责在开发态判断是否启用 MSW，并等待 `worker.start()`
 - `bootstrap.tsx` 负责接入 Theme Provider、引入共享 UI 包样式并挂载应用
-- `@repo/shared/i18n` 是唯一共享国际化运行时
+- `@repo/shared-i18n` 是唯一共享国际化运行时
 - package `exports` 继续只指向 `dist/`
 
 更完整的维护约束见 [`AGENTS.md`](./AGENTS.md)。

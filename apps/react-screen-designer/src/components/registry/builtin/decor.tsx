@@ -2,7 +2,7 @@
 // 装饰块组件
 // ============================================================================
 
-import type { ComponentMeta, Node } from '@repo/shared'
+import type { ComponentMeta, Node } from '@/types'
 
 export const DECOR_META: ComponentMeta = {
   componentType: 'decor',

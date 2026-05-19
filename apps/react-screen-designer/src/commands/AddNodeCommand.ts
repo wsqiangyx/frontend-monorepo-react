@@ -2,7 +2,7 @@
 // AddNodeCommand — 添加节点
 // ============================================================================
 
-import type { Node } from '@repo/shared'
+import type { Node } from '@/types'
 import type { Command } from './types'
 import { useDesignerStore } from '@/stores/designerStore'
 

@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { create } from 'zustand'
-import type { Screen } from '@repo/shared'
+import type { Screen } from '@/types'
 import { createHttpClient } from '@repo/shared/http'
 
 const api = createHttpClient({ baseURL: '/api' })

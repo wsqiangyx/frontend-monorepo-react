@@ -2,7 +2,7 @@
 // 文本组件
 // ============================================================================
 
-import type { ComponentMeta, Node } from '@repo/shared'
+import type { ComponentMeta, Node } from '@/types'
 
 export const TEXT_META: ComponentMeta = {
   componentType: 'text',

@@ -4,7 +4,7 @@
 // 删除时保存节点快照，撤销时恢复。
 // ============================================================================
 
-import type { Node } from '@repo/shared'
+import type { Node } from '@/types'
 import type { Command } from './types'
 import { useDesignerStore } from '@/stores/designerStore'
 

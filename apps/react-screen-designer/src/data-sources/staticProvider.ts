@@ -4,9 +4,9 @@
 // 直接返回配置中的静态数据，无网络请求。
 // ============================================================================
 
-import type { DataProvider } from '@repo/shared'
-import { registerProvider } from '@repo/shared'
-import type { StaticDataSourceConfig } from '@repo/shared'
+import type { DataProvider } from '@/utils'
+import { registerProvider } from '@/utils'
+import type { StaticDataSourceConfig } from '@/types'
 
 /**
  * 静态数据源提供者。

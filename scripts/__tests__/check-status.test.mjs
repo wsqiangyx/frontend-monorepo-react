@@ -19,6 +19,8 @@ function createWorkspaceRoot() {
   }
 
   for (const packageName of [
+    'shared-utils',
+    'shared-i18n',
     'shared',
     'shared-service',
     'design-tokens',
@@ -40,6 +42,10 @@ function createWorkspaceRoot() {
       '  react-screen-designer:',
       '    status: experimental',
       'packages:',
+      '  shared-utils:',
+      '    status: stable',
+      '  shared-i18n:',
+      '    status: stable',
       '  shared:',
       '    status: stable',
       '  shared-service:',
@@ -63,13 +69,13 @@ function createWorkspaceRoot() {
         scripts: {
           build: 'pnpm build:shared && pnpm --filter @repo/react-app build',
           'build:shared':
-            'pnpm --filter @repo/shared build && pnpm --filter @repo/shared-service build && pnpm --filter @repo/design-tokens build && pnpm --filter @repo/resources build && pnpm --filter @repo/mock build && pnpm --filter @repo/shared-ui build',
+            'pnpm --filter @repo/shared-utils build && pnpm --filter @repo/shared-i18n build && pnpm --filter @repo/shared build && pnpm --filter @repo/shared-service build && pnpm --filter @repo/design-tokens build && pnpm --filter @repo/resources build && pnpm --filter @repo/mock build && pnpm --filter @repo/shared-ui build',
           'build:react': 'pnpm build:shared && pnpm -F @repo/react-app build',
           typecheck:
-            'pnpm --filter @repo/shared typecheck && pnpm --filter @repo/shared-service typecheck && pnpm --filter @repo/design-tokens typecheck && pnpm --filter @repo/resources typecheck && pnpm --filter @repo/mock typecheck && pnpm --filter @repo/shared-ui typecheck && pnpm --filter @repo/react-app typecheck',
-          test: 'pnpm --filter @repo/shared test && pnpm --filter @repo/shared-service test && pnpm --filter @repo/design-tokens test && pnpm --filter @repo/resources test && pnpm --filter @repo/mock test && pnpm --filter @repo/shared-ui test && pnpm --filter @repo/react-app test',
+            'pnpm --filter @repo/shared-utils build && pnpm --filter @repo/shared-i18n build && pnpm --filter @repo/shared-utils typecheck && pnpm --filter @repo/shared-i18n typecheck && pnpm --filter @repo/shared typecheck && pnpm --filter @repo/shared-service typecheck && pnpm --filter @repo/design-tokens typecheck && pnpm --filter @repo/resources typecheck && pnpm --filter @repo/mock typecheck && pnpm --filter @repo/shared-ui typecheck && pnpm --filter @repo/react-app typecheck',
+          test: 'pnpm --filter @repo/shared-utils test && pnpm --filter @repo/shared-i18n test && pnpm --filter @repo/shared test && pnpm --filter @repo/shared-service test && pnpm --filter @repo/design-tokens test && pnpm --filter @repo/resources test && pnpm --filter @repo/mock test && pnpm --filter @repo/shared-ui test && pnpm --filter @repo/react-app test',
           'test:coverage':
-            'pnpm --filter @repo/shared test:coverage && pnpm --filter @repo/shared-service test:coverage && pnpm --filter @repo/design-tokens test:coverage && pnpm --filter @repo/resources test:coverage && pnpm --filter @repo/mock test:coverage && pnpm --filter @repo/shared-ui test:coverage && pnpm --filter @repo/react-app test:coverage',
+            'pnpm --filter @repo/shared-utils test:coverage && pnpm --filter @repo/shared-i18n test:coverage && pnpm --filter @repo/shared test:coverage && pnpm --filter @repo/shared-service test:coverage && pnpm --filter @repo/design-tokens test:coverage && pnpm --filter @repo/resources test:coverage && pnpm --filter @repo/mock test:coverage && pnpm --filter @repo/shared-ui test:coverage && pnpm --filter @repo/react-app test:coverage',
           'test:scripts': 'node --test "scripts/__tests__/*.test.mjs"',
           verify: 'pnpm check:status && pnpm test:scripts',
         },
@@ -87,6 +93,8 @@ function createWorkspaceRoot() {
       'export default defineConfig({',
       '  test: {',
       '    projects: [',
+      "      'packages/shared-utils/vitest.config.ts',",
+      "      'packages/shared-i18n/vitest.config.ts',",
       "      'packages/shared/vitest.config.ts',",
       "      'packages/shared-service/vitest.config.ts',",
       "      'packages/design-tokens/vitest.config.ts',",
@@ -119,6 +127,8 @@ test('checkStatusConsistency fails when an experimental app leaks into the root 
       'export default defineConfig({',
       '  test: {',
       '    projects: [',
+      "      'packages/shared-utils/vitest.config.ts',",
+      "      'packages/shared-i18n/vitest.config.ts',",
       "      'packages/shared/vitest.config.ts',",
       "      'packages/shared-service/vitest.config.ts',",
       "      'packages/design-tokens/vitest.config.ts',",

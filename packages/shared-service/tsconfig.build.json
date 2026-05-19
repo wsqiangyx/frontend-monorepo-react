@@ -6,8 +6,8 @@
     "declarationMap": true,
     "sourceMap": true,
     "paths": {
-      "@repo/shared": ["../shared/dist/index.d.ts"],
-      "@repo/shared/*": ["../shared/dist/*/index.d.ts"]
+      "@repo/shared-utils": ["../shared-utils/dist/index.d.ts"],
+      "@repo/shared-utils/*": ["../shared-utils/dist/*/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts"],

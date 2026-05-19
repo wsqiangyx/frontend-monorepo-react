@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { useCallback } from 'react'
-import type { Node } from '@repo/shared'
+import type { Node } from '@/types'
 import { useDesignerStore } from '@/stores/designerStore'
 import { TextRenderer } from '@/components/registry/builtin/text'
 import { ImageRenderer } from '@/components/registry/builtin/image'

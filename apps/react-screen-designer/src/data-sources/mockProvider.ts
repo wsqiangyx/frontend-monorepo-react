@@ -5,9 +5,9 @@
 // Phase 1 只支持 GET 请求。
 // ============================================================================
 
-import type { DataProvider } from '@repo/shared'
-import { registerProvider } from '@repo/shared'
-import type { MockDataSourceConfig } from '@repo/shared'
+import type { DataProvider } from '@/utils'
+import { registerProvider } from '@/utils'
+import type { MockDataSourceConfig } from '@/types'
 
 /**
  * Mock 数据源提供者。
