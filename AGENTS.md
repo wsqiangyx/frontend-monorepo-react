@@ -29,7 +29,7 @@
 当前正式范围包括：
 
 - 一个正式应用壳：`apps/react-app`
-- 六个正式共享包：`packages/shared`、`packages/platform-core`、`packages/ui-tokens`、`packages/resources`、`packages/mock`、`packages/ui-react`
+- 八个正式共享包：`packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock`、`packages/shared-ui`
 - 一套统一工具链基线：TypeScript、Vite、Vitest、ESLint、Stylelint、Prettier、Husky、Commitlint
 
 当前工作区现状补充说明：
@@ -47,9 +47,9 @@
 当前推荐架构模式补充为：
 
 - `apps/react-app` 是正式宿主应用，也是 composition root
-- `packages/platform-core` 是平台共享内核
-- `packages/shared`、`packages/ui-tokens`、`packages/resources` 是基础共享层
-- `packages/ui-react`、`packages/mock` 是交付适配层
+- `packages/shared-service` 是平台共享内核
+- `packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/design-tokens`、`packages/resources` 是基础共享层
+- `packages/shared-ui`、`packages/mock` 是交付适配层
 - 共享规则优先沉淀在 package 层，app 只负责装配与交付
 
 治理补充约束：
@@ -78,7 +78,7 @@
 
 补充构建约束：
 
-- 根 `build:shared` 当前负责先构建 `shared`、`platform-core`、`ui-tokens`、`resources`、`mock`、`ui-react`
+- 根 `build:shared` 当前负责先构建 `shared-utils`、`shared-i18n`、`shared`、`shared-service`、`design-tokens`、`resources`、`mock`、`shared-ui`
 - 根 `build:react` 必须先执行 `build:shared`，再构建 React app
 - app 自己的 `build` 脚本仍只负责构建自身，不反向承担根脚本编排职责
 
@@ -129,9 +129,9 @@
 
 不要把 MSW 启动逻辑移进 `bootstrap`，也不要把主题注入和 Provider 装配下沉到页面组件。
 
-### 6. 保持 `ui-tokens` 的职责收敛
+### 6. 保持 `design-tokens` 的职责收敛
 
-`packages/ui-tokens` 当前负责：
+`packages/design-tokens` 当前负责：
 
 - 语义 token 定义
 - CSS 变量生成
@@ -185,7 +185,7 @@
 
 ### 9. package 的 `exports` 仍然只指向 `dist`
 
-`packages/shared`、`packages/platform-core`、`packages/ui-tokens`、`packages/resources`、`packages/mock` 的 `exports` 当前都应只指向 `dist/`。
+`packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock` 的 `exports` 当前都应只指向 `dist/`。
 
 app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 对外契约仍然必须是 dist-based。
 
@@ -211,38 +211,39 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 ### 12. 主题与共享 UI 按现行专题主文档与实施基线收敛
 
-后续涉及 `ui-tokens`、`ui-react`、`bootstrap`、主题 store、共享业务壳组件的修改时，必须遵守以下收敛方向：
+后续涉及 `design-tokens`、`shared-ui`、`bootstrap`、主题 store、共享业务壳组件的修改时，必须遵守以下收敛方向：
 
 - 以 `docs/专题文档/设计/Phase0-基础能力详细设计.md` 与 `docs/专题文档/计划/Phase0-基础能力实施计划.md` 作为现行治理基线
 - 新增主题运行时规则时，优先收敛到共享层，不要继续在多个宿主里各写一套
 - 首屏主题落盘应朝“挂载前完成”方向推进
 - 当前主题持久化正式 key 已收敛为 `repo-theme-preference`
 - 首屏主题预注入的正式契约是 app `index.html` 加载 `/theme-init.js`
-- 当前共享 UI 包样式的正式契约是：React app 在 `bootstrap.tsx` 中显式引入 `@repo/ui-react/style.css`
+- 当前共享 UI 包样式的正式契约是：React app 在 `bootstrap.tsx` 中显式引入 `@repo/shared-ui/style.css`
 - 不要恢复包根入口自动带样式，也不要新增第三种正式接入方式
-- `ui-react` 的根入口应维护显式稳定导出清单，不要回退到无边界 `export *`
+- `shared-ui` 的根入口应维护显式稳定导出清单，不要回退到无边界 `export *`
 - 新增或改造共享组件时，默认补最小可访问性语义与扩展入口
 
-### 13. 共享 i18n 运行时集中在 `packages/shared`
+### 13. 共享 i18n 运行时集中在 `packages/shared-i18n`
 
 当前仓库的国际化边界已经固定为：
 
-- `@repo/shared/i18n` 是唯一共享国际化运行时
+- `@repo/shared-i18n` 是唯一共享国际化运行时
+- `@repo/shared/i18n` 保留向后兼容重导出
 - 当前正式支持的语言只有 `zh-CN` 与 `en-US`
 - app 可以维护各自的 provider、store 和页面词典，但不要复制 shared i18n 运行时规则
-- `packages/ui-react` 不直接依赖 `@repo/shared/i18n`，只消费翻译后的文案 props
+- `packages/shared-ui` 不直接依赖 `@repo/shared-i18n`，只消费翻译后的文案 props
 
-### 14. 中后台平台共享内核集中在 `packages/platform-core`
+### 14. 中后台平台共享内核集中在 `packages/shared-service`
 
 当前总体设计已经明确：
 
-- `packages/platform-core` 是平台级共享规则的唯一正式收敛层
+- `packages/shared-service` 是平台级共享规则的唯一正式收敛层
 - 它承载平台语义，而不是 `packages/shared`
 
 相关约束：
 
-- `packages/platform-core` 保持框架无关，不直接依赖 React、Ant Design
-- `packages/platform-core` 不直接操作 DOM，不承接浏览器副作用
+- `packages/shared-service` 保持框架无关，不直接依赖 React、Ant Design
+- `packages/shared-service` 不直接操作 DOM，不承接浏览器副作用
 - `packages/shared` 继续承载通用能力，不要把后台平台语义重新塞回 `shared`
 - app 可以维护各自的 store、provider、guard 与页面编排，但不要复制平台共享规则
 
@@ -281,7 +282,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 ### `apps/react-app`
 
 - React + Ant Design 应用壳
-- 主题通过 `@repo/ui-react` 的 `ThemeProvider` 接入
+- 主题通过 `@repo/shared-ui` 的 `ThemeProvider` 接入
 - app 内主题状态通过 Zustand store 管理
 
 ### `apps/react-screen-designer`
@@ -291,28 +292,41 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - 当前尚未纳入根脚本、根测试矩阵与模板默认验收范围
 - 若要把它升级为正式应用，必须先同步更新根 `package.json`、根 `vitest.config.ts`、根 `README.md`、本文件、总体设计主文档与测试规范
 
+### `packages/shared-utils`
+
+- 通用工具函数（格式化、校验、存储、请求、日志）
+- HTTP 客户端（Axios 封装）
+- 平台响应类型（ApiResponse、PaginationParams 等）
+- 保持纯 TypeScript、框架无关
+
+### `packages/shared-i18n`
+
+- 国际化运行时与语言包
+- `createTranslator` 初始化函数
+- locale 检测、持久化与切换
+- 当前正式支持 `zh-CN` 与 `en-US`
+
 ### `packages/shared`
 
-- 共享类型与通用工具
-- HTTP 客户端
 - 统一路由定义与 React 路由适配
-- 共享 i18n 运行时与共享 UI 文案契约
+- 共享 UI 文案契约
+- 向后兼容重导出（`@repo/shared/http`、`@repo/shared/i18n`）
 - `@repo/shared/routes` 作为框架无关路由定义入口保留稳定；正式框架适配器走 `@repo/shared/routes/react`
 
-### `packages/platform-core`
+### `packages/shared-service`
 
 - 平台共享内核
 - 承载应用初始化、认证态、菜单、权限、多标签页、平台请求契约与平台错误模型
 - 保持纯 TypeScript、框架无关、无 DOM 副作用
 
-### `packages/ui-tokens`
+### `packages/design-tokens`
 
 - 颜色、间距、阴影、排版、圆角、断点
 - 主题快照注册与 light/dark 解析
 - CSS 变量生成器
 - Ant Design 主题适配器
 
-### `packages/ui-react`
+### `packages/shared-ui`
 
 - React 共享主题 Provider
 - React 公共业务壳组件
@@ -332,10 +346,10 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 ### 新增共享能力
 
-- 纯工具函数或共享类型放到 `packages/shared`
-- 国际化运行时、locale 规则和共享文案契约优先放到 `packages/shared`
-- 后台平台的初始化、认证、菜单、权限、多标签页、平台请求契约优先放到 `packages/platform-core`
-- 视觉语义能力放到 `packages/ui-tokens`
+- 纯工具函数或共享类型放到 `packages/shared-utils`
+- 国际化运行时、locale 规则和共享文案契约优先放到 `packages/shared-i18n`
+- 后台平台的初始化、认证、菜单、权限、多标签页、平台请求契约优先放到 `packages/shared-service`
+- 视觉语义能力放到 `packages/design-tokens`
 - 共享静态资源、图标、SVG、Sprite 放到 `packages/resources`
 - 网络 mock 能力放到 `packages/mock`
 

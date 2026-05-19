@@ -7,6 +7,9 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@repo/shared-utils/http": ["../../packages/shared-utils/src/http/index.ts"],
+      "@repo/shared-utils": ["../../packages/shared-utils/src/index.ts"],
+      "@repo/shared-i18n": ["../../packages/shared-i18n/src/index.ts"],
       "@repo/shared-service": ["../../packages/shared-service/src/index.ts"],
       "@repo/shared/routes/react": ["../../packages/shared/src/routes/react-adapter.ts"],
       "@repo/shared/routes": ["../../packages/shared/src/routes/index.ts"],

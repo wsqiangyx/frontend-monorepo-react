@@ -5,8 +5,8 @@
     "rootDir": "./src",
     "composite": true,
     "paths": {
-      "@repo/shared": ["../shared/src/index.ts"],
-      "@repo/shared/*": ["../shared/src/*/index.ts"]
+      "@repo/shared-utils": ["../shared-utils/src/index.ts"],
+      "@repo/shared-utils/*": ["../shared-utils/src/*/index.ts"]
     }
   },
   "include": ["src"]
