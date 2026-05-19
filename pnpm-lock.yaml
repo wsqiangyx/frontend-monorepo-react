@@ -78,8 +78,8 @@ importers:
         specifier: 8.1.1
         version: 8.1.1(stylelint@17.9.1(typescript@6.0.3))
       stylelint-scss:
-        specifier: 7.0.0
-        version: 7.0.0(stylelint@17.9.1(typescript@6.0.3))
+        specifier: 7.1.1
+        version: 7.1.1(stylelint@17.9.1(typescript@6.0.3))
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -362,6 +362,7 @@ packages:
 
   '@antv/component@2.3.11':
     resolution: {integrity: sha512-iiOeThxJouNjvlueXsF/ukOLVgN3CWH69B3w8vr9PwvL8JDPUKhacqaBrEHIzk20nyKVsUCue3jQR2ssKzGIAQ==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/coord@0.4.7':
     resolution: {integrity: sha512-UTbrMLhwJUkKzqJx5KFnSRpU3BqrdLORJbwUbHK2zHSCT3q3bjcFA//ZYLVfIlwqFDXp/hzfMyRtp0c77A9ZVA==}
@@ -371,9 +372,11 @@ packages:
 
   '@antv/expr@1.2.2':
     resolution: {integrity: sha512-9jkUFTyCZByqyek92mJ1DFS7UmtJwp/8mI1rn2iPn62KXJ9K3xWthD9733Yhgui3G2vDuCqT6SqcU19hjRsHPA==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/g-canvas@2.4.0':
     resolution: {integrity: sha512-AEAJwpza82K5kbbRMONWIWe6T2pt7D98M+DkDIKhFZbgOtqpwssBpzuRUyHqZJVIMRYNUw6qmQfuGDKG2B6fFA==}
+    deprecated: This version was published in error, please use the latest version instead.
 
   '@antv/g-lite@2.7.0':
     resolution: {integrity: sha512-uSzgHYa5bwR5L2Au7/5tsOhFmXKZKLPBH90+Q9bP9teVs5VT4kOAi0isPSpDI8uhdDC2/VrfTWu5K9HhWI6FWw==}
@@ -383,9 +386,11 @@ packages:
 
   '@antv/g-plugin-dragndrop@2.3.1':
     resolution: {integrity: sha512-VosceOqTjDGMJy74pjPNoJ84QmPKaGXFYqXX2Hlrs18ygeHXuJWbgOfQrfT5AqhcPy2N58CcM7yo4kvonFzq3g==}
+    deprecated: This version has been deprecated. Please upgrade to the latest version.
 
   '@antv/g2@5.6.8':
     resolution: {integrity: sha512-ZR4rfCBGYFs1+afEsfWWCwRNe/JRG+yiEF4MVFMgY1a5nVEriva8F1T7FWNCGk7ET2FMTQK0P6AvK3iv3pkkRQ==}
+    deprecated: risk
 
   '@antv/g@6.5.1':
     resolution: {integrity: sha512-zGNOPBpwwHiy60AcDIRuHGYvmmhX1iOXJh4pmTjZVxyPDtzHzuHOXRhQs64WpOkBpXYzNMqCGr/GjeHNNGC6JQ==}
@@ -3176,9 +3181,6 @@ packages:
   mdn-data@2.27.1:
     resolution: {integrity: sha512-9Yubnt3e8A0OKwxYSXyhLymGW4sCufcLG6VdiDdUGVkPhpqLxlvP5vl1983gQjJl3tqbrM731mjaZaP68AgosQ==}
 
-  mdn-data@2.28.1:
-    resolution: {integrity: sha512-U9w+PzSZ00Z5m9rZ5ARVFL5xOfuCHdKYi/1RRwDCJsboFgJDNT3zT6PIPD7mZQYaQLhsZM3GfDRgSMRHhSmVng==}
-
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
     engines: {node: '>=18'}
@@ -3798,8 +3800,8 @@ packages:
     peerDependencies:
       stylelint: ^16.18.0 || ^17.0.0
 
-  stylelint-scss@7.0.0:
-    resolution: {integrity: sha512-H88kCC+6Vtzj76NsC8rv6x/LW8slBzIbyeSjsKVlS+4qaEJoDrcJR4L+8JdrR2ORdTscrBzYWiiT2jq6leYR1Q==}
+  stylelint-scss@7.1.1:
+    resolution: {integrity: sha512-pLPXJZ7RtAFNLXe8gqarf3B56ScVTd1vPiL9IFgcJkIZsYPzAgLJPh2h9NHrp3BFeKrtAkIgwQ08QSmhvlv1gA==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       stylelint: ^16.8.2 || ^17.0.0
@@ -7369,8 +7371,6 @@ snapshots:
 
   mdn-data@2.27.1: {}
 
-  mdn-data@2.28.1: {}
-
   meow@13.2.0: {}
 
   meow@14.1.0: {}
@@ -8026,7 +8026,7 @@ snapshots:
       postcss-scss: 4.0.9(postcss@8.5.14)
       stylelint: 17.9.1(typescript@6.0.3)
       stylelint-config-recommended: 18.0.0(stylelint@17.9.1(typescript@6.0.3))
-      stylelint-scss: 7.0.0(stylelint@17.9.1(typescript@6.0.3))
+      stylelint-scss: 7.1.1(stylelint@17.9.1(typescript@6.0.3))
     optionalDependencies:
       postcss: 8.5.14
 
@@ -8053,12 +8053,15 @@ snapshots:
       postcss-sorting: 10.0.0(postcss@8.5.14)
       stylelint: 17.9.1(typescript@6.0.3)
 
-  stylelint-scss@7.0.0(stylelint@17.9.1(typescript@6.0.3)):
+  stylelint-scss@7.1.1(stylelint@17.9.1(typescript@6.0.3)):
     dependencies:
+      '@csstools/css-calc': 3.2.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-syntax-patches-for-csstree': 1.1.4(css-tree@3.2.1)
+      '@csstools/css-tokenizer': 4.0.0
       css-tree: 3.2.1
       is-plain-object: 5.0.0
       known-css-properties: 0.37.0
-      mdn-data: 2.28.1
       postcss-media-query-parser: 0.2.3
       postcss-resolve-nested-selector: 0.1.6
       postcss-selector-parser: 7.1.1
