@@ -1,7 +1,18 @@
 // ============================================================================
 // @repo/shared-service — 权限码与权限集
 // ============================================================================
-// PermissionCode 使用品牌类型，防止普通字符串被误传入权限检查函数。
+// 权限判断的核心抽象，采用品牌类型（Branded Type）防止普通字符串误传。
+//
+// PermissionCode — 品牌类型，只有通过 asPermissionCode() 转换的字符串才能
+//                  传入权限检查函数，编译期拦截非法字符串。
+// PermissionSet  — 权限集合，内部使用 Set 存储，O(1) 查找。
+//
+// 典型使用流程：
+//   1. 登录后从后端获取用户权限码列表
+//   2. 调用 createPermissionSet(codes) 创建权限集
+//   3. 调用 hasPermission(set, asPermissionCode('user:list')) 判断权限
+//
+// 宿主应用的路由守卫和 PermissionGate 组件消费这些函数。
 // ============================================================================
 
 declare const __permissionCodeBrand: unique symbol
