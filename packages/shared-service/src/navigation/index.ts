@@ -1,3 +1,24 @@
+// ============================================================================
+// @repo/shared-service — 菜单树与路由元数据
+// ============================================================================
+// 定义平台级菜单节点与路由元数据模型。
+//
+// PlatformMenuNode 描述菜单树结构：
+//   type = 'directory' — 纯分组目录，无实际路由
+//   type = 'route'     — 对应前端路由
+//   type = 'external'  — 外部链接（新窗口打开）
+//   type = 'iframe'    — 内嵌 iframe 页面
+//
+// PlatformRouteMeta 描述路由的平台语义（权限、缓存、面包屑等）。
+// 宿主应用的路由守卫和菜单组件消费这些类型。
+//
+// 工具函数：
+//   normalizeMenuNode  — 补全默认值，保证下游代码无需做空值判断
+//   flattenMenuNodes   — 递归展平菜单树（过滤 hidden 节点），用于搜索/面包屑
+//   sortMenuNodes      — 按 order 字段排序（递归）
+//   normalizeRouteMeta — 补全路由元数据默认值
+// ============================================================================
+
 export type MenuNodeType = 'directory' | 'route' | 'external' | 'iframe'
 
 export interface PlatformMenuNode {

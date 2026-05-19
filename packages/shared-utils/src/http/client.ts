@@ -2,9 +2,20 @@
 // @repo/shared-utils — Axios HTTP 客户端封装
 // ============================================================================
 // 框架无关的 HTTP 客户端，基于 axios 封装。
-// - 请求拦截器：自动注入 token
-// - 响应拦截器：网络异常、超时、平台业务错误统一转化为 ApiError
-// - 方法层解包 ApiResponse<T>.data，消费者直接拿到 T
+//
+// 核心设计：
+//   请求拦截器 — 自动从 getToken() 获取 token 并注入 Authorization 头
+//   响应拦截器 — 网络异常、超时、平台业务错误统一转化为 ApiError
+//   unwrap 层 — 解包 ApiResponse<T>.data，消费者直接拿到 T
+//
+// 使用方式：
+//   const http = createHttpClient({ baseURL: '/api', getToken: () => store.token })
+//   const users = await http.get<User[]>('/users')
+//
+// 错误处理：
+//   网络错误 → ApiError(code='NETWORK_ERROR')
+//   业务错误 → ApiError(code=body.code, message=body.message)
+//   消费者只需 catch ApiError 即可覆盖所有异常场景。
 // ============================================================================
 
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
