@@ -1,0 +1,61 @@
+// ============================================================================
+// tsconfig.base.json — 整个 monorepo 的 TypeScript 编译选项唯一来源
+// ============================================================================
+// 所有 workspace（packages/*、apps/*）的 tsconfig 均通过 extends 继承此文件，
+// 确保编译行为一致。修改此文件会影响所有包，请谨慎操作。
+// ============================================================================
+{
+  "compilerOptions": {
+    // 编译目标：ES2022。Vite/esbuild 负责后续降级，此处设为源码目标即可。
+    "target": "ES2022",
+
+    // 模块系统：ESNext。输出 ESM 格式，供 Vite 原生消费，避免 CJS 互操作开销。
+    "module": "ESNext",
+
+    // 模块解析策略：bundler。适用于 Vite 等打包工具场景，
+    // 支持包的 exports 条件导出，比 node/node16 更宽松。
+    "moduleResolution": "bundler",
+
+    // 允许 CJS 模块以默认导入方式引入，兼容旧包。
+    "esModuleInterop": true,
+
+    // 强制文件名大小写一致，防止跨平台（Windows/macOS/Linux）路径问题。
+    "forceConsistentCasingInFileNames": true,
+
+    // 启用所有严格模式检查。monorepo 中跨包调用频繁，严格类型是必要的防线。
+    "strict": true,
+
+    // 跳过 .d.ts 文件的类型检查，提升构建速度。
+    // 第三方声明文件数量庞大，检查它们没有实际收益。
+    "skipLibCheck": true,
+
+    // 允许在代码中 import JSON 文件（如 package.json 的 version 字段）。
+    "resolveJsonModule": true,
+
+    // 隔离模块：每个文件必须能被独立转译。这是 Vite 逐文件处理的前提，
+    // 也是 project references 增量构建的必要条件。
+    "isolatedModules": true,
+
+    // 生成 .d.ts 声明文件。共享包（shared、ui-tokens、mock）被其他包消费时
+    // 依赖这些声明文件获取类型信息。
+    "declaration": true,
+
+    // 生成声明文件的 source map。IDE 中"转到定义"时能跳转到源码而非 .d.ts，
+    // 提升跨包开发体验。
+    "declarationMap": true,
+
+    // 生成 JS 源码的 source map，用于浏览器 DevTools 调试。
+    "sourceMap": true,
+
+    // 禁止未使用的局部变量。防止死代码积累，保持代码整洁。
+    "noUnusedLocals": true,
+
+    // 禁止未使用的函数参数。若需保留参数签名（如回调约定），
+    // 可用下划线前缀 _param 标记。
+    "noUnusedParameters": true,
+
+    // 禁止 switch 语句的 case 穿透（fallthrough），
+    // 防止遗漏 break 导致的意外行为。
+    "noFallthroughCasesInSwitch": true
+  }
+}
