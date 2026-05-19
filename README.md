@@ -1,4 +1,4 @@
-# react-admin-monorepo
+# frontend-monorepo
 
 面向团队复用的 React 中后台前端平台脚手架 Monorepo Git 模板仓库。以 React 为正式宿主，提供 React 应用壳、共享主题与 i18n 运行时、统一静态资源层、MSW/mock 基线，以及可复用的 Vite / Vitest / TypeScript 工程底座。
 
@@ -15,7 +15,7 @@
 
 这是一个以 React 为正式宿主应用的前端 monorepo 基线仓库，不是单应用仓库，也不是通用前端空白模板。
 
-- `apps/react-app`：React 19 + Ant Design 5 应用壳
+- `apps/react-app`：React 19 + Ant Design 6 应用壳
 - `packages/shared-utils`：通用工具（格式化、校验、HTTP 客户端、日志）
 - `packages/shared-i18n`：国际化运行时与语言包
 - `packages/shared`：路由定义、UI 文案契约、向后兼容重导出
@@ -42,7 +42,7 @@
 
 ### 1. 安装环境
 
-- Node.js `>=24.11.0 <25`
+- Node.js `24.15.0`
 - 推荐本地版本：`.nvmrc` 中的 `24.15.0`
 - `pnpm@10.33.1`
 
@@ -80,7 +80,7 @@ pnpm verify
 ## 目录结构
 
 ```text
-react-admin-monorepo/
+frontend-monorepo/
 ├─ apps/
 │  ├─ react-app/                 # React 正式宿主应用
 │  └─ react-screen-designer/     # 专题子应用（experimental）

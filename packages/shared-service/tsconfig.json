@@ -2,11 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "composite": true,
     "paths": {
-      "@repo/shared-utils": ["../shared-utils/src/index.ts"],
-      "@repo/shared-utils/*": ["../shared-utils/src/*/index.ts"]
+      "@repo/shared-utils": ["../shared-utils/dist/index.d.ts"],
+      "@repo/shared-utils/*": ["../shared-utils/dist/*/index.d.ts"]
     }
   },
   "include": ["src"]

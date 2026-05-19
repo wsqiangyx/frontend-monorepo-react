@@ -2,7 +2,7 @@
 
 **文档版本**：v1.2  
 **修订日期**：2026-05-19  
-**适用仓库**：`react-admin-monorepo`  
+**适用仓库**：`frontend-monorepo`  
 **文档性质**：唯一上游概要设计
 
 ---
@@ -44,7 +44,7 @@
 
 - 完整的 React 应用壳基线
 - 共享的设计令牌、国际化、通用工具、服务层、UI 组件（工作流引擎 `shared-workflow` 为规划中预留包，当前仓库未创建）
-- 通过 MSW 驱动的完整平台主链路，保持后端无关（默认适配芋道后端）
+- 通过 MSW 驱动的完整平台主链路，保持后端无关
 - 让模板消费者能在此基础上快速收敛业务样例和专题子应用
 
 ---
@@ -62,13 +62,13 @@
 
 ### 3.2 关键架构决策 (ADR)
 
-重大架构决策记录于 `docs/decisions/`，当前包含以下已采纳决策。
+重大架构决策在本设计文档内维护索引；若后续补建 ADR 独立目录，必须与本处保持同步。
 
 | 决策编号 | 标题                                                                      | 决策日期   | 状态      | 正式文档 |
 | -------- | ------------------------------------------------------------------------- | ---------- | --------- | -------- |
 | ADR-001  | `shared-service` 中的纯函数禁止依赖 UI 框架                               | 2026-05-10 | ✅ 已采纳 | 已完成   |
 | ADR-002  | 正式宿主为 React 单应用壳                                                 | 2026-05-19 | ✅ 已采纳 | 待补全   |
-| ADR-003  | 选用 Ant Design 5 作为 React 宿主组件库                                   | 2026-05-19 | ✅ 已采纳 | 待补全   |
+| ADR-003  | 选用 Ant Design 6 作为 React 宿主组件库                                   | 2026-05-19 | ✅ 已采纳 | 待补全   |
 | ADR-004  | 采用 pnpm catalog 统一管理核心依赖版本                                    | 2026-05-18 | ✅ 已采纳 | 待补全   |
 | ADR-005  | 工作流引擎以 `shared-workflow` 独立包交付（规划中，仓库当前未创建该目录） | 2026-05-18 | ✅ 已采纳 | 待补全   |
 | ADR-006  | 文档修订与审核机制                                                        | 2026-05-19 | ✅ 已采纳 | 待补全   |
@@ -84,21 +84,21 @@
 #### ADR-002：正式宿主为 React 单应用壳
 
 **背景**：团队技术栈集中于 React，单一宿主可降低架构复杂度，同时保留共享包的复用能力。  
-**决策**：正式宿主仅保留 `apps/react-app`，使用 React 19 + Ant Design 5。不包含 Vue 宿主。  
+**决策**：正式宿主仅保留 `apps/react-app`，使用 React 19 + Ant Design 6。不包含 Vue 宿主。  
 **后果**：共享包无需跨框架适配，`shared-ui` 仅实现 React 组件，`shared-i18n` 仅提供 React 初始化，工程维护成本显著降低。
 
-#### ADR-003：选用 Ant Design 5 作为组件库
+#### ADR-003：选用 Ant Design 6 作为组件库
 
 **背景**：需要一套企业级 React 组件库，要求生态成熟、设计规范、主题可定制。  
-**决策**：采用 **Ant Design 5**，理由包括：成熟的设计体系（Design Token）、丰富的组件生态、社区活跃、与设计令牌包无缝集成。  
+**决策**：采用 **Ant Design 6**，理由包括：成熟的设计体系（Design Token）、丰富的组件生态、社区活跃、与设计令牌包无缝集成。  
 **替代方案**：Material UI（设计风格差异较大）、React Spectrum（生态较小）。  
 **后果**：`design-tokens` 导出 Ant Design `ThemeConfig`，`shared-ui` 基于 Ant Design 封装，国际化通过 `ConfigProvider` 联动。
 
 #### ADR-004：pnpm catalog 统一版本管理
 
 **背景**：多包 Monorepo 需避免依赖版本碎片化。  
-**决策**：在 `pnpm-workspace.yaml` 定义 `catalog`，核心依赖版本统一声明，子包使用 `"react": "catalog:"` 引用。  
-**后果**：单点升级，版本冲突显性化。
+**决策**：在 `pnpm-workspace.yaml` 定义 `catalog` 与 `overrides` 作为集中版本参考，但当前子包 manifest 仍允许显式写入锁定版本。  
+**后果**：根配置仍是版本治理入口，但文档与 manifest 必须保持一致，避免出现“宣称 catalog、实际手写版本”的漂移。
 
 #### ADR-005：工作流独立包交付
 
@@ -131,7 +131,7 @@
 ## 4. 仓库顶层结构
 
 ```
-react-admin-monorepo/
+frontend-monorepo/
 ├─ apps/
 │  └─ react-app/               # React 正式宿主应用
 ├─ packages/
@@ -142,12 +142,15 @@ react-admin-monorepo/
 │  ├─ shared-ui/               # React UI 组件、图表组件、布局 Hooks
 │  └─ shared-workflow/         # 工作流引擎（规划中预留，仓库当前未创建）
 ├─ docs/
-│  └─ decisions/               # ADR 正式文档
-├─ docker/                     # 容器部署配置
+│  ├─ 总体设计/                # 上游概要设计、详细设计与实施计划
+│  ├─ 教程/                    # 初始化与操作手册
+│  ├─ 规范/                    # 独立规范文档
+│  ├─ 治理/                    # 阶段性治理记录
+│  └─ 子应用/                  # 专题子应用文档
 ├─ scripts/                    # 构建与工具脚本（含 check-arch.sh）
 ├─ pnpm-workspace.yaml
 ├─ tsconfig.base.json
-├─ eslint.config.mjs
+├─ eslint.config.js
 ├─ vitest.config.ts
 ├─ STATUS.yaml                 # 包治理状态清单
 └─ .env.example
@@ -213,7 +216,7 @@ react-app → shared-ui → shared-service → shared-utils
 
 #### `design-tokens` – 设计令牌
 
-- **提供**：CSS 自定义属性、Ant Design 5 `ThemeConfig`、UnoCSS 预设（颜色、字号、间距、圆角等）、图表配色常量
+- **提供**：CSS 自定义属性、Ant Design 6 `ThemeConfig`、UnoCSS 预设（颜色、字号、间距、圆角等）、图表配色常量
 - **子路径**：`./tokens.css`, `./antd-theme`, `./uno-preset`
 - **不负责**：业务状态、私有主题逻辑
 
@@ -247,7 +250,7 @@ react-app → shared-ui → shared-service → shared-utils
 
 #### `shared-ui` – React UI
 
-`shared-ui` 负责提供基于 Ant Design 5 二次封装的 React 组件。封装遵循以下分层原则：
+`shared-ui` 负责提供基于 Ant Design 6 二次封装的 React 组件。封装遵循以下分层原则：
 
 | 封装模式         | 适用场景                                        | 示例                                                               |
 | ---------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
@@ -278,7 +281,7 @@ react-app → shared-ui → shared-service → shared-utils
 
 #### `apps/react-app` – 组合根
 
-- **技术栈**：React 19 + Zustand + react-router + Ant Design 5 + react-i18next
+- **技术栈**：React 19 + Zustand + react-router + Ant Design 6 + react-i18next
 - **启动链**：环境校验 → Mock 启动 → 样式注入 → i18n → Router/Store → 挂载
 - **内部结构**：
 
@@ -388,19 +391,19 @@ react-app → shared-ui → shared-service → shared-utils
 
 通过 `pnpm-workspace.yaml` 的 `catalog` 统一版本，子包使用 `"react": "catalog:"` 引用。
 
-| 类别     | 技术栈                 | 版本                                 |
-| -------- | ---------------------- | ------------------------------------ |
-| 框架     | React                  | ^19.0                                |
-| 构建     | Vite, TypeScript       | ^6.0, ^5.6                           |
-| 状态管理 | Zustand                | ^5.0                                 |
-| 路由     | react-router           | ^7.0                                 |
-| 组件库   | Ant Design             | ^5.22（以 catalog 实际锁定版本为准） |
-| 国际化   | react-i18next, i18next | ^15, ^24                             |
-| 样式     | UnoCSS                 | ^0.65                                |
-| 图表     | AntV G2                | ^5.2                                 |
-| 请求     | Axios                  | ^1.7                                 |
-| Mock     | MSW                    | ^2.5                                 |
-| 工作流   | bpmn-js                | ^17.0                                |
+| 类别     | 技术栈                 | 版本                                |
+| -------- | ---------------------- | ----------------------------------- |
+| 框架     | React                  | ^19.0                               |
+| 构建     | Vite, TypeScript       | ^6.0, ^5.6                          |
+| 状态管理 | Zustand                | ^5.0                                |
+| 路由     | react-router           | ^7.0                                |
+| 组件库   | Ant Design             | 6.3.7（当前 manifest 实际锁定版本） |
+| 国际化   | react-i18next, i18next | ^15, ^24                            |
+| 样式     | UnoCSS                 | ^0.65                               |
+| 图表     | AntV G2                | ^5.2                                |
+| 请求     | Axios                  | ^1.7                                |
+| Mock     | MSW                    | ^2.5                                |
+| 工作流   | bpmn-js                | ^17.0                               |
 
 > **说明**：表中版本范围为 `pnpm-workspace.yaml` 中 `catalog` 的声明，实际安装版本以 `pnpm-lock.yaml` 锁定为准。
 
@@ -411,45 +414,25 @@ react-app → shared-ui → shared-service → shared-utils
 ## 13. 环境变量管理
 
 - 统一 `VITE_` 前缀
-- 必需变量：`VITE_API_BASE_URL`, `VITE_PROXY_TARGET`
+- 当前正式样例变量：`VITE_ENABLE_MSW`
 - 宿主拥有独立的 `.env.development` / `.env.production`
 - 共享包不得直接读取宿主私有环境变量；当前 `shared-utils` 中使用的 `VITE_` 变量视为临时实现，长期应通过初始化函数注入
 
 ---
 
-## 14. 后端对接策略（芋道）
+## 14. 后端对接策略
 
 - API 封装于 `shared-service/modules/`
 - 响应格式 `{ code, msg, data }`
 - 开发环境通过 Vite proxy 转发 `/admin-api`，Mock 环境提供模拟数据
-- 功能对齐分阶段：系统管理 → 监控工具 → 工作流
+- 功能对接应通过适配层映射到既有平台契约，不预设固定后端风格
 
 ---
 
-## 15. 部署与 Docker 策略
+## 15. 部署与发布边界
 
-- 独立构建，Nginx 作为基础镜像
-- Dockerfile 多阶段构建
-- Nginx 配置示例（SPA history 模式）：
-
-```nginx
-server {
-    listen 80;
-    server_name example.com;
-
-    location / {
-        root /usr/share/nginx/html;
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /admin-api/ {
-        proxy_pass http://backend:48080;
-        proxy_set_header Host $host;
-    }
-}
-```
-
-- `docker/` 目录提供 Dockerfile 与 Docker Compose 模板
+- 当前仓库未内置 `docker/` 目录或 Docker 发布模板
+- 如需补齐容器化交付，必须同步更新根文档、总体设计与模板接管说明
 
 ---
 
@@ -476,12 +459,12 @@ server {
 
 ### 16.3 切换后端
 
-默认后端适配芋道，若对接其他后端：
+若对接真实后端：
 
 1. 保持 `shared-service/types.ts` 中的通用响应格式，或替换为你自己的类型定义
 2. 替换 `shared-service/modules/` 下的 API 实现，保持函数签名不变或按需调整
 3. 同步更新 `shared-service/mock/handlers/` 中的 Mock 处理器以匹配新接口
-4. 更新 `VITE_PROXY_TARGET` 环境变量指向新后端地址
+4. 如宿主新增运行时变量，先同步 app 级 `.env.example` 与根文档
 
 ### 16.4 多租户或数据权限扩展
 
@@ -532,7 +515,7 @@ apps:
 - 根 `AGENTS.md`
 - 根 `TEMPLATE.md`
 - `docs/规范/测试规范.md`
-- `docs/decisions/` 中相关 ADR
+- `docs/总体设计/详细设计/` 与 `docs/总体设计/实施计划/` 中相关文档
 - 根 `STATUS.yaml`
 
 ### 18.3 本版主要变更
@@ -556,7 +539,7 @@ apps:
 **v1.0** (2026-05-19)：
 
 - 初始版本，从跨框架设计中剥离出 React 单框架设计方案
-- 组件库选定 Ant Design 5
+- 组件库选定 Ant Design 6
 - 移除所有 Vue 相关内容
 - ADR 体系重新建立
 - 共享包简化，仅保留 React 实现
