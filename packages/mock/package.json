@@ -21,6 +21,10 @@
     "./handlers": {
       "types": "./dist/handlers/index.d.ts",
       "default": "./dist/handlers/index.js"
+    },
+    "./passthrough": {
+      "types": "./dist/passthrough.d.ts",
+      "default": "./dist/passthrough.js"
     }
   },
   "scripts": {
