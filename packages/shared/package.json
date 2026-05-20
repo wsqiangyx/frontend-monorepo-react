@@ -53,11 +53,11 @@
     "@repo/shared-i18n": "workspace:*"
   },
   "peerDependencies": {
-    "react": "19.2.5",
-    "react-router-dom": "^7.15.0"
+    "react": "catalog:",
+    "react-router-dom": "catalog:"
   },
   "//_comment": "Framework adapters rely on consumer-installed framework/router peers.",
   "devDependencies": {
-    "@types/react": "19.2.14"
+    "@types/react": "catalog:"
   }
 }

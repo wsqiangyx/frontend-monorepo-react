@@ -13,28 +13,28 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
-    "@ant-design/icons": "6.2.2",
+    "@ant-design/icons": "catalog:",
     "@antv/g2": "^5.3.3",
     "@repo/shared-service": "workspace:*",
     "@repo/resources": "workspace:*",
     "@repo/shared": "workspace:*",
     "@repo/shared-ui": "workspace:*",
     "@repo/design-tokens": "workspace:*",
-    "antd": "6.3.7",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
-    "react-router-dom": "^7.15.0",
-    "zustand": "^5.0.13"
+    "antd": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router-dom": "catalog:",
+    "zustand": "catalog:"
   },
   "devDependencies": {
-    "@testing-library/dom": "10.4.1",
-    "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/react": "16.3.2",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
     "@repo/mock": "workspace:*",
-    "@types/node": "24.12.2",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.1",
-    "vite": "8.0.10"
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "vite": "catalog:"
   }
 }

@@ -97,8 +97,8 @@
 #### ADR-004：pnpm catalog 统一版本管理
 
 **背景**：多包 Monorepo 需避免依赖版本碎片化。  
-**决策**：在 `pnpm-workspace.yaml` 定义 `catalog` 与 `overrides` 作为集中版本参考，但当前子包 manifest 仍允许显式写入锁定版本。  
-**后果**：根配置仍是版本治理入口，但文档与 manifest 必须保持一致，避免出现“宣称 catalog、实际手写版本”的漂移。
+**决策**：在 `pnpm-workspace.yaml` 定义 `catalog` 与 `overrides` 作为集中版本参考，子包通过 `"dependency": "catalog:"` 统一引用。  
+**后果**：版本治理收敛到根配置，新增或升级依赖只需修改 `pnpm-workspace.yaml`，自动同步所有引用包。
 
 #### ADR-005：工作流独立包交付
 
@@ -191,7 +191,7 @@ react-app → shared-ui → shared-service → shared-utils
 用于 `check:arch` 脚本（具体实现见 `scripts/check-arch.sh`）：
 
 - 基础共享层 (`design-tokens`, `shared-utils`, `shared-i18n`) 的 `dependencies` 不得包含其他 workspace 包
-- `shared-service` 不得依赖 `react`, `react-dom`, `react-router`, `zustand`, `antd`, `@antv/g2`, `bpmn-js`
+- `shared-service` 不得依赖 `react`, `react-dom`, `react-router`, `zustand`, `antd`, `@antv/g2`
 - `shared-ui` 不得依赖 `apps/*`
 - `apps/react-app` 不得依赖其他 `apps/*`
 - 生产依赖不得直接引用 `msw`
@@ -389,21 +389,25 @@ react-app → shared-ui → shared-service → shared-utils
 
 ## 12. 技术栈与版本管理
 
-通过 `pnpm-workspace.yaml` 的 `catalog` 统一版本，子包使用 `"react": "catalog:"` 引用。
+通过 `pnpm-workspace.yaml` 的 `catalog` 统一版本，子包使用 `"react": "catalog:"` 引用（当前全仓已统一采用 catalog 协议，根配置与 manifest 保持一致）。
 
-| 类别     | 技术栈                 | 版本                                |
-| -------- | ---------------------- | ----------------------------------- |
-| 框架     | React                  | ^19.0                               |
-| 构建     | Vite, TypeScript       | ^6.0, ^5.6                          |
-| 状态管理 | Zustand                | ^5.0                                |
-| 路由     | react-router           | ^7.0                                |
-| 组件库   | Ant Design             | 6.3.7（当前 manifest 实际锁定版本） |
-| 国际化   | react-i18next, i18next | ^15, ^24                            |
-| 样式     | UnoCSS                 | ^0.65                               |
-| 图表     | AntV G2                | ^5.2                                |
-| 请求     | Axios                  | ^1.7                                |
-| Mock     | MSW                    | ^2.5                                |
-| 工作流   | bpmn-js                | ^17.0                               |
+| 类别     | 技术栈                                                                          | 版本（catalog 声明）         |
+| -------- | ------------------------------------------------------------------------------- | ---------------------------- |
+| 框架     | React                                                                           | 19.2.5                       |
+| 构建     | Vite, @vitejs/plugin-react                                                      | 8.0.10, 6.0.1                |
+| 状态管理 | Zustand                                                                         | ^5.0.13                      |
+| 路由     | react-router                                                                    | ^7.15.0                      |
+| 组件库   | Ant Design, @ant-design/icons                                                   | 6.3.7, 6.2.2                 |
+| 国际化   | react-i18next, i18next                                                          | ^15, ^24                     |
+| 样式     | UnoCSS                                                                          | ^0.65                        |
+| 图表     | AntV G2                                                                         | ^5.2                         |
+| 请求     | Axios                                                                           | ^1.7                         |
+| Mock     | MSW                                                                             | ^2.5                         |
+| 类型定义 | @types/react, @types/react-dom, @types/node                                     | 19.2.14, 19.2.3, 24.12.2     |
+| 测试     | Vitest, @testing-library/react, @testing-library/dom, @testing-library/jest-dom | 4.1.5, 16.3.2, 10.4.1, 6.9.1 |
+| 工作流   | bpmn-js（规划中预留，仓库当前未创建）                                           | —                            |
+
+> **说明**：表中版本为 `pnpm-workspace.yaml` 中 `catalog` 的声明值，实际安装版本以 `pnpm-lock.yaml` 锁定为准。TypeScript (6.0.3)、Vitest (4.1.5)、ESLint (9.39.4)、Sass (1.99.0)、UnoCSS (66.6.8)、jsdom (29.1.0) 通过 `overrides` 全局锁定。
 
 > **说明**：表中版本范围为 `pnpm-workspace.yaml` 中 `catalog` 的声明，实际安装版本以 `pnpm-lock.yaml` 锁定为准。
 
