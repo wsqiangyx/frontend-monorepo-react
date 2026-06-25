@@ -20,7 +20,7 @@
       "@repo/mock/server": ["../../packages/mock/src/server.ts"],
       "@repo/design-tokens/theme": ["../../packages/design-tokens/src/theme/index.ts"],
       "@repo/design-tokens/css": ["../../packages/design-tokens/src/to-css.ts"],
-      "@repo/design-tokens/theme/antd": ["../../packages/design-tokens/src/theme/antd.ts"],
+      "@repo/design-tokens/tailwind-preset": ["../../packages/design-tokens/src/theme/tailwind.ts"],
       "@repo/shared-ui": ["../../packages/shared-ui/src/index.ts"],
       "@repo/shared-ui/style.css": ["../../packages/shared-ui/src/style.css"],
       "@repo/resources": ["../../packages/resources/src/index.ts"],

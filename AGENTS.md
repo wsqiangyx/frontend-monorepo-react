@@ -293,7 +293,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 ### `packages/shared-utils`
 
 - 通用工具函数（格式化、校验、存储、请求、日志）
-- HTTP 客户端（Axios 封装）
+- HTTP 客户端（HttpClient 接口 + ky 适配器 + XHR 上传封装）
 - 平台响应类型（ApiResponse、PaginationParams 等）
 - 保持纯 TypeScript、框架无关
 

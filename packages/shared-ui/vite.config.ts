@@ -12,8 +12,8 @@ export default defineConfig({
       '@repo/shared/ui-contract': fileURLToPath(
         new URL('../shared/src/ui-contract/index.ts', import.meta.url),
       ),
-      '@repo/design-tokens/theme/antd': fileURLToPath(
-        new URL('../design-tokens/src/theme/antd.ts', import.meta.url),
+      '@repo/design-tokens/tailwind-preset': fileURLToPath(
+        new URL('../design-tokens/src/theme/tailwind.ts', import.meta.url),
       ),
       '@repo/design-tokens/theme': fileURLToPath(
         new URL('../design-tokens/src/theme/index.ts', import.meta.url),
@@ -35,10 +35,9 @@ export default defineConfig({
       external: [
         'react',
         'react-dom',
-        'antd',
         '@repo/shared-service',
         '@repo/design-tokens',
-        '@repo/design-tokens/theme/antd',
+        '@repo/design-tokens/tailwind-preset',
         '@repo/design-tokens/theme',
         '@repo/shared/ui-contract',
       ],

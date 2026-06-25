@@ -4,7 +4,7 @@
 // 语义色集中定义，保证 app 映射到同一套视觉语言。
 // 颜色值同时服务于：
 //   1. CSS 变量生成（to-css.ts → --color-primary: #1677ff）
-//   2. Ant Design 主题 token（theme/antd.ts → colorPrimary）
+//   2. Tailwind CSS 主题预设（theme/tailwind.ts → colors.primary）
 // 修改颜色值会影响应用的 UI 外观。
 // ============================================================================
 export const colors = {

@@ -80,9 +80,9 @@ const sourceAlias = [
     ),
   },
   {
-    find: '@repo/design-tokens/theme/antd',
+    find: '@repo/design-tokens/tailwind-preset',
     replacement: fileURLToPath(
-      new URL('../../packages/design-tokens/src/theme/antd.ts', import.meta.url),
+      new URL('../../packages/design-tokens/src/theme/tailwind.ts', import.meta.url),
     ),
   },
   {
