@@ -8,7 +8,7 @@
       "@repo/shared/ui-contract": ["../shared/src/ui-contract/index.ts"],
       "@repo/design-tokens": ["../design-tokens/src/index.ts"],
       "@repo/design-tokens/theme": ["../design-tokens/src/theme/index.ts"],
-      "@repo/design-tokens/theme/antd": ["../design-tokens/src/theme/antd.ts"]
+      "@repo/design-tokens/tailwind-preset": ["../design-tokens/src/theme/tailwind.ts"]
     }
   },
   "include": ["src"]

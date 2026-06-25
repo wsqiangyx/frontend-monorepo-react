@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { createAntdTheme } from '../theme/antd'
-import { resolveTheme } from '../theme/registry'
+import { createTailwindPreset } from '../theme/tailwind'
 
 describe('theme adapters', () => {
-  it('maps snapshot fields into antd theme tokens', () => {
-    const theme = createAntdTheme(resolveTheme('default', 'dark')) as {
-      token: Record<string, string | number>
-    }
+  it('returns a tailwind preset with theme.extend', () => {
+    const preset = createTailwindPreset()
 
-    expect(theme.token.colorPrimary).toBe('#1677ff')
-    expect(theme.token.colorBgBase).toBe('#141414')
-    expect(theme.token.colorTextBase).toBe('#e8e8e8')
-    expect(theme.token.borderRadius).toBe(6)
+    expect(preset.theme).toBeDefined()
+    expect(preset.theme?.extend).toBeDefined()
+    expect(preset.theme?.extend?.colors).toBeDefined()
+    expect(preset.theme?.extend?.spacing).toBeDefined()
+    expect(preset.theme?.extend?.borderRadius).toBeDefined()
+    expect(preset.theme?.extend?.fontFamily).toBeDefined()
+    expect(preset.theme?.extend?.screens).toBeDefined()
   })
 })
