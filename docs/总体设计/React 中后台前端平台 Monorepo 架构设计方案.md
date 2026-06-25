@@ -1,7 +1,7 @@
 # React 中后台前端平台 Monorepo 架构设计方案
 
-**文档版本**：v1.2  
-**修订日期**：2026-05-19  
+**文档版本**：v2.1
+**修订日期**：2026-06-25
 **适用仓库**：`frontend-monorepo`  
 **文档性质**：唯一上游概要设计
 
@@ -28,6 +28,8 @@
 | Design Token            | 平台无关的设计变量，输出为 CSS 变量、组件库主题配置等 |
 | Composition Root        | 应用的装配入口，负责依赖注入与全局初始化              |
 | MSW                     | Mock Service Worker，用于浏览器和测试环境的 API 模拟  |
+| HttpClient              | shared-utils 暴露的 HTTP 客户端接口抽象，隔离底层实现 |
+| TanStack Query          | 服务端状态管理库，提供缓存/去重/重试/背景刷新能力     |
 
 ---
 
@@ -57,7 +59,7 @@
 
 - **Workspace Monorepo**：通过 pnpm workspace 划分包边界，使用 catalog 统一版本
 - **Clean Architecture**：分离平台规则、宿主装配、UI 呈现与外部适配
-- **Ports / Adapters**：共享契约定义核心端口，Mock、Ant Design、HTTP 等作为适配器
+- **Ports / Adapters**：共享契约定义核心端口，Mock、shadcn/ui、HTTP 等作为适配器
 - **Composition Root**：宿主应用 (`react-app`) 负责最终装配，不反向定义共享规则
 
 ### 3.2 关键架构决策 (ADR)
@@ -68,10 +70,13 @@
 | -------- | ------------------------------------------------------------------------- | ---------- | --------- | -------- |
 | ADR-001  | `shared-service` 中的纯函数禁止依赖 UI 框架                               | 2026-05-10 | ✅ 已采纳 | 已完成   |
 | ADR-002  | 正式宿主为 React 单应用壳                                                 | 2026-05-19 | ✅ 已采纳 | 待补全   |
-| ADR-003  | 选用 Ant Design 6 作为 React 宿主组件库                                   | 2026-05-19 | ✅ 已采纳 | 待补全   |
+| ADR-003  | 选用 shadcn/ui + Tailwind CSS 作为 React 宿主 UI 方案                     | 2026-06-25 | ✅ 已采纳 | 待补全   |
 | ADR-004  | 采用 pnpm catalog 统一管理核心依赖版本                                    | 2026-05-18 | ✅ 已采纳 | 待补全   |
 | ADR-005  | 工作流引擎以 `shared-workflow` 独立包交付（规划中，仓库当前未创建该目录） | 2026-05-18 | ✅ 已采纳 | 待补全   |
 | ADR-006  | 文档修订与审核机制                                                        | 2026-05-19 | ✅ 已采纳 | 待补全   |
+| ADR-007  | 采用 Tailwind CSS 替代 UnoCSS 作为原子化 CSS 方案                         | 2026-06-25 | ✅ 已采纳 | 待补全   |
+| ADR-008  | HTTP 客户端从 axios 迁移到 ky                                             | 2026-06-25 | ✅ 已采纳 | 待补全   |
+| ADR-009  | 引入 TanStack Query 作为服务端状态管理层                                  | 2026-06-25 | ✅ 已采纳 | 待补全   |
 
 > **补充说明**：ADR-002 和 ADR-003 为技术栈选择的根基性决策，建议在仓库初始化后一个月内完成正式决策文档的编写，记录完整的背景、替代方案评估及决策后果。
 
@@ -83,16 +88,58 @@
 
 #### ADR-002：正式宿主为 React 单应用壳
 
-**背景**：团队技术栈集中于 React，单一宿主可降低架构复杂度，同时保留共享包的复用能力。  
-**决策**：正式宿主仅保留 `apps/react-app`，使用 React 19 + Ant Design 6。不包含 Vue 宿主。  
+**背景**：团队技术栈集中于 React，单一宿主可降低架构复杂度，同时保留共享包的复用能力。
+**决策**：正式宿主仅保留 `apps/react-app`，使用 React 19 + shadcn/ui + Tailwind CSS。不包含 Vue 宿主。
 **后果**：共享包无需跨框架适配，`shared-ui` 仅实现 React 组件，`shared-i18n` 仅提供 React 初始化，工程维护成本显著降低。
 
-#### ADR-003：选用 Ant Design 6 作为组件库
+#### ADR-003：选用 shadcn/ui + Tailwind CSS 作为 UI 方案
 
-**背景**：需要一套企业级 React 组件库，要求生态成熟、设计规范、主题可定制。  
-**决策**：采用 **Ant Design 6**，理由包括：成熟的设计体系（Design Token）、丰富的组件生态、社区活跃、与设计令牌包无缝集成。  
-**替代方案**：Material UI（设计风格差异较大）、React Spectrum（生态较小）。  
-**后果**：`design-tokens` 导出 Ant Design `ThemeConfig`，`shared-ui` 基于 Ant Design 封装，国际化通过 `ConfigProvider` 联动。
+**背景**：需要一套可定制、轻量化的 React 组件库与原子化 CSS 方案，要求源码可控、主题灵活、包体积可控。先前采用 Ant Design 6，但实际使用面极小（仅 ConfigProvider 主题注入和 screen-designer 属性面板），且中后台自定义 UI 较多，重型组件库的价值未被充分利用。
+**决策**：采用 **shadcn/ui**（基于 Radix UI 原语 + CVA 变体管理）+ **Tailwind CSS** 作为正式 UI 方案。理由包括：
+- **源码可控**：shadcn/ui 为 CLI 代码生成器，组件源码直接复制到项目中，可完全自定义，无 vendor lock-in
+- **轻量化**：按需引入组件，基于 Radix UI 的 tree-shakeable 原语，包体积显著小于 Ant Design
+- **主题灵活**：基于 CSS 变量（HSL 格式），与现有 `design-tokens` 的 CSS 变量架构天然契合
+- **Tailwind 生态**：Tailwind CSS 提供成熟的原子化 CSS 方案，社区活跃，与 shadcn/ui 深度集成
+- **暗色模式**：通过 `dark:` 变体 + CSS 变量切换，与现有 `ThemeSnapshot` 概念一致
+**替代方案**：Ant Design 6（使用面小、定制成本高）、Material UI（设计风格差异大）、Headless UI（组件数量少）。
+**后果**：
+- `design-tokens` 移除 Ant Design 主题适配器（`./theme/antd`），改为输出 Tailwind CSS 变量格式
+- `shared-ui` 基于 shadcn/ui 组件二次封装，样式通过 Tailwind + CSS 变量控制
+- 国际化不再通过 `ConfigProvider locale` 联动，改为组件直接消费 i18n 文案
+- 缺失的 Ant Design 组件（如 ColorPicker）需引入第三方库补充
+
+#### ADR-007：采用 Tailwind CSS 替代 UnoCSS
+
+**背景**：仓库先前选用 UnoCSS 作为原子化 CSS 方案，但实际使用量为零（仅引入 reset 和虚拟模块，无任何组件消费工具类）。shadcn/ui 的正式选型要求 Tailwind CSS 作为样式基础。
+**决策**：用 Tailwind CSS 替代 UnoCSS，移除 `unocss`、`@unocss/preset-uno`、`@unocss/preset-attributify`、`@unocss/reset` 依赖。
+**替代方案**：继续使用 UnoCSS（shadcn/ui 不原生支持）、UnoCSS + Tailwind 兼容层（增加复杂度）。
+**后果**：
+- Vite 配置移除 `unocss/vite` 插件，添加 `@tailwindcss/vite` 插件
+- `bootstrap.tsx` 中 `@unocss/reset/tailwind.css` 和 `virtual:uno.css` 替换为 Tailwind 指令
+- 新增 `postcss.config.js`（如使用 PostCSS 方案）或直接使用 Tailwind Vite 插件
+- `design-tokens` 的 spacing 和 breakpoints 值已在先前对齐 Tailwind 默认值，迁移无碰撞
+
+#### ADR-008：HTTP 客户端从 axios 迁移到 ky
+
+**背景**：axios 为个人主导维护项目（npm 发布权限高度集中在单一账户），2026 年 3 月发生严重供应链攻击事件——维护者账户被劫持后，攻击者通过 postinstall 钩子植入远程访问木马。此类攻击对中后台平台构成极高风险。ky 为零依赖、无 postinstall 钩子的现代 fetch 封装，供应链攻击面极小。同时，浏览器 fetch API 已足够成熟，ky 仅在其上提供轻量级的请求快捷方法和重试/超时机制，无额外运行时依赖。
+**决策**：将 HTTP 客户端从 axios 迁移到 ky，同时在 `shared-utils` 中建立 `HttpClient` 接口抽象层，`shared-service` 仅依赖接口而非具体实现。上传进度场景因浏览器 fetch 不支持上传进度回调，由 `shared-utils` 提供独立的 `uploadWithProgress` 工具函数（基于 XMLHttpRequest）。
+**替代方案**：继续使用 axios（供应链风险未消除）、ofetch（Node.js 端行为差异大）、got（仅 Node.js）。
+**后果**：
+- `shared-utils` 移除 axios 依赖，新增 ky 依赖和 `HttpClient` 接口 + ky 适配器实现
+- `shared-service` 不直接依赖 ky，仅通过 `shared-utils` 暴露的 `HttpClient` 接口消费
+- 上传进度场景绕过 ky，直接使用 `uploadWithProgress`（XHR 封装）
+- 接口层确保未来可在 1 小时内切换底层库（ky ↔ ofetch ↔ axios），业务层零感知
+
+#### ADR-009：引入 TanStack Query 作为服务端状态管理层
+
+**背景**：现有方案使用手动 `useEffect` + `useState` 管理请求状态，缺乏智能缓存、请求去重、自动重试、背景刷新、分页查询等能力。中后台场景中，同一数据被多个组件消费的情况频繁（如用户信息、菜单树、权限集），手动管理导致冗余请求和状态不一致。TanStack Query 是 React 生态服务端状态管理的事实标准，提供声明式的数据获取与缓存管理。
+**决策**：引入 `@tanstack/react-query` 作为服务端状态管理层。`shared-service/modules/` 封装的 API 函数返回 `Promise`，宿主层通过 TanStack Query 的 `useQuery` / `useMutation` / `useInfiniteQuery` 消费。禁止在组件中直接调用 ky 或 `httpClient`，所有数据请求必须通过 TanStack Query 层。
+**替代方案**：SWR（功能较 TanStack Query 少，特别是服务端渲染和无限滚动支持较弱）、手写缓存层（维护成本高，易出 bug）、React Query v4（已停止维护）。
+**后果**：
+- 宿主应用新增 `QueryClientProvider` 装配，与现有 `ThemeProvider` 并列
+- 组件不再使用 `useEffect` + `useState` 管理请求状态，改为 `useQuery` / `useMutation`
+- `shared-service` 保持框架无关，不直接依赖 TanStack Query；query key 约定和 hook 封装在宿主应用或 `shared-ui` 层
+- 缓存策略、重试策略、失效策略在宿主层统一配置
 
 #### ADR-004：pnpm catalog 统一版本管理
 
@@ -120,7 +167,9 @@
 | 触发条件                                         | 需重议的决策                             |
 | ------------------------------------------------ | ---------------------------------------- |
 | 引入第二个 UI 框架或技术栈                       | ADR-002（单宿主）                        |
-| Ant Design 停止维护或出现重大不兼容升级          | ADR-003（组件库选型）                    |
+| Radix UI 停止维护或 shadcn/ui 出现重大不兼容升级 | ADR-003（组件库选型）                    |
+| Tailwind CSS 停止维护或出现重大不兼容升级        | ADR-007（CSS 方案选型）                  |
+| ky 停止维护或出现重大不兼容升级                  | ADR-008（HTTP 客户端选型）               |
 | 需支持 IE11 或特殊老旧浏览器                     | 构建工具链、Polyfill 策略                |
 | 团队规模超过 10 人且多团队并行开发               | Monorepo 工具链（是否引入 Nx/Turborepo） |
 | 需将共享包发布到外部团队或公有 npm               | ADR-004（版本管理策略）                  |
@@ -135,8 +184,8 @@ frontend-monorepo/
 ├─ apps/
 │  └─ react-app/               # React 正式宿主应用
 ├─ packages/
-│  ├─ design-tokens/           # 设计令牌（CSS 变量、Ant Design Token、UnoCSS 预设）
-│  ├─ shared-utils/            # 通用工具（格式化、校验、存储、请求、日志）
+│  ├─ design-tokens/           # 设计令牌（CSS 变量、Tailwind 主题配置）
+│  ├─ shared-utils/            # 通用工具（格式化、校验、存储、HttpClient 接口、XHR 上传、日志）
 │  ├─ shared-i18n/             # 国际化运行时与语言包
 │  ├─ shared-service/          # 服务层（API 封装、Token 管理、权限判断、Mock）
 │  ├─ shared-ui/               # React UI 组件、图表组件、布局 Hooks
@@ -191,22 +240,23 @@ react-app → shared-ui → shared-service → shared-utils
 用于 `check:arch` 脚本（具体实现见 `scripts/check-arch.sh`）：
 
 - 基础共享层 (`design-tokens`, `shared-utils`, `shared-i18n`) 的 `dependencies` 不得包含其他 workspace 包
-- `shared-service` 不得依赖 `react`, `react-dom`, `react-router`, `zustand`, `antd`, `@antv/g2`
+- `shared-service` 不得依赖 `react`, `react-dom`, `react-router`, `zustand`, `antd`, `@ant-design/*`, `@radix-ui/*`, `ky`, `axios`
+- `shared-service` 仅通过 `shared-utils` 暴露的 `HttpClient` 接口访问 HTTP 能力，不直接依赖具体 HTTP 库
 - `shared-ui` 不得依赖 `apps/*`
 - `apps/react-app` 不得依赖其他 `apps/*`
 - 生产依赖不得直接引用 `msw`
 
 ### 5.4 包间依赖矩阵
 
-| 包名              | 可依赖项                                                                 | 禁止依赖项       |
-| ----------------- | ------------------------------------------------------------------------ | ---------------- | ------------------------------ |
-| `design-tokens`   | 无                                                                       | 所有             |
-| `shared-utils`    | 无                                                                       | React, 平台语义  |
-| `shared-i18n`     | react-i18next, i18next (peer), antd                                      | 宿主应用         |
-| `shared-service`  | shared-utils, axios, msw                                                 | UI 框架, DOM     |
-| `shared-ui`       | design-tokens, shared-utils, shared-i18n, shared-service, antd, @antv/g2 | 宿主应用         |
-| `shared-workflow` | design-tokens, shared-utils, bpmn-js, antd                               | 宿主应用业务规则 | （规划中预留，仓库当前未创建） |
-| `apps/react-app`  | 所有共享包                                                               | 无               |
+| 包名              | 可依赖项                                                                         | 禁止依赖项       |
+| ----------------- | -------------------------------------------------------------------------------- | ---------------- | ------------------------------ |
+| `design-tokens`   | 无                                                                              | 所有             |
+| `shared-utils`    | ky                                                                              | React, 平台语义  |
+| `shared-i18n`     | react-i18next, i18next (peer)                                                   | 宿主应用         |
+| `shared-service`  | shared-utils, msw                                                               | UI 框架, DOM, ky, axios |
+| `shared-ui`       | design-tokens, shared-utils, shared-i18n, shared-service, @radix-ui/*, tailwindcss | 宿主应用         |
+| `shared-workflow` | design-tokens, shared-utils, bpmn-js, @radix-ui/*                               | 宿主应用业务规则 | （规划中预留，仓库当前未创建） |
+| `apps/react-app`  | 所有共享包, @tanstack/react-query                                               | 无               |
 
 ---
 
@@ -216,25 +266,45 @@ react-app → shared-ui → shared-service → shared-utils
 
 #### `design-tokens` – 设计令牌
 
-- **提供**：CSS 自定义属性、Ant Design 6 `ThemeConfig`、UnoCSS 预设（颜色、字号、间距、圆角等）、图表配色常量
-- **子路径**：`./tokens.css`, `./antd-theme`, `./uno-preset`
+- **提供**：CSS 自定义属性、Tailwind CSS 主题配置（颜色、字号、间距、圆角等）、图表配色常量
+- **子路径**：`./tokens.css`, `./tailwind-preset`
 - **不负责**：业务状态、私有主题逻辑
 
 #### `shared-utils` – 通用工具
 
-- **提供**：日期格式化、数据校验、存储抽象 (`createStorage`)、Axios 实例、分级日志
+- **提供**：日期格式化、数据校验、存储抽象 (`createStorage`)、分级日志
+- **提供**：`HttpClient` 接口抽象与 ky 适配器实现，隔离底层 HTTP 库依赖
+- **提供**：`uploadWithProgress` 工具函数（基于 XMLHttpRequest），支持上传进度回调、abort 能力、多文件上传
 - **约束**：浏览器 API 通过工厂函数注入，禁止直接使用
+
+**HttpClient 接口设计**：
+
+```typescript
+interface HttpClient {
+  get<T>(url: string, config?: RequestConfig): Promise<T>
+  post<T>(url: string, data?: unknown, config?: RequestConfig): Promise<T>
+  put<T>(url: string, data?: unknown, config?: RequestConfig): Promise<T>
+  delete<T>(url: string, config?: RequestConfig): Promise<T>
+  upload<T>(url: string, file: File | Blob, onProgress?: (percent: number) => void): Promise<T>
+}
+```
+
+- `RequestConfig` 统一承载 headers、params、timeout、signal 等请求配置
+- `upload` 方法内部委托给 `uploadWithProgress`（XHR），其余方法委托给 ky 适配器
+- ky 适配器作为默认实现；未来如需切换，只需新增适配器并替换注入点，业务层零感知
 
 #### `shared-i18n` – 国际化
 
-- **提供**：中英文语言包、`createReactI18n` 初始化函数、Ant Design locale 映射（`enUS`, `zhCN`）
-- **契约**：持久化 key `locale`，运行时切换，通过 `ConfigProvider` 联动组件内部文案
+- **提供**：中英文语言包、`createReactI18n` 初始化函数、locale 检测与持久化
+- **契约**：持久化 key `locale`，运行时切换，组件通过 props 或 hook 消费翻译文案
 
 ### 6.2 平台内核层 / 服务层
 
 #### `shared-service` – 服务与契约
 
 - **API 模块**：按业务域拆分，响应格式 `{ code, msg, data }`
+- **HTTP 访问约束**：`shared-service` 仅依赖 `shared-utils` 暴露的 `HttpClient` 接口，不直接依赖 `ky` 或 `axios`
+- **服务端状态消费**：API 模块封装后返回 `Promise`，宿主层通过 TanStack Query 的 `useQuery` / `useMutation` / `useInfiniteQuery` 消费。禁止在组件中直接调用 `httpClient`，所有数据请求必须通过 TanStack Query 层
 - **TokenManager**：双 Token 刷新队列，并发请求排队
 - **权限判断**：纯函数 `checkPermission(permissions, required)`
 - **Mock 服务**：MSW handlers，与 API 类型同构
@@ -250,23 +320,23 @@ react-app → shared-ui → shared-service → shared-utils
 
 #### `shared-ui` – React UI
 
-`shared-ui` 负责提供基于 Ant Design 6 二次封装的 React 组件。封装遵循以下分层原则：
+`shared-ui` 负责提供基于 shadcn/ui 二次封装的 React 组件。封装遵循以下分层原则：
 
 | 封装模式         | 适用场景                                        | 示例                                                               |
 | ---------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
-| **直接透传**     | 组件 Props 与 Ant Design 完全一致，无需额外逻辑 | `Button` → 直接 re-export                                          |
+| **直接透传**     | 组件 Props 与 shadcn/ui 完全一致，无需额外逻辑 | `Button` → 直接 re-export                                          |
 | **Props 重组织** | 需要统一 API 风格或注入平台语义                 | `Menu` → `SidebarMenu`，接收 `MenuItem[]` 并自动处理权限过滤       |
-| **组合封装**     | 由多个 Ant Design 组件组装而成                  | `PageContainer` = `Layout.Content` + `Typography.Title` + 共享样式 |
+| **组合封装**     | 由多个 shadcn/ui 组件组装而成                   | `PageContainer` = 布局容器 + 标题 + 共享样式                       |
 
 **约束**：
 
-- 所有组件样式通过 `design-tokens` 的 CSS 变量和 Ant Design `ConfigProvider` 主题控制，禁止在组件内硬编码颜色、字号等视觉属性
+- 所有组件样式通过 `design-tokens` 的 CSS 变量和 Tailwind CSS 类名控制，禁止在组件内硬编码颜色、字号等视觉属性
 - 组件命名遵循 PascalCase，Props 命名使用 camelCase
 - 每个组件文件必须包含完整的 TypeScript 类型声明
 
 **已实现组件**：`PageContainer`, `SidebarMenu`, `AuthButton` 等基础组件
 
-**图表**：`LineChart`, `BarChart`, `PieChart`，基于 AntV G2，统一主题色  
+**图表**：`LineChart`, `BarChart`, `PieChart`，统一主题色
 **布局 Hooks**：`useMenu`, `useLayout`，消费权限数组返回菜单树
 
 #### `shared-workflow` – 工作流引擎（规划中预留）
@@ -281,8 +351,8 @@ react-app → shared-ui → shared-service → shared-utils
 
 #### `apps/react-app` – 组合根
 
-- **技术栈**：React 19 + Zustand + react-router + Ant Design 6 + react-i18next
-- **启动链**：环境校验 → Mock 启动 → 样式注入 → i18n → Router/Store → 挂载
+- **技术栈**：React 19 + Zustand + react-router + shadcn/ui + Tailwind CSS + TanStack Query + react-i18next
+- **启动链**：环境校验 → Mock 启动 → 样式注入 → i18n → QueryClient → Router/Store → 挂载
 - **内部结构**：
 
 | 目录/文件              | 职责                                        |
@@ -301,9 +371,9 @@ react-app → shared-ui → shared-service → shared-utils
 
 1. 环境变量校验
 2. 开发环境动态启动 MSW (`setupMock()`)
-3. 引入 `design-tokens/tokens.css` 和 `virtual:uno.css`
+3. 引入 `design-tokens/tokens.css` 和 Tailwind CSS 基础层
 4. 创建 i18n 实例 (`createReactI18n()`)
-5. 使用 `ConfigProvider` 传入 `antdTheme` 和 `locale`
+5. 创建 TanStack Query `QueryClient` 实例
 6. 初始化 Zustand store、Router
 7. 渲染 React 应用
 
@@ -317,13 +387,26 @@ react-app → shared-ui → shared-service → shared-utils
 
 ### 7.3 数据访问链
 
-`shared-service/modules/` 封装 API → 页面或 store 调用 → 返回 `ApiResponse<T>` → 开发环境 MSW 拦截
+**常规请求链路**：
+
+`shared-service/modules/` 封装 API（通过 `HttpClient` 接口，返回 `Promise<ApiResponse<T>>`）→ TanStack Query 层（`useQuery` / `useMutation`，提供缓存/去重/重试/背景刷新）→ 页面组件消费 → 开发环境 MSW 拦截
+
+**上传请求链路**：
+
+组件调用 → TanStack Query `useMutation` 包装 → `shared-service` 上传 API 调用 → `shared-utils/uploadWithProgress`（基于 XMLHttpRequest，支持进度回调与 abort）→ 开发环境 MSW 拦截
+
+**架构约束**：
+
+- `shared-service` 仅依赖 `HttpClient` 接口，不直接依赖 `ky`
+- `ky` 仅出现在 `shared-utils` 的依赖中，作为 `HttpClient` 的默认适配器实现
+- 上传场景绕过 `ky`，直接使用 XHR 封装，因浏览器 fetch 不支持上传进度回调
+- 禁止在组件中直接调用 `httpClient`，所有数据请求必须通过 TanStack Query 层
 
 ---
 
 ## 8. 国际化方案
 
-- 运行时切换，`ConfigProvider locale` 联动 Ant Design 文案
+- 运行时切换，组件通过 props 或 i18n hook 消费翻译文案
 - 语言包命名空间：`common`, `menu`, `app`
 - 持久化 key `locale`，默认 `zh-CN`
 
@@ -396,20 +479,20 @@ react-app → shared-ui → shared-service → shared-utils
 | 框架     | React                                                                           | 19.2.5                       |
 | 构建     | Vite, @vitejs/plugin-react                                                      | 8.0.10, 6.0.1                |
 | 状态管理 | Zustand                                                                         | ^5.0.13                      |
+| 服务端状态 | TanStack Query (@tanstack/react-query)                                         | ^5.0                         |
 | 路由     | react-router                                                                    | ^7.15.0                      |
-| 组件库   | Ant Design, @ant-design/icons                                                   | 6.3.7, 6.2.2                 |
+| 组件库   | shadcn/ui (Radix UI + CVA + tailwind-merge)                                     | — (CLI 代码生成)             |
+| 图标     | lucide-react                                                                    | ^0.5                         |
+| 样式     | Tailwind CSS, @tailwindcss/vite                                                 | ^4, ^4                       |
 | 国际化   | react-i18next, i18next                                                          | ^15, ^24                     |
-| 样式     | UnoCSS                                                                          | ^0.65                        |
-| 图表     | AntV G2                                                                         | ^5.2                         |
-| 请求     | Axios                                                                           | ^1.7                         |
+| 图表     | Recharts (候选)                                                                 | ^2                           |
+| 请求     | ky                                                                              | ^1.8                         |
 | Mock     | MSW                                                                             | ^2.5                         |
 | 类型定义 | @types/react, @types/react-dom, @types/node                                     | 19.2.14, 19.2.3, 24.12.2     |
 | 测试     | Vitest, @testing-library/react, @testing-library/dom, @testing-library/jest-dom | 4.1.5, 16.3.2, 10.4.1, 6.9.1 |
 | 工作流   | bpmn-js（规划中预留，仓库当前未创建）                                           | —                            |
 
-> **说明**：表中版本为 `pnpm-workspace.yaml` 中 `catalog` 的声明值，实际安装版本以 `pnpm-lock.yaml` 锁定为准。TypeScript (6.0.3)、Vitest (4.1.5)、ESLint (9.39.4)、Sass (1.99.0)、UnoCSS (66.6.8)、jsdom (29.1.0) 通过 `overrides` 全局锁定。
-
-> **说明**：表中版本范围为 `pnpm-workspace.yaml` 中 `catalog` 的声明，实际安装版本以 `pnpm-lock.yaml` 锁定为准。
+> **说明**：表中版本为 `pnpm-workspace.yaml` 中 `catalog` 的声明值，实际安装版本以 `pnpm-lock.yaml` 锁定为准。TypeScript (6.0.3)、Vitest (4.1.5)、ESLint (9.39.4)、Sass (1.99.0)、Tailwind CSS (4.x)、jsdom (29.1.0) 通过 `overrides` 全局锁定。shadcn/ui 不是 npm 包，通过 CLI 将组件源码生成到 `packages/shared-ui/src/components/ui/` 目录中。ky 仅在 `shared-utils` 中作为 `HttpClient` 接口的默认适配器依赖，`shared-service` 不直接依赖 ky。上传进度不依赖 ky，由 `shared-utils` 内部 `uploadWithProgress`（XHR 封装）实现。
 
 所有包当前 `private: true`，不发布 npm，Changesets 仅生成 CHANGELOG。
 
@@ -426,10 +509,11 @@ react-app → shared-ui → shared-service → shared-utils
 
 ## 14. 后端对接策略
 
-- API 封装于 `shared-service/modules/`
+- API 封装于 `shared-service/modules/`，通过 `HttpClient` 接口访问
 - 响应格式 `{ code, msg, data }`
 - 开发环境通过 Vite proxy 转发 `/admin-api`，Mock 环境提供模拟数据
 - 功能对接应通过适配层映射到既有平台契约，不预设固定后端风格
+- 宿主层通过 TanStack Query 消费 API，禁止组件直接调用 `httpClient`
 
 ---
 
@@ -454,12 +538,13 @@ react-app → shared-ui → shared-service → shared-utils
 
 ### 16.2 更换组件库
 
-如果要替换 Ant Design：
+如果要替换 shadcn/ui + Tailwind CSS：
 
 1. 在 `shared-ui` 中重写所有组件适配代码
-2. 更新 `design-tokens` 中的主题导出（如从 `antd-theme.ts` 切换为其他组件库主题配置）
-3. 更新 `shared-i18n` 中的 locale 映射（如从 Ant Design 的 `enUS` 切换为其他库的语言包）
+2. 更新 `design-tokens` 中的主题导出（如从 Tailwind CSS 变量切换为其他组件库主题配置）
+3. 更新 `shared-i18n` 中的 locale 映射（如从 i18next 切换为其他库的语言包方案）
 4. 更新 `apps/react-app` 中的全局配置和启动链
+5. 更新 Vite 配置中的 CSS 插件（移除 `@tailwindcss/vite`，替换为新方案插件）
 
 ### 16.3 切换后端
 
@@ -468,7 +553,8 @@ react-app → shared-ui → shared-service → shared-utils
 1. 保持 `shared-service/types.ts` 中的通用响应格式，或替换为你自己的类型定义
 2. 替换 `shared-service/modules/` 下的 API 实现，保持函数签名不变或按需调整
 3. 同步更新 `shared-service/mock/handlers/` 中的 Mock 处理器以匹配新接口
-4. 如宿主新增运行时变量，先同步 app 级 `.env.example` 与根文档
+4. 如需替换底层 HTTP 库（如从 ky 切换到 ofetch），只需在 `shared-utils` 中新增 `HttpClient` 适配器实现，业务层零感知
+5. 如宿主新增运行时变量，先同步 app 级 `.env.example` 与根文档
 
 ### 16.4 多租户或数据权限扩展
 
@@ -523,6 +609,37 @@ apps:
 - 根 `STATUS.yaml`
 
 ### 18.3 本版主要变更
+
+**v2.1** (2026-06-25)：
+
+- 新增 ADR-008：HTTP 客户端从 axios 迁移到 ky（供应链安全 + 零依赖 + 现代_fetch 封装）
+- 新增 ADR-009：引入 TanStack Query 作为服务端状态管理层
+- §1.3 术语表新增 `HttpClient`、`TanStack Query` 条目
+- §3.2 架构重议触发条件新增 ky 停止维护条件
+- §5.3 依赖检查规则：`shared-service` 禁止直接依赖 `ky`、`axios`，仅通过 `HttpClient` 接口访问
+- §5.4 包间依赖矩阵：`shared-utils` 新增 `ky` 可依赖项；`shared-service` 移除 `axios`，可依赖项改为 `shared-utils, msw`，禁止项新增 `ky, axios`；`apps/react-app` 新增 `@tanstack/react-query`
+- §6.1 `shared-utils` 新增 `HttpClient` 接口抽象（含 `get/post/put/delete/upload` 五个方法）、ky 适配器实现、`uploadWithProgress` 工具函数（XHR 封装）
+- §6.2 `shared-service` 新增 HTTP 访问约束（仅依赖 `HttpClient` 接口）和服务端状态消费说明（通过 TanStack Query 消费，禁止组件直接调用 httpClient）
+- §6.4 宿主技术栈新增 TanStack Query，启动链新增 QueryClient 步骤
+- §7.1 启动链新增"创建 TanStack Query QueryClient 实例"步骤
+- §7.3 数据访问链全面更新：常规请求链路（HttpClient → TanStack Query → 组件）、上传请求链路（XHR 封装）、架构约束
+- §12 技术栈表：`Axios ^1.7` 替换为 `ky ^1.8`，新增 `@tanstack/react-query ^5.0`，补充 ky 与上传场景说明
+
+**v2.0** (2026-06-25)：
+
+- ADR-003 变更：组件库从 Ant Design 6 切换为 shadcn/ui + Tailwind CSS
+- 新增 ADR-007：采用 Tailwind CSS 替代 UnoCSS 作为原子化 CSS 方案
+- §3.2 架构重议触发条件：Ant Design 条件替换为 Radix UI/shadcn/ui，新增 Tailwind CSS 条件
+- §5.3 依赖检查规则：`shared-service` 禁止依赖 `@radix-ui/*`，移除 `@antv/g2`
+- §5.4 包间依赖矩阵：`shared-i18n` 移除 `antd`，`shared-ui` 依赖 `@radix-ui/*` + `tailwindcss`
+- §6.1 `design-tokens` 子路径从 `./antd-theme`, `./uno-preset` 变更为 `./tailwind-preset`
+- §6.1 `shared-i18n` 移除 Ant Design locale 映射，i18n 改为组件直接消费
+- §6.3 `shared-ui` 封装基础从 Ant Design 变更为 shadcn/ui，样式控制从 ConfigProvider 变更为 Tailwind + CSS 变量
+- §6.4 宿主技术栈更新
+- §7.1 启动链移除 ConfigProvider 步骤，CSS 注入从 UnoCSS 变更为 Tailwind
+- §8 国际化方案移除 ConfigProvider locale 联动
+- §12 技术栈与版本管理表全面更新
+- §16.2 模板裁剪指南更新
 
 **v1.2** (2026-05-19)：
 

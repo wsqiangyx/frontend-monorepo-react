@@ -28,7 +28,7 @@ corepack prepare pnpm@10.33.1 --activate
 本仓库有严格的代码规范要求，详见 [`AGENTS.md`](./AGENTS.md)：
 
 - **ESLint**：使用 flat config，基于 `typescript-eslint`，集成 React 插件
-- **Stylelint**：SCSS 标准规范，包含属性排序
+- **Stylelint**：SCSS 标准规范，包含属性排序，与 Tailwind CSS 兼容
 - **Prettier**：统一代码格式（`semi: false`, `singleQuote: true`, `printWidth: 100`）
 - **Commitlint**：提交信息必须遵循 Conventional Commits 格式
 - **TypeScript**：严格模式，`noUnusedLocals: true`，`noUnusedParameters: true`，零编译错误
