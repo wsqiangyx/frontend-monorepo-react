@@ -1,33 +1,31 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { DataPanel, PageContainer, PermissionGate } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
 import { fetchRoles, type RoleRecord } from '@/services/role-service'
+import { roleKeys } from '@/lib/query-keys'
 
 export default function RoleListView() {
   const permissionSet = usePermissionStore((state) => state.permissionSet)
-  const [loading, setLoading] = useState(false)
   const [roles, setRoles] = useState<RoleRecord[]>([])
 
-  useEffect(() => {
-    void (async () => {
-      setLoading(true)
-      try {
-        const result = await fetchRoles()
-        setRoles(result.items)
-      } finally {
-        setLoading(false)
-      }
-    })()
-  }, [])
+  const { isLoading } = useQuery({
+    queryKey: roleKeys.list(),
+    queryFn: async () => {
+      const result = await fetchRoles()
+      setRoles(result.items)
+      return result
+    },
+  })
 
   return (
     <PageContainer title="角色管理">
       <DataPanel
         title="角色列表"
         description="聚焦角色职责、权限规模与使用人数。"
-        loading={loading}
+        loading={isLoading}
         loadingText="正在加载角色数据..."
-        empty={!loading && roles.length === 0}
+        empty={!isLoading && roles.length === 0}
         emptyContent={<div className="page-empty">暂无角色数据。</div>}
         toolbar={
           <PermissionGate permissionSet={permissionSet} code="system:role:create">

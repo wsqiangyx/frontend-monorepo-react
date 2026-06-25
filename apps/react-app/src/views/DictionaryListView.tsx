@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { DataPanel, PageContainer } from '@repo/shared-ui'
 import {
   fetchDictionaryItems,
@@ -6,39 +7,40 @@ import {
   type DictionaryItemRecord,
   type DictionaryTypeRecord,
 } from '@/services/dictionary-service'
+import { dictionaryKeys } from '@/lib/query-keys'
 
 export default function DictionaryListView() {
-  const [typeLoading, setTypeLoading] = useState(false)
-  const [itemLoading, setItemLoading] = useState(false)
   const [types, setTypes] = useState<DictionaryTypeRecord[]>([])
   const [items, setItems] = useState<DictionaryItemRecord[]>([])
   const [activeType, setActiveType] = useState('')
 
+  const { isLoading: typeLoading } = useQuery({
+    queryKey: dictionaryKeys.list(),
+    queryFn: async () => {
+      const result = await fetchDictionaryTypes()
+      setTypes(result.items)
+      if (result.items[0]) {
+        const itemResult = await fetchDictionaryItems(result.items[0].type)
+        setItems(itemResult)
+        setActiveType(result.items[0].type)
+      }
+      return result
+    },
+  })
+
+  const { isLoading: itemLoading } = useQuery({
+    queryKey: dictionaryKeys.list({ activeType }),
+    queryFn: async () => {
+      const result = await fetchDictionaryItems(activeType)
+      setItems(result)
+      return result
+    },
+    enabled: !!activeType,
+  })
+
   async function loadDictionaryItems(type: string) {
     setActiveType(type)
-    setItemLoading(true)
-    try {
-      const result = await fetchDictionaryItems(type)
-      setItems(result)
-    } finally {
-      setItemLoading(false)
-    }
   }
-
-  useEffect(() => {
-    void (async () => {
-      setTypeLoading(true)
-      try {
-        const result = await fetchDictionaryTypes()
-        setTypes(result.items)
-        if (result.items[0]) {
-          await loadDictionaryItems(result.items[0].type)
-        }
-      } finally {
-        setTypeLoading(false)
-      }
-    })()
-  }, [])
 
   return (
     <PageContainer title="字典管理">

@@ -1,81 +1,58 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { DataPanel, FilterBar, PageContainer, PermissionGate, StatusTag } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
-import { fetchMenus, type MenuRecord } from '@/services/menu-service'
+import { fetchMenus } from '@/services/menu-service'
+import { menuKeys } from '@/lib/query-keys'
 
 export default function MenuListView() {
   const permissionSet = usePermissionStore((state) => state.permissionSet)
   const [keyword, setKeyword] = useState('')
   const [typeFilter, setTypeFilter] = useState<'directory' | 'route' | ''>('')
-  const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
   const pageSize = 10
-  const [menus, setMenus] = useState<MenuRecord[]>([])
-  const [total, setTotal] = useState(0)
-  const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
-  async function loadMenus(
-    opts: { keyword?: string; type?: 'directory' | 'route'; page?: number; reset?: boolean } = {},
-  ) {
-    const kw = opts.keyword ?? keyword
-    const tp = opts.type ?? typeFilter
-    const pg = opts.page ?? page
-    if (opts.reset) {
-      setKeyword('')
-      setTypeFilter('')
-      setPage(1)
-    }
-    setLoading(true)
-    try {
-      const result = await fetchMenus({
-        keyword: kw.trim() || undefined,
-        type: tp || undefined,
-        page: opts.reset ? 1 : pg,
+  const queryKey = menuKeys.list({
+    keyword: keyword.trim() || undefined,
+    type: typeFilter || undefined,
+    page,
+    pageSize,
+  })
+
+  const { data: result, isLoading } = useQuery({
+    queryKey,
+    queryFn: () =>
+      fetchMenus({
+        keyword: keyword.trim() || undefined,
+        type: typeFilter || undefined,
+        page,
         pageSize,
-      })
-      setMenus(result.items)
-      setTotal(result.total)
-    } finally {
-      setLoading(false)
-    }
-  }
+      }),
+  })
+
+  const menus = result?.items ?? []
+  const total = result?.total ?? 0
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   function goPage(p: number) {
     if (p < 1 || p > totalPages) return
     setPage(p)
-    void loadMenus({ keyword, type: typeFilter, page: p })
   }
 
-  useEffect(() => {
-    let cancelled = false
-
-    async function bootstrap() {
-      setLoading(true)
-      try {
-        const result = await fetchMenus({ page: 1, pageSize: 10 })
-        if (cancelled) return
-        setMenus(result.items)
-        setTotal(result.total)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    void bootstrap()
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  function resetFilters() {
+    setKeyword('')
+    setTypeFilter('')
+    setPage(1)
+  }
 
   return (
     <PageContainer title="菜单管理">
       <DataPanel
         title="菜单列表"
         description="展示平台菜单定义，支持关键字与类型筛选。"
-        loading={loading}
+        loading={isLoading}
         loadingText="正在加载菜单数据..."
-        empty={!loading && menus.length === 0}
+        empty={!isLoading && menus.length === 0}
         emptyContent={<div className="page-empty">未查询到匹配菜单。</div>}
         toolbar={
           <PermissionGate permissionSet={permissionSet} code="system:menu:create">
@@ -88,18 +65,10 @@ export default function MenuListView() {
         <FilterBar
           actions={
             <div className="page-filter-actions">
-              <button
-                type="button"
-                className="page-secondary-button"
-                onClick={() => void loadMenus({ keyword: '', type: '', reset: true })}
-              >
+              <button type="button" className="page-secondary-button" onClick={resetFilters}>
                 重置
               </button>
-              <button
-                type="button"
-                className="page-primary-button"
-                onClick={() => void loadMenus()}
-              >
+              <button type="button" className="page-primary-button" onClick={() => setPage(1)}>
                 查询
               </button>
             </div>
@@ -114,7 +83,7 @@ export default function MenuListView() {
                 onChange={(event) => setKeyword(event.target.value)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter') {
-                    void loadMenus()
+                    setPage(1)
                   }
                 }}
                 placeholder="搜索标题 / 键 / 路径"
