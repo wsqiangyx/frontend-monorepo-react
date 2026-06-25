@@ -5,8 +5,8 @@
 //
 // 职责：
 //   1. 通过 ThemeContext 向子组件提供 ThemeSnapshot（当前主题快照）
-//   2. 通过 Ant Design ConfigProvider 注入 antd 主题配置
-//   3. 监听 themeName/mode 变化，调用 applyThemeToDocument 更新 CSS 变量
+//   2. 监听 themeName/mode 变化，调用 applyThemeToDocument 更新 CSS 变量
+//   3. 同步 Tailwind darkMode class 到 <html> 元素
 //
 // 使用方式：
 //   <ThemeProvider themeName="default" mode="light">
@@ -18,7 +18,6 @@
 
 import type { ReactNode } from 'react'
 import { createContext, useContext, useEffect, useMemo } from 'react'
-import { ConfigProvider, theme as antdThemeAlgorithms } from 'antd'
 import {
   applyThemeToDocument,
   resolveTheme,
@@ -27,7 +26,6 @@ import {
   type ThemePreference,
   type ThemeSnapshot,
 } from '@repo/design-tokens/theme'
-import { createAntdTheme } from '@repo/design-tokens/theme/antd'
 
 const ThemeContext = createContext<ThemeSnapshot | null>(null)
 
@@ -40,14 +38,6 @@ export interface ThemeProviderProps {
 
 export function ThemeProvider({ themeName, mode, preference, children }: ThemeProviderProps) {
   const snapshot = useMemo(() => resolveTheme(themeName, mode), [mode, themeName])
-  const antdTheme = useMemo(
-    () => ({
-      ...createAntdTheme(snapshot),
-      algorithm:
-        mode === 'dark' ? antdThemeAlgorithms.darkAlgorithm : antdThemeAlgorithms.defaultAlgorithm,
-    }),
-    [mode, snapshot],
-  )
 
   useEffect(() => {
     applyThemeToDocument({
@@ -57,11 +47,17 @@ export function ThemeProvider({ themeName, mode, preference, children }: ThemePr
     })
   }, [mode, preference, themeName])
 
-  return (
-    <ThemeContext.Provider value={snapshot}>
-      <ConfigProvider theme={antdTheme}>{children}</ConfigProvider>
-    </ThemeContext.Provider>
-  )
+  useEffect(() => {
+    // 同步 Tailwind darkMode class 到 <html> 元素
+    const html = document.documentElement
+    if (mode === 'dark') {
+      html.classList.add('dark')
+    } else {
+      html.classList.remove('dark')
+    }
+  }, [mode])
+
+  return <ThemeContext.Provider value={snapshot}>{children}</ThemeContext.Provider>
 }
 
 export function useThemeSnapshot() {

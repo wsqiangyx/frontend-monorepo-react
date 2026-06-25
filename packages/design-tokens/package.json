@@ -18,9 +18,9 @@
       "types": "./dist/theme/index.d.ts",
       "default": "./dist/theme/index.js"
     },
-    "./theme/antd": {
-      "types": "./dist/theme/antd.d.ts",
-      "default": "./dist/theme/antd.js"
+    "./tailwind-preset": {
+      "types": "./dist/theme/tailwind.d.ts",
+      "default": "./dist/theme/tailwind.js"
     }
   },
   "scripts": {
