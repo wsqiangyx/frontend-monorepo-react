@@ -1,6 +1,6 @@
 # frontend-monorepo
 
-面向团队复用的 React 中后台前端平台脚手架 Monorepo Git 模板仓库。以 React 为正式宿主，提供 React 应用壳、共享主题与 i18n 运行时、统一静态资源层、MSW/mock 基线，以及可复用的 Vite / Vitest / TypeScript 工程底座。
+面向团队复用的 React 中后台前端平台脚手架 Monorepo Git 模板仓库。以 React 为正式宿主，提供 React 应用壳、共享主题与 i18n 运行时、统一静态资源层、MSW/mock 基线，以及可复用的 Vite / Vitest / TypeScript 工程底座。UI 层基于 shadcn/ui + Tailwind CSS，组件源码可控、轻量可定制。
 
 正式设计主入口：[`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`](./docs/总体设计/React%20中后台前端平台%20Monorepo%20架构设计方案.md)。
 
@@ -15,15 +15,15 @@
 
 这是一个以 React 为正式宿主应用的前端 monorepo 基线仓库，不是单应用仓库，也不是通用前端空白模板。
 
-- `apps/react-app`：React 19 + Ant Design 6 应用壳
+- `apps/react-app`：React 19 + shadcn/ui + Tailwind CSS 应用壳
 - `packages/shared-utils`：通用工具（格式化、校验、HTTP 客户端、日志）
 - `packages/shared-i18n`：国际化运行时与语言包
 - `packages/shared`：路由定义、UI 文案契约、向后兼容重导出
 - `packages/shared-service`：平台共享内核，承载初始化、认证、菜单、权限、多标签页与平台请求契约
-- `packages/design-tokens`：设计令牌、CSS 变量、主题快照、Ant Design 主题适配、共享主题运行时
+- `packages/design-tokens`：设计令牌、CSS 变量、主题快照、Tailwind CSS 主题适配、共享主题运行时
 - `packages/resources`：统一静态资源、图标、SVG、SVG Sprite 与资源索引
 - `packages/mock`：MSW handlers、browser worker、Node server
-- `packages/shared-ui`：React 共享主题 Provider 与公共业务壳组件
+- `packages/shared-ui`：React 共享主题 Provider 与公共业务壳组件（基于 shadcn/ui）
 
 当前工作区与正式基线：
 

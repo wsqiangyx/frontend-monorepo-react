@@ -1,6 +1,7 @@
 # Phase 0 基础能力实施计划
 
 > 制定日期：2026-05-15
+> 最近修订：2026-06-25
 > 适用阶段：Phase 0
 > 上游设计：`docs/总体设计/详细设计/Phase0-基础能力详细设计.md`
 > 文档性质：面向未来执行的实施计划，不记录已完成事项或复盘
@@ -58,10 +59,11 @@
 
 ### 任务 2：主题与共享 UI
 
-- 在 `packages/design-tokens` 落地主题注册表、主题运行时、CSS 变量生成和 Ant Design 主题适配
+- 在 `packages/design-tokens` 落地主题注册表、主题运行时、CSS 变量生成和 Tailwind CSS 主题配置
 - 在 `packages/shared` 收敛跨层主题文案契约 `@repo/shared/ui-contract`
-- 在 `packages/shared-ui` 落地 `ThemeProvider`、首批业务壳组件和显式样式子路径 `./style.css`
+- 在 `packages/shared-ui` 落地 `ThemeProvider`（基于 CSS 变量 + Tailwind dark 变体）、shadcn/ui 组件基线和显式样式子路径 `./style.css`
 - 在 `apps/react-app` 中接入主题 store、`theme-init.js` 预注入、`ThemeProvider` 和示例页面替换
+- 配置 Tailwind CSS（`@tailwindcss/vite` 插件或 PostCSS 方案）、移除 UnoCSS 依赖
 - 同步根级脚本、测试聚合和主文档约束
 
 验证命令：

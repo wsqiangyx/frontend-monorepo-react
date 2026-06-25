@@ -1,6 +1,7 @@
 # Phase 0 基础能力详细设计
 
 > 制定日期：2026-05-15
+> 最近修订：2026-06-25
 > 适用阶段：Phase 0
 > 文档性质：基础能力阶段详细设计
 > 上游设计：`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`
@@ -101,16 +102,16 @@ packages/
 
 ### 4.2 总体方案
 
-采用“主题内核 + React 共享组件包 + app 接入层”的结构：
+采用”主题内核 + React 共享组件包 + app 接入层”的结构：
 
 - `packages/design-tokens`
-  - 管理主题注册表、语义 token、主题快照、CSS 变量、Ant Design 主题映射
+  - 管理主题注册表、语义 token、主题快照、CSS 变量、Tailwind CSS 主题配置
 - `packages/shared-ui`
-  - 封装 React 公共组件
+  - 封装 React 公共组件（基于 shadcn/ui）
   - 不保存主题状态，只消费主题结果
 - `apps/react-app`
   - 持有 `themeName`、`preference`、`resolvedMode`
-  - 通过 Provider 注入主题上下文与框架主题
+  - 通过 Provider 注入主题上下文
 
 正式原则：
 
@@ -122,10 +123,12 @@ packages/
 
 - `ThemePreference = 'system' | 'light' | 'dark'`
 - 主题运行时优先收敛到 `@repo/design-tokens/theme`
-- `@repo/design-tokens` 根入口承载 token、CSS 变量和主题适配
+- `@repo/design-tokens` 根入口承载 token、CSS 变量和 Tailwind 主题适配
 - 共享 UI 样式只能由 React app 在 `bootstrap.tsx` 中显式引入 `@repo/shared-ui/style.css`
 - `main -> bootstrap -> App` 分层不得破坏
 - `index.html` 必须在 `main.tsx` 前加载 `/theme-init.js`
+- 所有组件样式通过 CSS 变量和 Tailwind CSS 类名控制，禁止硬编码颜色、字号等视觉属性
+- shadcn/ui 组件源码通过 CLI 生成到 `packages/shared-ui/src/components/ui/`，可完全自定义
 
 ## 5. 0.3 国际化
 

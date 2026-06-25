@@ -29,7 +29,7 @@
 
 - 一个正式应用壳：`apps/react-app`
 - 八个正式共享包：`packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock`、`packages/shared-ui`
-- 一套统一工具链基线：TypeScript、Vite、Vitest、ESLint、Stylelint、Prettier、Husky、Commitlint
+- 一套统一工具链基线：TypeScript、Vite、Vitest、ESLint、Stylelint、Prettier、Husky、Commitlint、Tailwind CSS
 
 当前工作区现状补充说明：
 
@@ -108,7 +108,7 @@
 当前 React app 层面的要求：
 
 - 保留框架插件
-- 保留 UnoCSS 插件
+- 保留 Tailwind CSS 插件（`@tailwindcss/vite`）
 - 保留 `@` alias
 - 保留 workspace 源码 alias
 - 保持 `serve -> sourceAlias`、`build -> buildAlias`、`vitest -> sourceAlias` 的分层契约
@@ -133,14 +133,14 @@
 
 - 语义 token 定义
 - CSS 变量生成
-- Ant Design 主题映射
+- Tailwind CSS 主题配置
 - 共享主题运行时：theme preference、resolved mode、系统主题探测、持久化 key 与首屏预注入工具
 
 这些边界应保持稳定：
 
 - CSS 变量必须继续输出为 `kebab-case`
-- `./css`、`./theme`、`./theme/antd` 这些正式导出路径除非明确迁移，否则不要随意破坏
-- `@repo/design-tokens` 根入口优先承载 token、CSS 与框架主题适配；主题运行时能力优先收敛到 `@repo/design-tokens/theme`
+- `./css`、`./theme`、`./tailwind-preset` 这些正式导出路径除非明确迁移，否则不要随意破坏
+- `@repo/design-tokens` 根入口优先承载 token、CSS 与 Tailwind 主题适配；主题运行时能力优先收敛到 `@repo/design-tokens/theme`
 - 不要在 app 内复制 token 逻辑
 - 当前正式主题偏好语义是 `ThemePreference = 'system' | 'light' | 'dark'`
 
@@ -240,7 +240,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 相关约束：
 
-- `packages/shared-service` 保持框架无关，不直接依赖 React、Ant Design
+- `packages/shared-service` 保持框架无关，不直接依赖 React、Ant Design、Radix UI
 - `packages/shared-service` 不直接操作 DOM，不承接浏览器副作用
 - `packages/shared` 继续承载通用能力，不要把后台平台语义重新塞回 `shared`
 - app 可以维护各自的 store、provider、guard 与页面编排，但不要复制平台共享规则
@@ -279,7 +279,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 ### `apps/react-app`
 
-- React + Ant Design 应用壳
+- React + shadcn/ui + Tailwind CSS 应用壳
 - 主题通过 `@repo/shared-ui` 的 `ThemeProvider` 接入
 - app 内主题状态通过 Zustand store 管理
 
@@ -322,12 +322,13 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - 颜色、间距、阴影、排版、圆角、断点
 - 主题快照注册与 light/dark 解析
 - CSS 变量生成器
-- Ant Design 主题适配器
+- Tailwind CSS 主题适配器
 
 ### `packages/shared-ui`
 
 - React 共享主题 Provider
-- React 公共业务壳组件
+- React 公共业务壳组件（基于 shadcn/ui）
+- shadcn/ui 组件源码（通过 CLI 生成到 `src/components/ui/`）
 - 仅承接框架内主题接入与共享 UI 壳，不承接业务状态
 
 ### `packages/resources`
