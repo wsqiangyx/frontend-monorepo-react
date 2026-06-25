@@ -1,11 +1,11 @@
 // ============================================================================
-// @repo/shared-utils — Axios HTTP 客户端封装
+// @repo/shared-utils — ky HTTP 客户端封装
 // ============================================================================
-// 框架无关的 HTTP 客户端，基于 axios 封装。
+// 框架无关的 HTTP 客户端，基于 ky 封装。
 //
 // 核心设计：
-//   请求拦截器 — 自动从 getToken() 获取 token 并注入 Authorization 头
-//   响应拦截器 — 网络异常、超时、平台业务错误统一转化为 ApiError
+//   请求钩子 — 自动从 getToken() 获取 token 并注入 Authorization 头
+//   响应钩子 — 网络异常、超时、平台业务错误统一转化为 ApiError
 //   unwrap 层 — 解包 ApiResponse<T>.data，消费者直接拿到 T
 //
 // 使用方式：
@@ -18,7 +18,7 @@
 //   消费者只需 catch ApiError 即可覆盖所有异常场景。
 // ============================================================================
 
-import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
+import ky, { type KyInstance, type Options as KyOptions } from 'ky'
 import type { HttpClientConfig } from './types'
 import { ApiError } from './types'
 import type { ApiResponse } from '../types'
@@ -37,57 +37,72 @@ export interface HttpClient {
 export function createHttpClient(config: HttpClientConfig): HttpClient {
   const { baseURL, timeout = 10_000, getToken = () => null } = config
 
-  const client: AxiosInstance = axios.create({
-    baseURL,
+  const client: KyInstance = ky.create({
+    prefixUrl: baseURL.replace(/\/$/, ''),
     timeout,
-  })
+    hooks: {
+      beforeRequest: [
+        (request) => {
+          const token = getToken()
+          if (token) {
+            request.headers.set('Authorization', `Bearer ${token}`)
+          }
+        },
+      ],
+      afterResponse: [
+        async (_request, _options, response) => {
+          if (!response.ok) {
+            let code = 'NETWORK_ERROR'
+            let message = `HTTP ${response.status}`
 
-  client.interceptors.request.use((req) => {
-    const token = getToken()
-    if (token) {
-      req.headers.Authorization = `Bearer ${token}`
-    }
-    return req
-  })
+            try {
+              const body = (await response.json()) as ApiResponse<unknown>
+              code = body.code ?? 'NETWORK_ERROR'
+              message = body.message ?? message
+            } catch {
+              // 非 JSON 响应，使用默认值
+            }
 
-  client.interceptors.response.use(
-    (res: AxiosResponse) => res,
-    (error) => {
-      if (axios.isAxiosError(error)) {
-        const status = error.response?.status ?? 0
-        const body = error.response?.data as ApiResponse<unknown> | undefined
-        const code = body?.code ?? 'NETWORK_ERROR'
-        const message = body?.message ?? error.message
-        throw new ApiError(code, message, status)
-      }
-      throw error
+            throw new ApiError(code, message, response.status)
+          }
+        },
+      ],
     },
-  )
+  })
 
-  async function unwrap<T>(promise: Promise<AxiosResponse>): Promise<T> {
-    const res = await promise
-    const body = res.data as ApiResponse<T>
+  async function unwrap<T>(promise: Promise<Response>): Promise<T> {
+    const response = await promise
+    const body = (await response.json()) as ApiResponse<T>
     if (!body.success) {
-      throw new ApiError(body.code, body.message, res.status)
+      throw new ApiError(body.code, body.message, response.status)
     }
     return body.data
   }
 
+  // ky 的 prefixUrl 要求后续路径不以 / 开头，统一去除
+  function stripSlash(path: string): string {
+    return path.replace(/^\//, '')
+  }
+
   return {
     get<T>(url: string, params?: Record<string, unknown>): Promise<T> {
-      return unwrap<T>(client.get(url, { params }))
+      const options: KyOptions = {}
+      if (params) {
+        options.searchParams = params as Record<string, string | number | boolean>
+      }
+      return unwrap<T>(client.get(stripSlash(url), options))
     },
     post<T>(url: string, data?: unknown): Promise<T> {
-      return unwrap<T>(client.post(url, data))
+      return unwrap<T>(client.post(stripSlash(url), { json: data }))
     },
     put<T>(url: string, data?: unknown): Promise<T> {
-      return unwrap<T>(client.put(url, data))
+      return unwrap<T>(client.put(stripSlash(url), { json: data }))
     },
     patch<T>(url: string, data?: unknown): Promise<T> {
-      return unwrap<T>(client.patch(url, data))
+      return unwrap<T>(client.patch(stripSlash(url), { json: data }))
     },
     delete<T>(url: string): Promise<T> {
-      return unwrap<T>(client.delete(url))
+      return unwrap<T>(client.delete(stripSlash(url)))
     },
   }
 }

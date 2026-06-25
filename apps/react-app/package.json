@@ -13,13 +13,14 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
-    "@ant-design/icons": "catalog:",
     "@repo/shared-service": "workspace:*",
     "@repo/resources": "workspace:*",
     "@repo/shared": "workspace:*",
     "@repo/shared-ui": "workspace:*",
     "@repo/design-tokens": "workspace:*",
-    "antd": "catalog:",
+    "@tanstack/react-query": "catalog:",
+    "ky": "catalog:",
+    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router-dom": "catalog:",

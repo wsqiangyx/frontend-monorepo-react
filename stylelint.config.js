@@ -28,9 +28,9 @@ export default {
       true,
       {
         ignoreAtRules: [
-          'apply', // UnoCSS/Tailwind 的 @apply 指令
-          'screen', // UnoCSS/Tailwind 的 @screen 响应式断点
-          'layer', // CSS @layer 或 UnoCSS 的层级指令
+          'apply', // Tailwind CSS 的 @apply 指令
+          'screen', // Tailwind CSS 的 @screen 响应式断点
+          'layer', // CSS @layer 或 Tailwind CSS 的层级指令
         ],
       },
     ],
