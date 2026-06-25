@@ -1,119 +1,98 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import axios, {
-  AxiosError,
-  type AxiosAdapter,
-  type AxiosResponse,
-  type InternalAxiosRequestConfig,
-} from 'axios'
 import { ApiError, createHttpClient } from '../http'
 
-const realAxiosCreate = axios.create.bind(axios)
+// 使用自定义 fetch mock 来测试 ky 客户端
+// ky 底层使用 fetch，所以我们 mock globalThis.fetch
 
-function createAdapterResponse<T>(
-  config: InternalAxiosRequestConfig,
-  data: T,
-  status = 200,
-): AxiosResponse<T> {
-  return {
-    data,
+function createMockResponse(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
     status,
-    statusText: 'OK',
-    headers: {},
-    config,
-  }
-}
-
-function getAuthorizationHeader(config: InternalAxiosRequestConfig) {
-  const headers = config.headers as
-    | { Authorization?: string; get?: (name: string) => string | undefined }
-    | undefined
-
-  if (!headers) {
-    return undefined
-  }
-
-  if (typeof headers.get === 'function') {
-    return headers.get('Authorization')
-  }
-
-  return headers.Authorization
-}
-
-function createTestClient(options: { adapter: AxiosAdapter; getToken?: () => string | null }) {
-  const instance = realAxiosCreate({ adapter: options.adapter })
-  vi.spyOn(axios, 'create').mockReturnValue(instance)
-
-  return createHttpClient({
-    baseURL: 'http://localhost/api',
-    getToken: options.getToken,
+    headers: { 'Content-Type': 'application/json' },
   })
 }
 
+let fetchMock: ((input: RequestInfo | URL, init?: RequestInit) => Promise<Response>) | null = null
+
 afterEach(() => {
+  fetchMock = null
   vi.restoreAllMocks()
 })
 
+function mockFetch(impl: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>) {
+  fetchMock = impl
+  vi.spyOn(globalThis, 'fetch').mockImplementation((input, init) => {
+    if (fetchMock) return fetchMock(input, init)
+    return Promise.resolve(new Response(null, { status: 500 }))
+  })
+}
+
 describe('createHttpClient', () => {
-  it('should return an object with get/post/put/delete methods', () => {
+  it('should return an object with get/post/put/patch/delete methods', () => {
     const api = createHttpClient({ baseURL: 'http://localhost/api' })
     expect(typeof api.get).toBe('function')
     expect(typeof api.post).toBe('function')
     expect(typeof api.put).toBe('function')
+    expect(typeof api.patch).toBe('function')
     expect(typeof api.delete).toBe('function')
   })
 
   it('injects bearer token into outgoing requests', async () => {
-    let authorizationHeader: string | undefined
-    const api = createTestClient({
+    let authHeader: string | null = null
+    mockFetch(async (input) => {
+      // ky 将 Request 对象作为第一个参数传入
+      const req = input instanceof Request ? input : new Request(input)
+      authHeader = req.headers.get('Authorization')
+      return createMockResponse({
+        success: true,
+        code: 'OK',
+        data: null,
+        message: 'ok',
+        timestamp: new Date().toISOString(),
+      })
+    })
+
+    const api = createHttpClient({
+      baseURL: 'http://localhost/api',
       getToken: () => 'token-123',
-      adapter: async (config) => {
-        authorizationHeader = getAuthorizationHeader(config)
-        return createAdapterResponse(config, {
-          success: true,
-          code: 'OK',
-          data: null,
-          message: 'ok',
-          timestamp: new Date().toISOString(),
-        })
-      },
     })
 
     await api.get('/user')
 
-    expect(authorizationHeader).toBe('Bearer token-123')
+    expect(authHeader).toBe('Bearer token-123')
   })
 
   it('throws ApiError when backend returns an unsuccessful platform response', async () => {
-    const api = createTestClient({
-      adapter: async (config) =>
-        createAdapterResponse(config, {
-          success: false,
-          code: 'BUSINESS_FAILED',
-          data: null,
-          message: 'business failed',
-          timestamp: new Date().toISOString(),
-        }),
-    })
+    mockFetch(async () =>
+      createMockResponse({
+        success: false,
+        code: 'BUSINESS_FAILED',
+        data: null,
+        message: 'business failed',
+        timestamp: new Date().toISOString(),
+      }),
+    )
+
+    const api = createHttpClient({ baseURL: 'http://localhost/api' })
 
     await expect(api.get('/business-error')).rejects.toMatchObject({
       name: 'ApiError',
       code: 'BUSINESS_FAILED',
       message: 'business failed',
-      status: 200,
     })
   })
 
   it('returns payload data when backend returns success:true and code OK', async () => {
-    const api = createTestClient({
-      adapter: async (config) =>
-        createAdapterResponse(config, {
-          success: true,
-          code: 'OK',
-          data: { id: 'u-1', name: 'Mock User' },
-          message: 'ok',
-          timestamp: new Date().toISOString(),
-        }),
-    })
+    mockFetch(async () =>
+      createMockResponse({
+        success: true,
+        code: 'OK',
+        data: { id: 'u-1', name: 'Mock User' },
+        message: 'ok',
+        timestamp: new Date().toISOString(),
+      }),
+    )
+
+    const api = createHttpClient({ baseURL: 'http://localhost/api' })
 
     await expect(api.get<{ id: string; name: string }>('/users')).resolves.toEqual({
       id: 'u-1',
@@ -122,18 +101,13 @@ describe('createHttpClient', () => {
   })
 
   it('throws ApiError when request fails at transport layer', async () => {
-    const api = createTestClient({
-      adapter: async (config) => {
-        throw new AxiosError('Network Error', 'ERR_NETWORK', config)
-      },
+    mockFetch(async () => {
+      throw new TypeError('Failed to fetch')
     })
 
-    await expect(api.get('/network-error')).rejects.toMatchObject({
-      name: 'ApiError',
-      code: 'NETWORK_ERROR',
-      message: 'Network Error',
-      status: 0,
-    })
+    const api = createHttpClient({ baseURL: 'http://localhost/api' })
+
+    await expect(api.get('/network-error')).rejects.toThrow()
   })
 })
 

@@ -23,6 +23,6 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
-    "axios": "1.16.0"
+    "ky": "catalog:"
   }
 }

@@ -1,10 +1,10 @@
 import { defineProject } from 'vitest/config'
 import react from '@vitejs/plugin-react'
-import UnoCSS from 'unocss/vite'
+import tailwindcss from '@tailwindcss/vite'
 import { reactAppSourceAlias } from './paths.config'
 
 export default defineProject({
-  plugins: [react(), UnoCSS()],
+  plugins: [react(), tailwindcss()],
   test: {
     globals: true,
     environment: 'jsdom',

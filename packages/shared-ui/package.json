@@ -28,7 +28,6 @@
     "@repo/shared-service": "workspace:*",
     "@repo/shared": "workspace:*",
     "@repo/design-tokens": "workspace:*",
-    "antd": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
