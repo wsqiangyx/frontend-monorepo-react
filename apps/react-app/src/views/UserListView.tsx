@@ -1,60 +1,30 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { DataPanel, FilterBar, PageContainer, PermissionGate, StatusTag } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
 import { fetchUsers, type UserRecord } from '@/services/user-service'
+import { userKeys } from '@/lib/query-keys'
 
 export default function UserListView() {
   const permissionSet = usePermissionStore((state) => state.permissionSet)
   const [keyword, setKeyword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [users, setUsers] = useState<UserRecord[]>([])
-  const [total, setTotal] = useState(0)
 
-  async function loadUsers(nextKeyword = keyword) {
-    setLoading(true)
-    try {
-      const result = await fetchUsers({ keyword: nextKeyword || undefined, page: 1, pageSize: 10 })
-      setUsers(result.items)
-      setTotal(result.total)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: result, isLoading } = useQuery({
+    queryKey: userKeys.list({ keyword: keyword || undefined, page: 1, pageSize: 10 }),
+    queryFn: () => fetchUsers({ keyword: keyword || undefined, page: 1, pageSize: 10 }),
+  })
 
-  useEffect(() => {
-    let cancelled = false
-
-    async function bootstrapUsers() {
-      setLoading(true)
-      try {
-        const result = await fetchUsers({ page: 1, pageSize: 10 })
-        if (cancelled) {
-          return
-        }
-        setUsers(result.items)
-        setTotal(result.total)
-      } finally {
-        if (!cancelled) {
-          setLoading(false)
-        }
-      }
-    }
-
-    void bootstrapUsers()
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const users = result?.items ?? []
+  const total = result?.total ?? 0
 
   return (
     <PageContainer title="用户管理">
       <DataPanel
         title="用户列表"
         description="基于平台 Mock 契约演示列表、筛选与权限按钮控制。"
-        loading={loading}
+        loading={isLoading}
         loadingText="正在加载用户数据..."
-        empty={!loading && users.length === 0}
+        empty={!isLoading && users.length === 0}
         emptyContent={<div className="page-empty">未查询到匹配用户。</div>}
         toolbar={
           <PermissionGate permissionSet={permissionSet} code="system:user:create">
@@ -74,13 +44,6 @@ export default function UserListView() {
               >
                 重置
               </button>
-              <button
-                type="button"
-                className="page-primary-button"
-                onClick={() => void loadUsers()}
-              >
-                查询
-              </button>
             </div>
           }
         >
@@ -90,11 +53,6 @@ export default function UserListView() {
               className="page-filter-input"
               value={keyword}
               onChange={(event) => setKeyword(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  void loadUsers()
-                }
-              }}
               placeholder="搜索用户名 / 昵称 / 邮箱"
             />
           </label>
@@ -111,7 +69,7 @@ export default function UserListView() {
             <span>状态</span>
             <span>最近登录</span>
           </div>
-          {users.map((item) => (
+          {users.map((item: UserRecord) => (
             <div key={item.id} className="data-table__row">
               <span>{item.username}</span>
               <span>{item.displayName}</span>

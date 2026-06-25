@@ -1,30 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { DataPanel, PageContainer } from '@repo/shared-ui'
-import { fetchSystemMeta, type SystemMetaRecord } from '@/services/system-meta-service'
+import { fetchSystemMeta } from '@/services/system-meta-service'
+import { systemMetaKeys } from '@/lib/query-keys'
 
 export default function SystemMetaView() {
-  const [loading, setLoading] = useState(false)
-  const [meta, setMeta] = useState<SystemMetaRecord | null>(null)
-
-  useEffect(() => {
-    void (async () => {
-      setLoading(true)
-      try {
-        setMeta(await fetchSystemMeta())
-      } finally {
-        setLoading(false)
-      }
-    })()
-  }, [])
+  const { data: meta, isLoading } = useQuery({
+    queryKey: systemMetaKeys.detail(),
+    queryFn: () => fetchSystemMeta(),
+  })
 
   return (
     <PageContainer title="系统元信息">
       <DataPanel
         title="平台元信息"
         description="当前仍处于 Mock 驱动阶段，用于验证系统信息展示契约。"
-        loading={loading}
+        loading={isLoading}
         loadingText="正在加载系统元信息..."
-        empty={!loading && !meta}
+        empty={!isLoading && !meta}
         emptyContent={<div className="page-empty">暂无系统元信息。</div>}
       >
         {meta ? (

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { PageContainer, MetricCard, PermissionGate } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
 import { createHttpClient } from '@repo/shared/http'
+import { dashboardKeys } from '@/lib/query-keys'
 
 interface DashboardSummary {
   totalUsers?: number
@@ -15,14 +16,14 @@ interface DashboardSummary {
 const api = createHttpClient({ baseURL: '/api' })
 
 export default function DashboardView() {
-  const [summary, setSummary] = useState<DashboardSummary | null>(null)
   const permissionSet = usePermissionStore((s) => s.permissionSet)
 
-  useEffect(() => {
-    api.get<DashboardSummary>('/dashboard/summary').then(setSummary)
-  }, [])
+  const { data: summary, isLoading } = useQuery({
+    queryKey: dashboardKeys.summary(),
+    queryFn: () => api.get<DashboardSummary>('/dashboard/summary'),
+  })
 
-  if (!summary) {
+  if (isLoading || !summary) {
     return <PageContainer title="Dashboard">Loading...</PageContainer>
   }
 
