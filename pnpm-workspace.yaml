@@ -15,9 +15,6 @@ catalog:
 
   # —— UI 组件库 ——
   # shadcn/ui 通过 CLI 代码生成，不通过 catalog 声明
-  # antd 仍被 screen-designer (experimental) 使用，待 Phase 4 清理
-  antd: '6.3.7'
-  '@ant-design/icons': '6.2.2'
   lucide-react: '^0.469'
 
   # —— 样式 ——
