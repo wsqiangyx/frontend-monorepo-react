@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { PermissionSet, PermissionCode } from '@repo/shared-service'
 import { createPermissionSet, hasPermission, hasAnyPermission } from '@repo/shared-service'
-import { createHttpClient } from '@repo/shared/http'
+import { createHttpClient } from '@repo/shared-utils/http'
 
 interface PermissionState {
   permissionSet: PermissionSet

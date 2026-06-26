@@ -15,7 +15,7 @@ test('applyTemplateInitialization rewrites minimal template placeholders and rep
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-init-template-'))
   const readmePath = join(workspaceRoot, 'README.md')
   const reactMessagesPath = join(workspaceRoot, 'apps/react-app/src/i18n/messages.ts')
-  const sharedConstantsPath = join(workspaceRoot, 'packages/shared/src/i18n/constants.ts')
+  const sharedConstantsPath = join(workspaceRoot, 'packages/shared-i18n/src/constants.ts')
   const themeInitPath = join(workspaceRoot, 'apps/react-app/public/theme-init.js')
 
   writeFile(
@@ -58,7 +58,7 @@ test('applyTemplateInitialization rewrites minimal template placeholders and rep
     'README.md',
     'apps/react-app/public/theme-init.js',
     'apps/react-app/src/i18n/messages.ts',
-    'packages/shared/src/i18n/constants.ts',
+    'packages/shared-i18n/src/constants.ts',
   ])
 
   assert.match(readFileSync(readmePath, 'utf8'), /# Acme Starter/)

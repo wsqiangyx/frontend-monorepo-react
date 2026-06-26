@@ -1,6 +1,7 @@
 # Phase 1 中后台平台基座实施计划
 
 > 制定日期：2026-05-15
+> 最近修订：2026-06-26
 > 适用阶段：Phase 1
 > 上游设计：`docs/总体设计/详细设计/Phase1-中后台平台基座详细设计.md`
 > 文档性质：面向未来执行的实施计划，不记录已完成事项或复盘
@@ -58,8 +59,10 @@
 
 ### 任务 2：`packages/shared-service`
 
-- 落地 `app`、`auth`、`navigation`、`permissions`、`workspace-tabs`、`request`、`contracts`、`runtime`
+- 落地 `app`、`auth`、`navigation`、`permissions`、`workspace-tabs`、`contracts`、`runtime`
 - 收敛平台初始化、认证、导航、权限、多标签页与请求契约的共享规则
+- `shared-service` 仅通过 `shared-utils` 暴露的 `HttpClient` 接口访问 HTTP 能力，不直接依赖 `ky` 或 `axios`（ADR-008）
+- `shared-service/request/` 重导出子模块已清理，消费者直接引用 `@repo/shared-utils`（ADR-010）
 - 补齐对应模块测试与统一导出面
 
 验证命令：

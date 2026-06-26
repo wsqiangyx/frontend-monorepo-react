@@ -1,3 +1,10 @@
+// ============================================================================
+// @repo/shared-types — UI 层类型契约
+// ============================================================================
+// 跨包共享的 UI 类型契约，被 design-tokens、shared-ui、react-app 消费。
+// 零运行时依赖，纯类型与常量导出。
+// ============================================================================
+
 export type ThemeName = 'default'
 
 export const themeNameValues = ['default'] as const satisfies readonly ThemeName[]

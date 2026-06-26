@@ -1,4 +1,4 @@
-import { type ThemeMode, type ThemeName } from '@repo/shared/ui-contract'
+import { type ThemeMode, type ThemeName } from '@repo/shared-types/ui-contract'
 import { generateCssVarsString } from '../to-css'
 import { resolveTheme } from './registry'
 

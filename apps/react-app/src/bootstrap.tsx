@@ -7,19 +7,31 @@
 //   1. 从 themeStore 读取当前主题状态
 //   2. 调用 applyThemeToDocument 将 CSS 变量注入 <style>
 //   3. 加载 Tailwind CSS 基础层、shared-ui 全局样式
-//   4. 通过 StrictMode + createRoot 挂载 React 应用
+//   4. 创建 TanStack Query QueryClient 实例
+//   5. 通过 StrictMode + createRoot 挂载 React 应用
 //
 // 注意：此文件不包含业务逻辑，仅负责依赖装配与全局初始化。
 // ============================================================================
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { applyThemeToDocument } from '@repo/design-tokens/theme'
 import App from '@/App'
 import '@/styles/tailwind.css'
 import '@/styles/global.scss'
 import '@repo/shared-ui/style.css'
 import { useThemeStore } from '@/stores/theme'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 分钟内数据视为新鲜
+      retry: 1, // 失败后重试 1 次
+      refetchOnWindowFocus: false, // 窗口聚焦时不自动重新获取
+    },
+  },
+})
 
 export function bootstrap() {
   const themeState = useThemeStore.getState()
@@ -32,7 +44,9 @@ export function bootstrap() {
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </StrictMode>,
   )
 }

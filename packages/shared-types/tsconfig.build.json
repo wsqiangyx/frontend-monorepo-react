@@ -1,7 +1,5 @@
-// @repo/shared 的 TypeScript 构建配置 — tsc -p tsconfig.build.json 使用
-// 继承 tsconfig.json（而非直接继承 base），在此基础上覆盖 noEmit 并排除测试文件。
-// 覆盖 noEmit 是因为 tsconfig.base.json 未设定 noEmit（默认 false），
-// 但如果未来 base 改为 noEmit: true，此处显式覆盖保证构建正常产出。
+// @repo/shared-types 的 TypeScript 构建配置 — tsc -p tsconfig.build.json 使用
+// 继承 tsconfig.json，覆盖 noEmit 并排除测试文件。
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
@@ -15,7 +13,7 @@
     "sourceMap": true
   },
   // 只编译 src/ 下的 .ts 文件
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts"],
   // 排除测试文件，它们不需要进入编译产物
   "exclude": ["src/**/*.test.ts"]
 }

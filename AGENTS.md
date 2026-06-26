@@ -28,7 +28,7 @@
 当前正式范围包括：
 
 - 一个正式应用壳：`apps/react-app`
-- 八个正式共享包：`packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock`、`packages/shared-ui`
+- 八个正式共享包：`packages/shared-types`、`packages/shared-utils`、`packages/shared-i18n`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock`、`packages/shared-ui`
 - 一套统一工具链基线：TypeScript、Vite、Vitest、ESLint、Stylelint、Prettier、Husky、Commitlint、Tailwind CSS
 
 当前工作区现状补充说明：
@@ -47,7 +47,7 @@
 
 - `apps/react-app` 是正式宿主应用，也是 composition root
 - `packages/shared-service` 是平台共享内核
-- `packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/design-tokens`、`packages/resources` 是基础共享层
+- `packages/shared-types`、`packages/shared-utils`、`packages/shared-i18n`、`packages/design-tokens`、`packages/resources` 是基础共享层
 - `packages/shared-ui`、`packages/mock` 是交付适配层
 - 共享规则优先沉淀在 package 层，app 只负责装配与交付
 
@@ -76,7 +76,7 @@
 
 补充构建约束：
 
-- 根 `build:shared` 当前负责先构建 `shared-utils`、`shared-i18n`、`shared`、`shared-service`、`design-tokens`、`resources`、`mock`、`shared-ui`
+- 根 `build:shared` 当前负责先构建 `shared-types`、`shared-utils`、`shared-i18n`、`shared-service`、`design-tokens`、`resources`、`mock`、`shared-ui`
 - 根 `build:react` 必须先执行 `build:shared`，再构建 React app
 - app 自己的 `build` 脚本仍只负责构建自身，不反向承担根脚本编排职责
 
@@ -183,7 +183,7 @@
 
 ### 9. package 的 `exports` 仍然只指向 `dist`
 
-`packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock` 的 `exports` 当前都应只指向 `dist/`。
+`packages/shared-types`、`packages/shared-utils`、`packages/shared-i18n`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock` 的 `exports` 当前都应只指向 `dist/`。
 
 app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 对外契约仍然必须是 dist-based。
 
@@ -205,7 +205,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - `pnpm-workspace.yaml` 的 `overrides` 强制锁定关键依赖版本
 - 业务依赖在各应用/子包的 `package.json` 中声明
 - 运行时依赖放在实际消费它们的 app / package `dependencies` 中声明
-- `packages/shared` 中与 React 路由适配相关的框架依赖保持为 `peerDependencies`
+- `packages/shared-types` 是零依赖的纯类型契约包，不依赖任何 workspace 包
 
 ### 12. 主题与共享 UI 按现行专题主文档与实施基线收敛
 
@@ -236,13 +236,13 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 当前总体设计已经明确：
 
 - `packages/shared-service` 是平台级共享规则的唯一正式收敛层
-- 它承载平台语义，而不是 `packages/shared`
+- 它承载平台语义，而不是 `packages/shared-types`
 
 相关约束：
 
 - `packages/shared-service` 保持框架无关，不直接依赖 React、Ant Design、Radix UI
 - `packages/shared-service` 不直接操作 DOM，不承接浏览器副作用
-- `packages/shared` 继续承载通用能力，不要把后台平台语义重新塞回 `shared`
+- `packages/shared-types` 只承载跨包共享的纯类型契约，不要把后台平台语义塞回 `shared-types`
 - app 可以维护各自的 store、provider、guard 与页面编排，但不要复制平台共享规则
 
 ### 15. Phase 1 / Phase 2 平台数据链路以 `packages/mock` + MSW 为正式后端替身
@@ -304,12 +304,12 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - locale 检测、持久化与切换
 - 当前正式支持 `zh-CN` 与 `en-US`
 
-### `packages/shared`
+### `packages/shared-types`
 
-- 统一路由定义与 React 路由适配
-- 共享 UI 文案契约
-- 向后兼容重导出（`@repo/shared/http`、`@repo/shared/i18n`）
-- `@repo/shared/routes` 作为框架无关路由定义入口保留稳定；正式框架适配器走 `@repo/shared/routes/react`
+- 跨包共享的纯类型契约（零运行时依赖，ADR-010）
+- UI 层类型契约（ThemeName、ThemeMode、StatusTone、MetricTrend 等）
+- API 响应契约（ApiResponse、PaginatedData、PlatformError 等）
+- 路由定义契约（RouteDefinition、routeDefinitions）
 
 ### `packages/shared-service`
 

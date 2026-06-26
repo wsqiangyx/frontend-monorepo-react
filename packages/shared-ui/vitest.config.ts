@@ -15,8 +15,8 @@ export default defineProject({
       '@repo/shared-service': fileURLToPath(
         new URL('../shared-service/src/index.ts', import.meta.url),
       ),
-      '@repo/shared/ui-contract': fileURLToPath(
-        new URL('../shared/src/ui-contract/index.ts', import.meta.url),
+      '@repo/shared-types/ui-contract': fileURLToPath(
+        new URL('../shared-types/src/ui-contract/index.ts', import.meta.url),
       ),
       '@repo/design-tokens/tailwind-preset': fileURLToPath(
         new URL('../design-tokens/src/theme/tailwind.ts', import.meta.url),

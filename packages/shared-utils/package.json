@@ -23,6 +23,7 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
+    "@repo/shared-types": "workspace:*",
     "ky": "catalog:"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@repo/design-tokens",
+  "name": "@repo/shared-types",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,17 +10,17 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./css": {
-      "types": "./dist/to-css.d.ts",
-      "default": "./dist/to-css.js"
+    "./ui-contract": {
+      "types": "./dist/ui-contract/index.d.ts",
+      "default": "./dist/ui-contract/index.js"
     },
-    "./theme": {
-      "types": "./dist/theme/index.d.ts",
-      "default": "./dist/theme/index.js"
+    "./api-contract": {
+      "types": "./dist/api-contract/index.d.ts",
+      "default": "./dist/api-contract/index.js"
     },
-    "./tailwind-preset": {
-      "types": "./dist/theme/tailwind.d.ts",
-      "default": "./dist/theme/tailwind.js"
+    "./routes": {
+      "types": "./dist/routes/index.d.ts",
+      "default": "./dist/routes/index.js"
     }
   },
   "scripts": {
@@ -29,8 +29,5 @@
     "test": "node ../../scripts/vitest.cjs run",
     "test:watch": "node ../../scripts/vitest.cjs",
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
-  },
-  "dependencies": {
-    "@repo/shared-types": "workspace:*"
   }
 }

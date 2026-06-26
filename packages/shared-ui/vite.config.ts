@@ -9,8 +9,8 @@ export default defineConfig({
       '@repo/shared-service': fileURLToPath(
         new URL('../shared-service/src/index.ts', import.meta.url),
       ),
-      '@repo/shared/ui-contract': fileURLToPath(
-        new URL('../shared/src/ui-contract/index.ts', import.meta.url),
+      '@repo/shared-types/ui-contract': fileURLToPath(
+        new URL('../shared-types/src/ui-contract/index.ts', import.meta.url),
       ),
       '@repo/design-tokens/tailwind-preset': fileURLToPath(
         new URL('../design-tokens/src/theme/tailwind.ts', import.meta.url),
@@ -36,10 +36,10 @@ export default defineConfig({
         'react',
         'react-dom',
         '@repo/shared-service',
+        '@repo/shared-types/ui-contract',
         '@repo/design-tokens',
         '@repo/design-tokens/tailwind-preset',
         '@repo/design-tokens/theme',
-        '@repo/shared/ui-contract',
       ],
     },
   },

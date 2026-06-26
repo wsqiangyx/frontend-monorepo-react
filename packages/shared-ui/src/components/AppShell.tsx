@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
-import type { ContentMaxWidth } from '@repo/shared/ui-contract'
+import type { ContentMaxWidth } from '@repo/shared-types/ui-contract'
 
 interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   sidebar?: boolean

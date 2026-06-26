@@ -1,10 +1,10 @@
 // ============================================================================
 // @repo/react-app — 用户状态 Store (Zustand)
 // ============================================================================
-// 使用 Zustand 管理用户状态，通过 @repo/shared 的 HTTP 客户端获取数据。
+// 使用 Zustand 管理用户状态，通过 @repo/shared-utils 的 HTTP 客户端获取数据。
 // ============================================================================
 import { create } from 'zustand'
-import { createHttpClient } from '@repo/shared/http'
+import { createHttpClient } from '@repo/shared-utils/http'
 
 interface User {
   id: number

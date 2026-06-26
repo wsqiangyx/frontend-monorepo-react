@@ -1,4 +1,4 @@
-import { createHttpClient } from '@repo/shared/http'
+import { createHttpClient } from '@repo/shared-utils/http'
 
 export const api = createHttpClient({ baseURL: '/api' })
 
