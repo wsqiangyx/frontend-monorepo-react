@@ -1,15 +1,16 @@
 version: 1
-updated_at: 2026-06-25
+updated_at: 2026-06-26
 apps:
   react-app:
     status: stable
     notes: 正式默认宿主应用，已纳入根脚本、根测试矩阵与模板默认交付范围
 packages:
+  shared-types:
+    status: stable
+    notes: 跨包共享的纯类型契约包（ADR-010）
   shared-utils:
     status: stable
   shared-i18n:
-    status: stable
-  shared:
     status: stable
   shared-service:
     status: stable

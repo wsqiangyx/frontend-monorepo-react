@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@repo/shared-service": "workspace:*",
-    "@repo/shared": "workspace:*",
+    "@repo/shared-types": "workspace:*",
     "@repo/design-tokens": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"

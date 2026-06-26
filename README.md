@@ -16,9 +16,9 @@
 这是一个以 React 为正式宿主应用的前端 monorepo 基线仓库，不是单应用仓库，也不是通用前端空白模板。
 
 - `apps/react-app`：React 19 + shadcn/ui + Tailwind CSS 应用壳
+- `packages/shared-types`：跨包共享的纯类型契约（零运行时依赖，ADR-010）
 - `packages/shared-utils`：通用工具（格式化、校验、HTTP 客户端、日志）
 - `packages/shared-i18n`：国际化运行时与语言包
-- `packages/shared`：路由定义、UI 文案契约、向后兼容重导出
 - `packages/shared-service`：平台共享内核，承载初始化、认证、菜单、权限、多标签页与平台请求契约
 - `packages/design-tokens`：设计令牌、CSS 变量、主题快照、Tailwind CSS 主题适配、共享主题运行时
 - `packages/resources`：统一静态资源、图标、SVG、SVG Sprite 与资源索引
@@ -35,7 +35,7 @@
 
 - `apps/react-app`：正式宿主应用，也是 composition root
 - `packages/shared-service`：平台领域模型与应用规则
-- `packages/shared-utils`、`packages/shared-i18n`、`packages/shared`、`packages/design-tokens`、`packages/resources`：基础共享运行时
+- `packages/shared-types`、`packages/shared-utils`、`packages/shared-i18n`、`packages/design-tokens`、`packages/resources`：基础共享运行时
 - `packages/shared-ui`、`packages/mock`：交付与边界适配层
 
 ## 快速开始
@@ -85,9 +85,9 @@ frontend-monorepo/
 │  ├─ react-app/                 # React 正式宿主应用
 │  └─ react-screen-designer/     # 专题子应用（experimental）
 ├─ packages/
+│  ├─ shared-types/              # 跨包共享的纯类型契约
 │  ├─ shared-utils/              # 通用工具与 HTTP 客户端
 │  ├─ shared-i18n/               # 国际化运行时
-│  ├─ shared/                    # 路由定义、UI 契约、向后兼容重导出
 │  ├─ shared-service/            # 平台共享内核
 │  ├─ design-tokens/             # 设计令牌与主题
 │  ├─ resources/                 # 静态资源

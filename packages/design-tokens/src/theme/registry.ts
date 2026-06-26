@@ -3,7 +3,7 @@ import {
   themeNameValues,
   type ThemeMode,
   type ThemeName,
-} from '@repo/shared/ui-contract'
+} from '@repo/shared-types/ui-contract'
 import {
   defaultDarkTheme,
   defaultLightTheme,

@@ -47,6 +47,7 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage --config vitest.config.ts"
   },
   "dependencies": {
+    "@repo/shared-types": "workspace:*",
     "@repo/shared-utils": "workspace:*"
   },
   "devDependencies": {

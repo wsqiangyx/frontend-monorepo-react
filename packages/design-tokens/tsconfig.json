@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "paths": {
-      "@repo/shared/ui-contract": ["../shared/src/ui-contract/index.ts"]
+      "@repo/shared-types/ui-contract": ["../shared-types/src/ui-contract/index.ts"]
     }
   },
   "include": ["src"]

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { PageContainer, MetricCard, PermissionGate } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
-import { createHttpClient } from '@repo/shared/http'
+import { createHttpClient } from '@repo/shared-utils/http'
 import { dashboardKeys } from '@/lib/query-keys'
 
 interface DashboardSummary {

@@ -12,11 +12,10 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     projects: [
-      // 基础共享层（必须先于 shared 构建，因为 shared 重导出这两个包）
+      // 基础共享层
+      'packages/shared-types/vitest.config.ts',
       'packages/shared-utils/vitest.config.ts',
       'packages/shared-i18n/vitest.config.ts',
-      // 向后兼容重导出层
-      'packages/shared/vitest.config.ts',
       // 平台内核层
       'packages/shared-service/vitest.config.ts',
       // 设计令牌与静态资源

@@ -11,7 +11,7 @@
 // 子组件通过 ThemeProvider（shared-ui）消费 ThemeSnapshot。
 // ============================================================================
 
-export type { ThemeMode, ThemeName } from '@repo/shared/ui-contract'
+export type { ThemeMode, ThemeName } from '@repo/shared-types/ui-contract'
 export type { ThemeDefinition, ThemeRegistry, ThemeSnapshot } from './types'
 export { isThemeMode, isThemeName, resolveTheme, themeRegistry } from './registry'
 export type { ThemePreference, ThemeRuntimeState } from './system'

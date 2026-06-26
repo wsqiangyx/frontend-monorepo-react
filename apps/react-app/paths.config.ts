@@ -34,30 +34,22 @@ const sourceAlias = [
     replacement: fileURLToPath(new URL('../../packages/shared-i18n/src/index.ts', import.meta.url)),
   },
   {
-    find: '@repo/shared/routes/react',
+    find: '@repo/shared-types/ui-contract',
     replacement: fileURLToPath(
-      new URL('../../packages/shared/src/routes/react-adapter.ts', import.meta.url),
+      new URL('../../packages/shared-types/src/ui-contract/index.ts', import.meta.url),
     ),
   },
   {
-    find: '@repo/shared/routes',
+    find: '@repo/shared-types/api-contract',
     replacement: fileURLToPath(
-      new URL('../../packages/shared/src/routes/index.ts', import.meta.url),
+      new URL('../../packages/shared-types/src/api-contract/index.ts', import.meta.url),
     ),
   },
   {
-    find: '@repo/shared/http',
-    replacement: fileURLToPath(new URL('../../packages/shared/src/http/index.ts', import.meta.url)),
-  },
-  {
-    find: '@repo/shared/ui-contract',
+    find: '@repo/shared-types/routes',
     replacement: fileURLToPath(
-      new URL('../../packages/shared/src/ui-contract/index.ts', import.meta.url),
+      new URL('../../packages/shared-types/src/routes/index.ts', import.meta.url),
     ),
-  },
-  {
-    find: '@repo/shared/i18n',
-    replacement: fileURLToPath(new URL('../../packages/shared/src/i18n/index.ts', import.meta.url)),
   },
   {
     find: '@repo/shared-service',

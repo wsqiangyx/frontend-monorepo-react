@@ -9,7 +9,7 @@
     "declarationMap": true,
     "paths": {
       "@repo/shared-service": ["../shared-service/dist/index.d.ts"],
-      "@repo/shared/ui-contract": ["../shared/dist/ui-contract/index.d.ts"],
+      "@repo/shared-types/ui-contract": ["../shared-types/dist/ui-contract/index.d.ts"],
       "@repo/design-tokens": ["../design-tokens/dist/index.d.ts"],
       "@repo/design-tokens/theme": ["../design-tokens/dist/theme/index.d.ts"],
       "@repo/design-tokens/tailwind-preset": ["../design-tokens/dist/theme/tailwind.d.ts"]

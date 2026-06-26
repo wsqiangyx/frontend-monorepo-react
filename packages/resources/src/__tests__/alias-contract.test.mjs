@@ -9,8 +9,8 @@ describe('alias contract check', () => {
   it('derives tsconfig expectations from source alias entries', () => {
     const expectations = createAliasContractExpectation([
       {
-        find: '@repo/shared/http',
-        target: '../../packages/shared/src/http/index.ts',
+        find: '@repo/shared-utils/http',
+        target: '../../packages/shared-utils/src/http/index.ts',
       },
       {
         find: '@repo/resources',
@@ -19,7 +19,7 @@ describe('alias contract check', () => {
     ])
 
     expect(expectations).toEqual({
-      '@repo/shared/http': ['../../packages/shared/src/http/index.ts'],
+      '@repo/shared-utils/http': ['../../packages/shared-utils/src/http/index.ts'],
       '@repo/resources': ['../../packages/resources/src/index.ts'],
       '@repo/resources/*': ['../../packages/resources/src/*/index.ts'],
     })
@@ -29,8 +29,8 @@ describe('alias contract check', () => {
     const configText = `
 const sourceAlias = [
   {
-    find: '@repo/shared/http',
-    replacement: fileURLToPath(new URL('../../packages/shared/src/http/index.ts', import.meta.url)),
+    find: '@repo/shared-utils/http',
+    replacement: fileURLToPath(new URL('../../packages/shared-utils/src/http/index.ts', import.meta.url)),
   },
   {
     find: '@repo/resources',
@@ -48,8 +48,8 @@ export const appSourceAlias = [...sourceAlias, appAlias]
 
     expect(extractAliasEntriesFromText(configText)).toEqual([
       {
-        find: '@repo/shared/http',
-        target: '../../packages/shared/src/http/index.ts',
+        find: '@repo/shared-utils/http',
+        target: '../../packages/shared-utils/src/http/index.ts',
       },
       {
         find: '@repo/resources',
@@ -62,8 +62,8 @@ export const appSourceAlias = [...sourceAlias, appAlias]
     const issues = collectAliasContractIssues({
       aliasEntries: [
         {
-          find: '@repo/shared/http',
-          target: '../../packages/shared/src/http/index.ts',
+          find: '@repo/shared-utils/http',
+          target: '../../packages/shared-utils/src/http/index.ts',
         },
         {
           find: '@repo/resources',
@@ -77,7 +77,7 @@ export const appSourceAlias = [...sourceAlias, appAlias]
     })
 
     expect(issues).toEqual([
-      'Missing tsconfig path mapping for "@repo/shared/http": expected ../../packages/shared/src/http/index.ts',
+      'Missing tsconfig path mapping for "@repo/shared-utils/http": expected ../../packages/shared-utils/src/http/index.ts',
       'Missing tsconfig path mapping for "@repo/resources/*": expected ../../packages/resources/src/*/index.ts',
       'Unexpected shared tsconfig path mapping "@repo/extra": ../../packages/extra/src/index.ts',
     ])

@@ -5,7 +5,7 @@
     "types": ["vite/client"],
     "paths": {
       "@repo/shared-service": ["../shared-service/src/index.ts"],
-      "@repo/shared/ui-contract": ["../shared/src/ui-contract/index.ts"],
+      "@repo/shared-types/ui-contract": ["../shared-types/src/ui-contract/index.ts"],
       "@repo/design-tokens": ["../design-tokens/src/index.ts"],
       "@repo/design-tokens/theme": ["../design-tokens/src/theme/index.ts"],
       "@repo/design-tokens/tailwind-preset": ["../design-tokens/src/theme/tailwind.ts"]

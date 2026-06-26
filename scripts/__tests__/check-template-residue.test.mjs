@@ -19,7 +19,7 @@ test('checkTemplateResidue reports typical template and demo residue with file c
     "'home.title': 'React Workspace Shell'\n'home.searchPlaceholder': 'Search demo user'\n",
   )
   writeFile(
-    join(workspaceRoot, 'packages/shared/src/i18n/constants.ts'),
+    join(workspaceRoot, 'packages/shared-i18n/src/constants.ts'),
     "export const LOCALE_STORAGE_KEY = 'repo-locale'\n",
   )
 
@@ -43,7 +43,7 @@ test('checkTemplateResidue passes when known residue patterns are absent', () =>
     "'home.title': 'Acme Control Center'\n",
   )
   writeFile(
-    join(workspaceRoot, 'packages/shared/src/i18n/constants.ts'),
+    join(workspaceRoot, 'packages/shared-i18n/src/constants.ts'),
     "export const LOCALE_STORAGE_KEY = 'acme-console-locale'\n",
   )
   writeFile(join(workspaceRoot, '.github/workflows/ci.yml'), 'branches: [main]\n')
@@ -69,7 +69,7 @@ test('checkTemplateResidue ignores docs, template markdown, and scripts while ke
     "'home.title': 'React Starter Shell'\n",
   )
   writeFile(
-    join(workspaceRoot, 'packages/shared/src/i18n/constants.ts'),
+    join(workspaceRoot, 'packages/shared-i18n/src/constants.ts'),
     "export const LOCALE_STORAGE_KEY = 'repo-locale'\n",
   )
   writeFile(
@@ -96,12 +96,12 @@ test('checkTemplateResidue detects @repo/* scope identifiers in code', () => {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-template-residue-'))
 
   writeFile(
-    join(workspaceRoot, 'packages/shared/src/index.ts'),
-    "export { default } from '@repo/shared'\n",
+    join(workspaceRoot, 'packages/shared-types/src/index.ts'),
+    "export { default } from '@repo/shared-types'\n",
   )
   writeFile(
     join(workspaceRoot, 'apps/react-app/src/main.tsx'),
-    "import { createRoot } from '@repo/shared'\n",
+    "import { createRoot } from '@repo/shared-types'\n",
   )
 
   const result = checkTemplateResidue({ workspaceRoot })
@@ -145,7 +145,7 @@ test('checkTemplateResidue detects repo-locale in code', () => {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-template-residue-'))
 
   writeFile(
-    join(workspaceRoot, 'packages/shared/src/i18n/constants.ts'),
+    join(workspaceRoot, 'packages/shared-i18n/src/constants.ts'),
     "export const LOCALE_KEY = 'repo-locale'\n",
   )
 
