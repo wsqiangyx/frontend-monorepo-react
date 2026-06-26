@@ -1,7 +1,7 @@
 # React 中后台前端平台 Monorepo 架构设计方案
 
-**文档版本**：v2.1
-**修订日期**：2026-06-25
+**文档版本**：v3.0
+**修订日期**：2026-06-26
 **适用仓库**：`frontend-monorepo`  
 **文档性质**：唯一上游概要设计
 
@@ -77,6 +77,7 @@
 | ADR-007  | 采用 Tailwind CSS 替代 UnoCSS 作为原子化 CSS 方案                         | 2026-06-25 | ✅ 已采纳 | 待补全   |
 | ADR-008  | HTTP 客户端从 axios 迁移到 ky                                             | 2026-06-25 | ✅ 已采纳 | 待补全   |
 | ADR-009  | 引入 TanStack Query 作为服务端状态管理层                                  | 2026-06-25 | ✅ 已采纳 | 待补全   |
+| ADR-010  | 废弃 `shared` 包，新建 `shared-types` 纯类型契约包                        | 2026-06-26 | ✅ 已采纳 | 待补全   |
 
 > **补充说明**：ADR-002 和 ADR-003 为技术栈选择的根基性决策，建议在仓库初始化后一个月内完成正式决策文档的编写，记录完整的背景、替代方案评估及决策后果。
 
@@ -96,13 +97,14 @@
 
 **背景**：需要一套可定制、轻量化的 React 组件库与原子化 CSS 方案，要求源码可控、主题灵活、包体积可控。先前采用 Ant Design 6，但实际使用面极小（仅 ConfigProvider 主题注入和 screen-designer 属性面板），且中后台自定义 UI 较多，重型组件库的价值未被充分利用。
 **决策**：采用 **shadcn/ui**（基于 Radix UI 原语 + CVA 变体管理）+ **Tailwind CSS** 作为正式 UI 方案。理由包括：
+
 - **源码可控**：shadcn/ui 为 CLI 代码生成器，组件源码直接复制到项目中，可完全自定义，无 vendor lock-in
 - **轻量化**：按需引入组件，基于 Radix UI 的 tree-shakeable 原语，包体积显著小于 Ant Design
 - **主题灵活**：基于 CSS 变量（HSL 格式），与现有 `design-tokens` 的 CSS 变量架构天然契合
 - **Tailwind 生态**：Tailwind CSS 提供成熟的原子化 CSS 方案，社区活跃，与 shadcn/ui 深度集成
 - **暗色模式**：通过 `dark:` 变体 + CSS 变量切换，与现有 `ThemeSnapshot` 概念一致
-**替代方案**：Ant Design 6（使用面小、定制成本高）、Material UI（设计风格差异大）、Headless UI（组件数量少）。
-**后果**：
+  **替代方案**：Ant Design 6（使用面小、定制成本高）、Material UI（设计风格差异大）、Headless UI（组件数量少）。
+  **后果**：
 - `design-tokens` 移除 Ant Design 主题适配器（`./theme/antd`），改为输出 Tailwind CSS 变量格式
 - `shared-ui` 基于 shadcn/ui 组件二次封装，样式通过 Tailwind + CSS 变量控制
 - 国际化不再通过 `ConfigProvider locale` 联动，改为组件直接消费 i18n 文案
@@ -114,6 +116,7 @@
 **决策**：用 Tailwind CSS 替代 UnoCSS，移除 `unocss`、`@unocss/preset-uno`、`@unocss/preset-attributify`、`@unocss/reset` 依赖。
 **替代方案**：继续使用 UnoCSS（shadcn/ui 不原生支持）、UnoCSS + Tailwind 兼容层（增加复杂度）。
 **后果**：
+
 - Vite 配置移除 `unocss/vite` 插件，添加 `@tailwindcss/vite` 插件
 - `bootstrap.tsx` 中 `@unocss/reset/tailwind.css` 和 `virtual:uno.css` 替换为 Tailwind 指令
 - 新增 `postcss.config.js`（如使用 PostCSS 方案）或直接使用 Tailwind Vite 插件
@@ -125,6 +128,7 @@
 **决策**：将 HTTP 客户端从 axios 迁移到 ky，同时在 `shared-utils` 中建立 `HttpClient` 接口抽象层，`shared-service` 仅依赖接口而非具体实现。上传进度场景因浏览器 fetch 不支持上传进度回调，由 `shared-utils` 提供独立的 `uploadWithProgress` 工具函数（基于 XMLHttpRequest）。
 **替代方案**：继续使用 axios（供应链风险未消除）、ofetch（Node.js 端行为差异大）、got（仅 Node.js）。
 **后果**：
+
 - `shared-utils` 移除 axios 依赖，新增 ky 依赖和 `HttpClient` 接口 + ky 适配器实现
 - `shared-service` 不直接依赖 ky，仅通过 `shared-utils` 暴露的 `HttpClient` 接口消费
 - 上传进度场景绕过 ky，直接使用 `uploadWithProgress`（XHR 封装）
@@ -136,10 +140,43 @@
 **决策**：引入 `@tanstack/react-query` 作为服务端状态管理层。`shared-service/modules/` 封装的 API 函数返回 `Promise`，宿主层通过 TanStack Query 的 `useQuery` / `useMutation` / `useInfiniteQuery` 消费。禁止在组件中直接调用 ky 或 `httpClient`，所有数据请求必须通过 TanStack Query 层。
 **替代方案**：SWR（功能较 TanStack Query 少，特别是服务端渲染和无限滚动支持较弱）、手写缓存层（维护成本高，易出 bug）、React Query v4（已停止维护）。
 **后果**：
+
 - 宿主应用新增 `QueryClientProvider` 装配，与现有 `ThemeProvider` 并列
 - 组件不再使用 `useEffect` + `useState` 管理请求状态，改为 `useQuery` / `useMutation`
 - `shared-service` 保持框架无关，不直接依赖 TanStack Query；query key 约定和 hook 封装在宿主应用或 `shared-ui` 层
 - 缓存策略、重试策略、失效策略在宿主层统一配置
+
+#### ADR-010：废弃 `shared` 包，新建 `shared-types` 纯类型契约包
+
+**背景**：`@repo/shared` 包存在三个结构性问题：
+
+1. **僵尸包**：包自身几乎没有自有代码，5 个子模块中 `./http`、`./i18n`、`./utils`、`./types` 全部是从 `shared-utils` 和 `shared-i18n` 的重导出，根 `index.ts` 只有一行 `export * from '@repo/shared-utils'`
+2. **依赖倒挂**：`ui-contract` 模块承载跨包共享的类型契约（`ThemeName`、`StatusTone` 等），被基础共享层的 `design-tokens` 依赖，但 `shared` 包自身依赖 `shared-utils` 和 `shared-i18n`，导致基础层间接依赖了上层包，违反分层架构原则
+3. **路由定义未接入**：`shared/routes/` 只定义了一条路由（`/`），宿主应用未消费；`shared/routes/react` 的 `createReactRoutes()` 也从未被调用
+
+**决策**：
+
+- 新建 `@repo/shared-types` 包，承载所有跨包共享的**纯类型契约**（零运行时依赖，无 workspace 包依赖）
+- `shared-types` 包含原 `shared` 包中的 `ui-contract` 类型、原 `shared-service/request/` 中的 API 契约重导出类型、原 `shared/routes/definitions.ts` 中的路由类型
+- 废弃 `@repo/shared` 包，所有消费者直接引用源头包：
+  - `@repo/shared/http` → `@repo/shared-utils/http`
+  - `@repo/shared/i18n` → `@repo/shared-i18n`
+  - `@repo/shared/ui-contract` → `@repo/shared-types`
+  - `@repo/shared/routes` → `@repo/shared-types/routes`（如需）
+- `shared-service` 的 `request/` 子模块（从 `shared-utils` 重导出）同步清理，消费者直接引用 `@repo/shared-utils`
+- `design-tokens` 的依赖从 `shared` 改为 `shared-types`，解除基础层对上层包的间接依赖
+
+**替代方案**：
+
+- 将 `ui-contract` 移入 `shared-utils`（语义不匹配——UI 类型不是通用工具）
+- 保留 `shared` 包但清理重导出（治标不治本，依赖倒挂未解决）
+
+**后果**：
+
+- 依赖图无环、层次清晰：`shared-types`（零依赖）→ `shared-utils` → `shared-service` → `shared-ui` → `react-app`
+- `design-tokens` 不再间接依赖 `shared-utils` 和 `shared-i18n`
+- 所有 `@repo/shared` 的 import 路径需迁移（影响 `react-app`、`shared-ui`、`design-tokens`）
+- 路由适配器 `createReactRoutes()` 从 `shared/routes/react` 移入宿主应用（它是 React 专属逻辑，不属于共享包）
 
 #### ADR-004：pnpm catalog 统一版本管理
 
@@ -184,6 +221,7 @@ frontend-monorepo/
 ├─ apps/
 │  └─ react-app/               # React 正式宿主应用
 ├─ packages/
+│  ├─ shared-types/            # 跨包共享的纯类型契约（零运行时依赖）
 │  ├─ design-tokens/           # 设计令牌（CSS 变量、Tailwind 主题配置）
 │  ├─ shared-utils/            # 通用工具（格式化、校验、存储、HttpClient 接口、XHR 上传、日志）
 │  ├─ shared-i18n/             # 国际化运行时与语言包
@@ -211,52 +249,67 @@ frontend-monorepo/
 
 ### 5.1 层次划分
 
-| 层级           | 包含包/目录                                    | 角色                                   |
-| -------------- | ---------------------------------------------- | -------------------------------------- |
-| **宿主层**     | `apps/react-app`                               | 组合根，路由装配、store 接线、页面编排 |
-| **交付适配层** | `shared-ui`, `shared-service` (API/Token)      | React UI 适配，API 边界与 Mock         |
-| **平台内核层** | `shared-service` (权限/类型)                   | 平台领域模型、应用规则                 |
-| **基础共享层** | `design-tokens`, `shared-utils`, `shared-i18n` | 通用运行时、主题系统、国际化           |
+| 层级           | 包含包/目录                                                    | 角色                                   |
+| -------------- | -------------------------------------------------------------- | -------------------------------------- |
+| **宿主层**     | `apps/react-app`                                               | 组合根，路由装配、store 接线、页面编排 |
+| **交付适配层** | `shared-ui`, `shared-service` (API/Token)                      | React UI 适配，API 边界与 Mock         |
+| **平台内核层** | `shared-service` (权限/类型)                                   | 平台领域模型、应用规则                 |
+| **基础共享层** | `shared-types`, `design-tokens`, `shared-utils`, `shared-i18n` | 类型契约、通用运行时、主题系统、国际化 |
 
 ### 5.2 正式依赖方向
 
 ```
 运行时依赖方向（不可逆）：
-react-app → shared-ui → shared-service → shared-utils
-              ↓            ↓
-          design-tokens  shared-i18n
+shared-types                    ← 零依赖，最底层
+  ↑
+shared-utils                    ← 只依赖 shared-types 的 API 契约
+  ↑
+shared-service                  ← 依赖 shared-types + shared-utils
+  ↑
+design-tokens                   ← 只依赖 shared-types 的 UI 契约
+  ↑
+shared-ui                       ← 依赖 design-tokens + shared-service
+  ↑
+react-app                       ← 依赖所有共享包
+
+shared-i18n                     ← 零 workspace 依赖（peer: react-i18next）
 ```
 
 **强制约束**：
 
-- 基础共享层不依赖任何上层包
+- `shared-types` 零 workspace 包依赖，仅承载纯类型契约
+- 基础共享层不依赖上层包（`shared-types` 无依赖；`shared-utils` 仅依赖 `shared-types`；`design-tokens` 仅依赖 `shared-types`；`shared-i18n` 无 workspace 依赖）
 - `shared-service` 权限判断等纯函数不依赖 React/DOM
 - `shared-ui` 不反向定义平台规则
 - 宿主应用不能复制共享层的主题或 i18n 运行时
 - `shared-service/mock-setup` 仅限开发/测试环境引入，生产构建时 Tree Shaking 剔除
+- `@repo/shared` 包已废弃（ADR-010），禁止新增任何 import
 
 ### 5.3 依赖检查规则
 
 用于 `check:arch` 脚本（具体实现见 `scripts/check-arch.sh`）：
 
-- 基础共享层 (`design-tokens`, `shared-utils`, `shared-i18n`) 的 `dependencies` 不得包含其他 workspace 包
+- `shared-types` 的 `dependencies` 不得包含任何 workspace 包或运行时依赖
+- 基础共享层 (`shared-utils`, `design-tokens`, `shared-i18n`) 的 `dependencies` 不得包含上层 workspace 包（`shared-service`, `shared-ui`）；`shared-utils` 和 `design-tokens` 可依赖 `shared-types`
 - `shared-service` 不得依赖 `react`, `react-dom`, `react-router`, `zustand`, `antd`, `@ant-design/*`, `@radix-ui/*`, `ky`, `axios`
 - `shared-service` 仅通过 `shared-utils` 暴露的 `HttpClient` 接口访问 HTTP 能力，不直接依赖具体 HTTP 库
 - `shared-ui` 不得依赖 `apps/*`
 - `apps/react-app` 不得依赖其他 `apps/*`
 - 生产依赖不得直接引用 `msw`
+- 任何包不得新增 `@repo/shared` 依赖（该包已废弃，ADR-010）
 
 ### 5.4 包间依赖矩阵
 
-| 包名              | 可依赖项                                                                         | 禁止依赖项       |
-| ----------------- | -------------------------------------------------------------------------------- | ---------------- | ------------------------------ |
-| `design-tokens`   | 无                                                                              | 所有             |
-| `shared-utils`    | ky                                                                              | React, 平台语义  |
-| `shared-i18n`     | react-i18next, i18next (peer)                                                   | 宿主应用         |
-| `shared-service`  | shared-utils, msw                                                               | UI 框架, DOM, ky, axios |
-| `shared-ui`       | design-tokens, shared-utils, shared-i18n, shared-service, @radix-ui/*, tailwindcss | 宿主应用         |
-| `shared-workflow` | design-tokens, shared-utils, bpmn-js, @radix-ui/*                               | 宿主应用业务规则 | （规划中预留，仓库当前未创建） |
-| `apps/react-app`  | 所有共享包, @tanstack/react-query                                               | 无               |
+| 包名              | 可依赖项                                                                                          | 禁止依赖项              |
+| ----------------- | ------------------------------------------------------------------------------------------------- | ----------------------- | ------------------------------ |
+| `shared-types`    | 无（零依赖）                                                                                      | 所有 workspace 包       |
+| `design-tokens`   | shared-types                                                                                      | 其他 workspace 包       |
+| `shared-utils`    | shared-types, ky                                                                                  | React, 平台语义         |
+| `shared-i18n`     | react-i18next, i18next (peer)                                                                     | 宿主应用, shared-types  |
+| `shared-service`  | shared-types, shared-utils, msw                                                                   | UI 框架, DOM, ky, axios |
+| `shared-ui`       | shared-types, design-tokens, shared-utils, shared-i18n, shared-service, @radix-ui/\*, tailwindcss | 宿主应用                |
+| `shared-workflow` | shared-types, design-tokens, shared-utils, bpmn-js, @radix-ui/\*                                  | 宿主应用业务规则        | （规划中预留，仓库当前未创建） |
+| `apps/react-app`  | 所有共享包, @tanstack/react-query                                                                 | 无                      |
 
 ---
 
@@ -264,10 +317,21 @@ react-app → shared-ui → shared-service → shared-utils
 
 ### 6.1 基础共享层
 
+#### `shared-types` – 跨包共享类型契约
+
+- **提供**：跨包共享的纯 TypeScript 类型与常量契约
+- **子模块**：
+  - `./ui-contract` — UI 层类型契约（`ThemeName`, `ThemeMode`, `StatusTone`, `MetricTrend`, `ContentMaxWidth` 等），被 `design-tokens`、`shared-ui`、`react-app` 消费
+  - `./api-contract` — API 响应契约（`ApiResponse`, `PaginationParams`, `PaginatedData`, `PlatformError` 等），被 `shared-utils`、`shared-service` 消费
+  - `./routes` — 路由定义契约（`RouteDefinition` 类型），框架无关，供宿主应用消费
+- **约束**：零运行时依赖，零 workspace 包依赖，纯类型与常量导出
+- **来源**：原 `@repo/shared` 包中的 `ui-contract` 和 `routes/definitions`；原 `shared-utils` 中的 API 响应类型
+
 #### `design-tokens` – 设计令牌
 
 - **提供**：CSS 自定义属性、Tailwind CSS 主题配置（颜色、字号、间距、圆角等）、图表配色常量
-- **子路径**：`./tokens.css`, `./tailwind-preset`
+- **子路径**：`./tokens.css`, `./tailwind-preset`, `./theme`
+- **依赖**：仅 `shared-types`（消费 `ThemeName`, `ThemeMode` 等类型）
 - **不负责**：业务状态、私有主题逻辑
 
 #### `shared-utils` – 通用工具
@@ -275,6 +339,7 @@ react-app → shared-ui → shared-service → shared-utils
 - **提供**：日期格式化、数据校验、存储抽象 (`createStorage`)、分级日志
 - **提供**：`HttpClient` 接口抽象与 ky 适配器实现，隔离底层 HTTP 库依赖
 - **提供**：`uploadWithProgress` 工具函数（基于 XMLHttpRequest），支持上传进度回调、abort 能力、多文件上传
+- **依赖**：`shared-types`（消费 API 契约类型），`ky`（HTTP 适配器实现）
 - **约束**：浏览器 API 通过工厂函数注入，禁止直接使用
 
 **HttpClient 接口设计**：
@@ -308,6 +373,7 @@ interface HttpClient {
 - **TokenManager**：双 Token 刷新队列，并发请求排队
 - **权限判断**：纯函数 `checkPermission(permissions, required)`
 - **Mock 服务**：MSW handlers，与 API 类型同构
+- **类型消费**：API 响应类型从 `shared-utils` 或 `shared-types` 直接获取，`request/` 重导出子模块已清理（ADR-010）
 
 **扩展预留**：当前权限模型为 RBAC（基于角色）。若未来需要支持多租户或数据权限（如“只能查看本部门数据”），扩展路径如下：
 
@@ -322,11 +388,11 @@ interface HttpClient {
 
 `shared-ui` 负责提供基于 shadcn/ui 二次封装的 React 组件。封装遵循以下分层原则：
 
-| 封装模式         | 适用场景                                        | 示例                                                               |
-| ---------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
-| **直接透传**     | 组件 Props 与 shadcn/ui 完全一致，无需额外逻辑 | `Button` → 直接 re-export                                          |
-| **Props 重组织** | 需要统一 API 风格或注入平台语义                 | `Menu` → `SidebarMenu`，接收 `MenuItem[]` 并自动处理权限过滤       |
-| **组合封装**     | 由多个 shadcn/ui 组件组装而成                   | `PageContainer` = 布局容器 + 标题 + 共享样式                       |
+| 封装模式         | 适用场景                                       | 示例                                                         |
+| ---------------- | ---------------------------------------------- | ------------------------------------------------------------ |
+| **直接透传**     | 组件 Props 与 shadcn/ui 完全一致，无需额外逻辑 | `Button` → 直接 re-export                                    |
+| **Props 重组织** | 需要统一 API 风格或注入平台语义                | `Menu` → `SidebarMenu`，接收 `MenuItem[]` 并自动处理权限过滤 |
+| **组合封装**     | 由多个 shadcn/ui 组件组装而成                  | `PageContainer` = 布局容器 + 标题 + 共享样式                 |
 
 **约束**：
 
@@ -334,10 +400,13 @@ interface HttpClient {
 - 组件命名遵循 PascalCase，Props 命名使用 camelCase
 - 每个组件文件必须包含完整的 TypeScript 类型声明
 
-**已实现组件**：`PageContainer`, `SidebarMenu`, `AuthButton` 等基础组件
+**已实现组件**：`PageContainer`, `SidebarMenu`, `AuthButton` 等基础组件（`.repo-*` BEM 风格，过渡期共存）
+
+**shadcn/ui 组件**：基于 Radix UI 原语 + CVA 变体管理 + Tailwind CSS 封装，分三个 Tier 共约 30 个组件（Button/Input/Select/Dialog/Table/Toast/Form 等），详见 `docs/总体设计/详细设计/专题-UI主题增强与组件库设计.md`
 
 **图表**：`LineChart`, `BarChart`, `PieChart`，统一主题色
 **布局 Hooks**：`useMenu`, `useLayout`，消费权限数组返回菜单树
+**类型契约**：UI 组件的类型契约（`ThemeName`, `StatusTone` 等）从 `@repo/shared-types` 消费
 
 #### `shared-workflow` – 工作流引擎（规划中预留）
 
@@ -474,23 +543,23 @@ interface HttpClient {
 
 通过 `pnpm-workspace.yaml` 的 `catalog` 统一版本，子包使用 `"react": "catalog:"` 引用（当前全仓已统一采用 catalog 协议，根配置与 manifest 保持一致）。
 
-| 类别     | 技术栈                                                                          | 版本（catalog 声明）         |
-| -------- | ------------------------------------------------------------------------------- | ---------------------------- |
-| 框架     | React                                                                           | 19.2.5                       |
-| 构建     | Vite, @vitejs/plugin-react                                                      | 8.0.10, 6.0.1                |
-| 状态管理 | Zustand                                                                         | ^5.0.13                      |
-| 服务端状态 | TanStack Query (@tanstack/react-query)                                         | ^5.0                         |
-| 路由     | react-router                                                                    | ^7.15.0                      |
-| 组件库   | shadcn/ui (Radix UI + CVA + tailwind-merge)                                     | — (CLI 代码生成)             |
-| 图标     | lucide-react                                                                    | ^0.5                         |
-| 样式     | Tailwind CSS, @tailwindcss/vite                                                 | ^4, ^4                       |
-| 国际化   | react-i18next, i18next                                                          | ^15, ^24                     |
-| 图表     | Recharts (候选)                                                                 | ^2                           |
-| 请求     | ky                                                                              | ^1.8                         |
-| Mock     | MSW                                                                             | ^2.5                         |
-| 类型定义 | @types/react, @types/react-dom, @types/node                                     | 19.2.14, 19.2.3, 24.12.2     |
-| 测试     | Vitest, @testing-library/react, @testing-library/dom, @testing-library/jest-dom | 4.1.5, 16.3.2, 10.4.1, 6.9.1 |
-| 工作流   | bpmn-js（规划中预留，仓库当前未创建）                                           | —                            |
+| 类别       | 技术栈                                                                          | 版本（catalog 声明）         |
+| ---------- | ------------------------------------------------------------------------------- | ---------------------------- |
+| 框架       | React                                                                           | 19.2.5                       |
+| 构建       | Vite, @vitejs/plugin-react                                                      | 8.0.10, 6.0.1                |
+| 状态管理   | Zustand                                                                         | ^5.0.13                      |
+| 服务端状态 | TanStack Query (@tanstack/react-query)                                          | ^5.0                         |
+| 路由       | react-router                                                                    | ^7.15.0                      |
+| 组件库     | shadcn/ui (Radix UI + CVA + tailwind-merge)                                     | — (CLI 代码生成)             |
+| 图标       | lucide-react                                                                    | ^0.5                         |
+| 样式       | Tailwind CSS, @tailwindcss/vite                                                 | ^4, ^4                       |
+| 国际化     | react-i18next, i18next                                                          | ^15, ^24                     |
+| 图表       | Recharts (候选)                                                                 | ^2                           |
+| 请求       | ky                                                                              | ^1.8                         |
+| Mock       | MSW                                                                             | ^2.5                         |
+| 类型定义   | @types/react, @types/react-dom, @types/node                                     | 19.2.14, 19.2.3, 24.12.2     |
+| 测试       | Vitest, @testing-library/react, @testing-library/dom, @testing-library/jest-dom | 4.1.5, 16.3.2, 10.4.1, 6.9.1 |
+| 工作流     | bpmn-js（规划中预留，仓库当前未创建）                                           | —                            |
 
 > **说明**：表中版本为 `pnpm-workspace.yaml` 中 `catalog` 的声明值，实际安装版本以 `pnpm-lock.yaml` 锁定为准。TypeScript (6.0.3)、Vitest (4.1.5)、ESLint (9.39.4)、Sass (1.99.0)、Tailwind CSS (4.x)、jsdom (29.1.0) 通过 `overrides` 全局锁定。shadcn/ui 不是 npm 包，通过 CLI 将组件源码生成到 `packages/shared-ui/src/components/ui/` 目录中。ky 仅在 `shared-utils` 中作为 `HttpClient` 接口的默认适配器依赖，`shared-service` 不直接依赖 ky。上传进度不依赖 ky，由 `shared-utils` 内部 `uploadWithProgress`（XHR 封装）实现。
 
@@ -574,12 +643,14 @@ interface HttpClient {
 
 ```yaml
 packages:
+  shared-types: stable
   design-tokens: stable
   shared-utils: stable
   shared-i18n: stable
   shared-service: stable
   shared-ui: stable
   # shared-workflow: 规划中预留，仓库当前未创建该目录，不列入 STATUS.yaml
+  # shared: 已废弃（ADR-010），目录待移除
 
 apps:
   react-app: stable
@@ -610,9 +681,29 @@ apps:
 
 ### 18.3 本版主要变更
 
+**v3.0** (2026-06-26)：
+
+- 新增 ADR-010：废弃 `shared` 包，新建 `shared-types` 纯类型契约包
+- §4 仓库顶层结构：新增 `shared-types`，移除 `shared`
+- §5.1 层次划分：基础共享层新增 `shared-types`
+- §5.2 正式依赖方向：重绘依赖图，`shared-types` 为最底层零依赖包；新增 `@repo/shared` 禁止依赖约束
+- §5.3 依赖检查规则：`shared-types` 零依赖约束；基础层可依赖 `shared-types`；新增 `shared` 禁止依赖规则
+- §5.4 包间依赖矩阵：新增 `shared-types` 行；`design-tokens` 可依赖项从"无"改为 `shared-types`；`shared-utils` 可依赖项新增 `shared-types`；`shared-service` 可依赖项新增 `shared-types`；`shared-ui` 可依赖项新增 `shared-types`
+- §6.1 新增 `shared-types` 包职责说明；`design-tokens` 新增依赖说明；`shared-utils` 新增依赖说明
+- §6.2 `shared-service` 新增类型消费说明，`request/` 重导出清理
+- §6.3 `shared-ui` 新增类型契约来源说明
+- §17 包治理状态：新增 `shared-types: stable`，标注 `shared` 已废弃
+- §6.3 `shared-ui` 新增 shadcn/ui 组件封装说明，引用专题设计文档
+- 新增专题设计文档 `docs/总体设计/详细设计/专题-UI主题增强与组件库设计.md`，覆盖主题增强、组件库封装、展示页面设计
+
+**v2.2** (2026-06-26)：
+
+- §6.3 `shared-ui` 新增 shadcn/ui 组件封装说明，引用专题设计文档
+- 新增专题设计文档 `docs/总体设计/详细设计/专题-UI主题增强与组件库设计.md`，覆盖主题增强、组件库封装、展示页面设计
+
 **v2.1** (2026-06-25)：
 
-- 新增 ADR-008：HTTP 客户端从 axios 迁移到 ky（供应链安全 + 零依赖 + 现代_fetch 封装）
+- 新增 ADR-008：HTTP 客户端从 axios 迁移到 ky（供应链安全 + 零依赖 + 现代\_fetch 封装）
 - 新增 ADR-009：引入 TanStack Query 作为服务端状态管理层
 - §1.3 术语表新增 `HttpClient`、`TanStack Query` 条目
 - §3.2 架构重议触发条件新增 ky 停止维护条件

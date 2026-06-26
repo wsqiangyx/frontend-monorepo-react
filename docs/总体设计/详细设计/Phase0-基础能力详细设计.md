@@ -1,8 +1,7 @@
 # Phase 0 基础能力详细设计
 
 > 制定日期：2026-05-15
-> 最近修订：2026-06-25
-> 适用阶段：Phase 0
+> 最近修订：2026-06-26> 适用阶段：Phase 0
 > 文档性质：基础能力阶段详细设计
 > 上游设计：`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`
 
@@ -47,13 +46,16 @@ Phase 0 只回答一件事：如何把仓库收敛为一个可验证、可扩展
 apps/
   react-app/
 packages/
-  shared/
+  shared-types/      # 跨包共享的纯类型契约（零运行时依赖）
+  shared-utils/
   shared-service/
   design-tokens/
   resources/
   mock/
   shared-ui/
 ```
+
+> **注意**：`shared` 包已废弃（ADR-010），其原有职责已收敛：`ui-contract` 移入 `shared-types`，HTTP/i18n/utils 重导出由消费者直接引用源头包。
 
 ### 3.2 脚本与配置契约
 
@@ -104,8 +106,12 @@ packages/
 
 采用”主题内核 + React 共享组件包 + app 接入层”的结构：
 
+- `packages/shared-types`
+  - 承载跨包共享的纯类型契约（UI 契约、API 契约、路由契约）
+  - 零运行时依赖，零 workspace 包依赖
 - `packages/design-tokens`
   - 管理主题注册表、语义 token、主题快照、CSS 变量、Tailwind CSS 主题配置
+  - 仅依赖 `shared-types`（消费 `ThemeName`、`ThemeMode` 等类型）
 - `packages/shared-ui`
   - 封装 React 公共组件（基于 shadcn/ui）
   - 不保存主题状态，只消费主题结果
@@ -124,11 +130,39 @@ packages/
 - `ThemePreference = 'system' | 'light' | 'dark'`
 - 主题运行时优先收敛到 `@repo/design-tokens/theme`
 - `@repo/design-tokens` 根入口承载 token、CSS 变量和 Tailwind 主题适配
+- 跨包共享的类型契约（`ThemeName`、`ThemeMode`、`StatusTone` 等）定义在 `@repo/shared-types`，`design-tokens` 和 `shared-ui` 从中消费
 - 共享 UI 样式只能由 React app 在 `bootstrap.tsx` 中显式引入 `@repo/shared-ui/style.css`
 - `main -> bootstrap -> App` 分层不得破坏
 - `index.html` 必须在 `main.tsx` 前加载 `/theme-init.js`
 - 所有组件样式通过 CSS 变量和 Tailwind CSS 类名控制，禁止硬编码颜色、字号等视觉属性
 - shadcn/ui 组件源码通过 CLI 生成到 `packages/shared-ui/src/components/ui/`，可完全自定义
+- `@repo/shared` 包已废弃（ADR-010），禁止新增任何 import；原有 `./http`、`./i18n`、`./ui-contract` 路径的消费者须迁移至 `@repo/shared-utils/http`、`@repo/shared-i18n`、`@repo/shared-types`
+
+### 4.4 主题与共享 UI 增强设计
+
+Phase 0 基线建立后，主题系统与组件库的增强设计见专题文档：
+
+- **`docs/总体设计/详细设计/专题-UI主题增强与组件库设计.md`**
+
+该专题文档覆盖以下增强内容：
+
+- **设计令牌增强**：新增动效 (motion)、层级 (zIndex)、透明度 (opacity)、过渡 (transitions) 四类 token；扩展颜色系统（主色色阶、secondary/accent/destructive 语义色、交互态颜色）
+- **暗色主题自动派生**：通过 `deriveDarkFromLight()` 纯函数从亮色快照派生暗色快照，新增主题变体时无需手动维护暗色值
+- **compact 主题变体**：更紧凑的间距和圆角，与 default 主题同色系
+- **shadcn/ui CSS 变量桥接**：将 design-tokens 变量映射到 shadcn/ui 期望的变量名空间，确保主题切换自动联动
+- **shadcn/ui 组件封装**：基于 Radix UI 原语 + CVA + Tailwind CSS，分三个 Tier 封装约 30 个常用组件
+- **组件展示页面**：在 react-app 中新增 `/components` 路由展示所有组件用法
+
+### 4.5 主题与共享 UI 正式契约（增强）
+
+在 §4.3 契约基础上，新增以下契约条款：
+
+- ThemeSnapshot 支持交互态颜色字段（`colorBgHover`、`colorBgPressed`、`colorBgSelected`、`colorBorderHover`、`colorBorderFocus`、`colorDestructive` 等）
+- 暗色主题通过 `deriveDarkFromLight()` 派生，禁止手动维护暗色快照
+- 主题名支持 `default` 和 `compact` 两种变体
+- 桥接变量（`--background`、`--primary` 等）通过 `var(--color-*)` 引用 design-tokens 变量，禁止重复声明值
+- 新组件必须使用 shadcn/ui 模式（`forwardRef` + `cva` + `cn()`），放入 `components/ui/`
+- 现有 `.repo-*` 组件 API 不变，直到显式迁移
 
 ## 5. 0.3 国际化
 
