@@ -9,7 +9,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "paths": {
-      "@repo/shared-types/ui-contract": ["../shared-types/dist/ui-contract/index.d.ts"]
+      "@repo/shared-utils/ui-contract": ["../shared-utils/dist/ui-contract/index.d.ts"]
     }
   },
   "include": ["src/**/*.ts"],

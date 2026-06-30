@@ -14,7 +14,7 @@
 // ============================================================================
 
 import { ApiError } from './types'
-import type { ApiResponse } from '../types'
+import type { ApiResponse } from '../api-contract'
 
 export interface UploadConfig {
   baseURL?: string

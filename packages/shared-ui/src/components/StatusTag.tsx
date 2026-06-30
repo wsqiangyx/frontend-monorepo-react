@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import type { StatusTone } from '@repo/shared-types/ui-contract'
+import type { StatusTone } from '@repo/shared-utils/ui-contract'
 
 interface StatusTagProps extends HTMLAttributes<HTMLSpanElement> {
   status: StatusTone

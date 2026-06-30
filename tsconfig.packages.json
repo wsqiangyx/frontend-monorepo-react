@@ -3,17 +3,14 @@
   // ============================================================================
   // 包级 TypeScript 项目引用（composite 模式）
   // ============================================================================
-  // 构建顺序：shared-types → shared-utils / shared-i18n → shared-service → 其余。
-  // shared-types 是零依赖的纯类型契约包，必须最先构建。
+  // 构建顺序：shared-utils → shared-service → design-tokens → mock → shared-ui。
+  // shared-utils 是零依赖的基础包，必须最先构建。
   // 此文件供根 typecheck 脚本使用，不包含 apps/（应用有独立 tsconfig）。
   // ============================================================================
   "references": [
-    { "path": "./packages/shared-types/tsconfig.build.json" },
     { "path": "./packages/shared-utils/tsconfig.build.json" },
-    { "path": "./packages/shared-i18n/tsconfig.build.json" },
     { "path": "./packages/shared-service/tsconfig.build.json" },
     { "path": "./packages/design-tokens/tsconfig.build.json" },
-    { "path": "./packages/resources/tsconfig.build.json" },
     { "path": "./packages/mock/tsconfig.build.json" },
     { "path": "./packages/shared-ui/tsconfig.build.json" }
   ]

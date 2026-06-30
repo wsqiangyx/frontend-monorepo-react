@@ -13,6 +13,22 @@
     "./http": {
       "types": "./dist/http/index.d.ts",
       "default": "./dist/http/index.js"
+    },
+    "./ui-contract": {
+      "types": "./dist/ui-contract/index.d.ts",
+      "default": "./dist/ui-contract/index.js"
+    },
+    "./api-contract": {
+      "types": "./dist/api-contract/index.d.ts",
+      "default": "./dist/api-contract/index.js"
+    },
+    "./routes": {
+      "types": "./dist/routes/index.d.ts",
+      "default": "./dist/routes/index.js"
+    },
+    "./i18n": {
+      "types": "./dist/i18n/index.d.ts",
+      "default": "./dist/i18n/index.js"
     }
   },
   "scripts": {
@@ -23,7 +39,6 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
-    "@repo/shared-types": "workspace:*",
     "ky": "catalog:"
   }
 }

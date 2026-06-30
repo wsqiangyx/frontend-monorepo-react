@@ -1,6 +1,6 @@
-import { createHttpClient } from '@repo/shared-utils/http'
+import { createPlatformClient } from './http-client'
 
-export const api = createHttpClient({ baseURL: '/api' })
+export const api = createPlatformClient()
 
 export interface PaginatedResult<T> {
   items: T[]

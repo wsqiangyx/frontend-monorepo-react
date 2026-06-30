@@ -12,8 +12,6 @@ const subpathModules = [
   'permissions',
   'workspace-tabs',
   'request',
-  'contracts',
-  'runtime',
 ] as const
 
 const entry: Record<string, string> = {

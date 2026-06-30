@@ -19,7 +19,11 @@ export default function MenuListView() {
     pageSize,
   })
 
-  const { data: result, isLoading } = useQuery({
+  const {
+    data: result,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey,
     queryFn: () =>
       fetchMenus({
@@ -52,7 +56,7 @@ export default function MenuListView() {
         description="展示平台菜单定义，支持关键字与类型筛选。"
         loading={isLoading}
         loadingText="正在加载菜单数据..."
-        empty={!isLoading && menus.length === 0}
+        empty={!isLoading && !error && menus.length === 0}
         emptyContent={<div className="page-empty">未查询到匹配菜单。</div>}
         toolbar={
           <PermissionGate permissionSet={permissionSet} code="system:menu:create">
@@ -62,6 +66,7 @@ export default function MenuListView() {
           </PermissionGate>
         }
       >
+        {error && <div className="page-error">加载失败：{error.message}</div>}
         <FilterBar
           actions={
             <div className="page-filter-actions">

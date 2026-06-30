@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { resolveInitialLocale, writeStoredLocale, type Locale } from '@repo/shared-i18n'
+import { resolveInitialLocale, writeStoredLocale, type Locale } from '@repo/shared-utils/i18n'
 
 interface LocaleState {
   locale: Locale

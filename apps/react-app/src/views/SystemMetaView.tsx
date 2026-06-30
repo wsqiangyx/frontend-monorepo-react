@@ -4,7 +4,11 @@ import { fetchSystemMeta } from '@/services/system-meta-service'
 import { systemMetaKeys } from '@/lib/query-keys'
 
 export default function SystemMetaView() {
-  const { data: meta, isLoading } = useQuery({
+  const {
+    data: meta,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: systemMetaKeys.detail(),
     queryFn: () => fetchSystemMeta(),
   })
@@ -16,9 +20,10 @@ export default function SystemMetaView() {
         description="当前仍处于 Mock 驱动阶段，用于验证系统信息展示契约。"
         loading={isLoading}
         loadingText="正在加载系统元信息..."
-        empty={!isLoading && !meta}
+        empty={!isLoading && !error && !meta}
         emptyContent={<div className="page-empty">暂无系统元信息。</div>}
       >
+        {error && <div className="page-error">加载失败：{error.message}</div>}
         {meta ? (
           <div className="meta-grid">
             <article className="meta-card">

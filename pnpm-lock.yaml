@@ -39,6 +39,9 @@ catalogs:
     lucide-react:
       specifier: ^0.469
       version: 0.469.0
+    msw:
+      specifier: ^2.5
+      version: 2.13.6
     react:
       specifier: 19.2.5
       version: 19.2.5
@@ -144,18 +147,15 @@ importers:
       '@repo/design-tokens':
         specifier: workspace:*
         version: link:../../packages/design-tokens
-      '@repo/resources':
-        specifier: workspace:*
-        version: link:../../packages/resources
-      '@repo/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@repo/shared-service':
         specifier: workspace:*
         version: link:../../packages/shared-service
       '@repo/shared-ui':
         specifier: workspace:*
         version: link:../../packages/shared-ui
+      '@repo/shared-utils':
+        specifier: workspace:*
+        version: link:../../packages/shared-utils
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.101.1(react@19.2.5)
@@ -206,36 +206,20 @@ importers:
         specifier: 'catalog:'
         version: 8.0.10(@types/node@24.12.2)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)
 
-  packages/design-tokens: {}
-
-  packages/mock:
+  packages/design-tokens:
     dependencies:
-      msw:
-        specifier: 2.13.6
-        version: 2.13.6(@types/node@24.12.2)(typescript@6.0.3)
-
-  packages/resources: {}
-
-  packages/shared:
-    dependencies:
-      '@repo/shared-i18n':
-        specifier: workspace:*
-        version: link:../shared-i18n
       '@repo/shared-utils':
         specifier: workspace:*
         version: link:../shared-utils
-      react:
-        specifier: 'catalog:'
-        version: 19.2.5
-      react-router-dom:
-        specifier: 'catalog:'
-        version: 7.15.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-    devDependencies:
-      '@types/react':
-        specifier: 'catalog:'
-        version: 19.2.14
 
-  packages/shared-i18n: {}
+  packages/mock:
+    dependencies:
+      '@repo/shared-utils':
+        specifier: workspace:*
+        version: link:../shared-utils
+      msw:
+        specifier: 'catalog:'
+        version: 2.13.6(@types/node@24.12.2)(typescript@6.0.3)
 
   packages/shared-service:
     dependencies:
@@ -252,12 +236,12 @@ importers:
       '@repo/design-tokens':
         specifier: workspace:*
         version: link:../design-tokens
-      '@repo/shared':
-        specifier: workspace:*
-        version: link:../shared
       '@repo/shared-service':
         specifier: workspace:*
         version: link:../shared-service
+      '@repo/shared-utils':
+        specifier: workspace:*
+        version: link:../shared-utils
       react:
         specifier: 'catalog:'
         version: 19.2.5

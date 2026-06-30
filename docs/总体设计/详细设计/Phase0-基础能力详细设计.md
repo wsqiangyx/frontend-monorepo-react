@@ -1,7 +1,7 @@
 # Phase 0 基础能力详细设计
 
 > 制定日期：2026-05-15
-> 最近修订：2026-06-26> 适用阶段：Phase 0
+> 最近修订：2026-06-30> 适用阶段：Phase 0
 > 文档性质：基础能力阶段详细设计
 > 上游设计：`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`
 
@@ -46,16 +46,14 @@ Phase 0 只回答一件事：如何把仓库收敛为一个可验证、可扩展
 apps/
   react-app/
 packages/
-  shared-types/      # 跨包共享的纯类型契约（零运行时依赖）
   shared-utils/
   shared-service/
   design-tokens/
-  resources/
   mock/
   shared-ui/
 ```
 
-> **注意**：`shared` 包已废弃（ADR-010），其原有职责已收敛：`ui-contract` 移入 `shared-types`，HTTP/i18n/utils 重导出由消费者直接引用源头包。
+> **注意**：`shared` 包已废弃（ADR-010），`shared-types`、`shared-i18n`、`resources` 已合并至 `shared-utils` 或 `react-app`（ADR-011）。
 
 ### 3.2 脚本与配置契约
 
@@ -106,12 +104,14 @@ packages/
 
 采用”主题内核 + React 共享组件包 + app 接入层”的结构：
 
-- `packages/shared-types`
-  - 承载跨包共享的纯类型契约（UI 契约、API 契约、路由契约）
-  - 零运行时依赖，零 workspace 包依赖
+- `packages/shared-utils`
+  - 承载跨包共享的纯类型契约（`./ui-contract`、`./api-contract`、`./routes` 子路径导出）
+  - 承载通用运行时工具与 HTTP 客户端接口（`./http` 子路径导出）
+  - 承载国际化运行时（`./i18n` 子路径导出）
+  - 零 workspace 包依赖
 - `packages/design-tokens`
   - 管理主题注册表、语义 token、主题快照、CSS 变量、Tailwind CSS 主题配置
-  - 仅依赖 `shared-types`（消费 `ThemeName`、`ThemeMode` 等类型）
+  - 仅依赖 `shared-utils`（消费 `ThemeName`、`ThemeMode` 等类型）
 - `packages/shared-ui`
   - 封装 React 公共组件（基于 shadcn/ui）
   - 不保存主题状态，只消费主题结果
@@ -130,13 +130,13 @@ packages/
 - `ThemePreference = 'system' | 'light' | 'dark'`
 - 主题运行时优先收敛到 `@repo/design-tokens/theme`
 - `@repo/design-tokens` 根入口承载 token、CSS 变量和 Tailwind 主题适配
-- 跨包共享的类型契约（`ThemeName`、`ThemeMode`、`StatusTone` 等）定义在 `@repo/shared-types`，`design-tokens` 和 `shared-ui` 从中消费
+- 跨包共享的类型契约（`ThemeName`、`ThemeMode`、`StatusTone` 等）定义在 `@repo/shared-utils/ui-contract`，`design-tokens` 和 `shared-ui` 从中消费
 - 共享 UI 样式只能由 React app 在 `bootstrap.tsx` 中显式引入 `@repo/shared-ui/style.css`
 - `main -> bootstrap -> App` 分层不得破坏
 - `index.html` 必须在 `main.tsx` 前加载 `/theme-init.js`
 - 所有组件样式通过 CSS 变量和 Tailwind CSS 类名控制，禁止硬编码颜色、字号等视觉属性
 - shadcn/ui 组件源码通过 CLI 生成到 `packages/shared-ui/src/components/ui/`，可完全自定义
-- `@repo/shared` 包已废弃（ADR-010），禁止新增任何 import；原有 `./http`、`./i18n`、`./ui-contract` 路径的消费者须迁移至 `@repo/shared-utils/http`、`@repo/shared-i18n`、`@repo/shared-types`
+- `@repo/shared` 包已废弃（ADR-010），禁止新增任何 import；`@repo/shared-types` 和 `@repo/shared-i18n` 已合并至 `shared-utils`（ADR-011），禁止新增任何 import
 
 ### 4.4 主题与共享 UI 增强设计
 
@@ -169,7 +169,7 @@ Phase 0 基线建立后，主题系统与组件库的增强设计见专题文档
 ### 5.1 设计目标
 
 - 仅支持 `zh-CN` 与 `en-US`
-- 在 `packages/shared-i18n` 中建立共享 i18n 运行时
+- 在 `packages/shared-utils/i18n` 中建立共享 i18n 运行时
 - 在 React app 建立统一的 locale 初始化、持久化与切换链路
 - 去除共享组件中的内部硬编码英文
 
@@ -179,20 +179,20 @@ Phase 0 基线建立后，主题系统与组件库的增强设计见专题文档
 
 分层如下：
 
-- `packages/shared-i18n`
-  - 提供 `@repo/shared-i18n`
+- `packages/shared-utils`（`./i18n` 子路径）
+  - 提供 `@repo/shared-utils/i18n`
   - 承载 locale 类型、词典结构、fallback 规则、浏览器语言探测、localStorage 持久化与翻译函数
 - `apps/react-app`
   - 建立 locale store 与 provider/hook
   - 负责组装 shared messages 与 app messages
   - 负责语言切换入口与页面级文案消费
 - `packages/shared-ui`
-  - 不直接依赖 `@repo/shared-i18n`
+  - 不直接依赖 `@repo/shared-utils/i18n`
   - 仅消费外部传入的翻译后文案
 
 ### 5.3 i18n 正式契约
 
-- `@repo/shared-i18n` 是唯一共享国际化运行时
+- `@repo/shared-utils/i18n` 是唯一共享国际化运行时
 - 当前正式支持语言只有 `zh-CN` 与 `en-US`
 - 正式 locale 持久化 key：`repo-locale`
 - 共享组件不承接翻译运行时，只接收翻译后的文本 props

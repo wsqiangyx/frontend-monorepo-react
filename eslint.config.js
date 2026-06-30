@@ -38,11 +38,6 @@ export default defineConfig(
         {
           patterns: [
             {
-              group: ['@repo/resources/*/*'],
-              message:
-                'Use only @repo/resources or the approved subpaths: assets, icons, svg, sprite.',
-            },
-            {
               group: ['**/packages/*/src/*', '**/packages/*/dist/*'],
               message: 'Consume shared packages through workspace aliases or package exports.',
             },

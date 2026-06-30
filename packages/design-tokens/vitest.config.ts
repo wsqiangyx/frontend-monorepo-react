@@ -18,8 +18,8 @@ export default defineProject({
   },
   resolve: {
     alias: {
-      '@repo/shared-types/ui-contract': fileURLToPath(
-        new URL('../shared-types/src/ui-contract/index.ts', import.meta.url),
+      '@repo/shared-utils/ui-contract': fileURLToPath(
+        new URL('../shared-utils/src/ui-contract/index.ts', import.meta.url),
       ),
     },
   },

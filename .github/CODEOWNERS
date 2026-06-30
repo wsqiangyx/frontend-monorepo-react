@@ -8,12 +8,11 @@
 apps/react-app/ @wsqiangyx
 
 # 共享包
-packages/shared/ @wsqiangyx
-packages/platform-core/ @wsqiangyx
-packages/ui-tokens/ @wsqiangyx
-packages/resources/ @wsqiangyx
+packages/shared-utils/ @wsqiangyx
+packages/shared-service/ @wsqiangyx
+packages/design-tokens/ @wsqiangyx
 packages/mock/ @wsqiangyx
-packages/ui-react/ @wsqiangyx
+packages/shared-ui/ @wsqiangyx
 
 # 文档
 docs/ @wsqiangyx

@@ -14,10 +14,7 @@
   },
   "dependencies": {
     "@repo/shared-service": "workspace:*",
-    "@repo/shared-types": "workspace:*",
     "@repo/shared-utils": "workspace:*",
-    "@repo/shared-i18n": "workspace:*",
-    "@repo/resources": "workspace:*",
     "@repo/shared-ui": "workspace:*",
     "@repo/design-tokens": "workspace:*",
     "@tanstack/react-query": "catalog:",

@@ -8,21 +8,19 @@
     "paths": {
       "@/*": ["./src/*"],
       "@repo/shared-utils/http": ["../../packages/shared-utils/src/http/index.ts"],
+      "@repo/shared-utils/ui-contract": ["../../packages/shared-utils/src/ui-contract/index.ts"],
+      "@repo/shared-utils/api-contract": ["../../packages/shared-utils/src/api-contract/index.ts"],
+      "@repo/shared-utils/routes": ["../../packages/shared-utils/src/routes/index.ts"],
+      "@repo/shared-utils/i18n": ["../../packages/shared-utils/src/i18n/index.ts"],
       "@repo/shared-utils": ["../../packages/shared-utils/src/index.ts"],
-      "@repo/shared-i18n": ["../../packages/shared-i18n/src/index.ts"],
       "@repo/shared-service": ["../../packages/shared-service/src/index.ts"],
-      "@repo/shared-types/ui-contract": ["../../packages/shared-types/src/ui-contract/index.ts"],
-      "@repo/shared-types/api-contract": ["../../packages/shared-types/src/api-contract/index.ts"],
-      "@repo/shared-types/routes": ["../../packages/shared-types/src/routes/index.ts"],
       "@repo/mock/browser": ["../../packages/mock/src/browser.ts"],
       "@repo/mock/server": ["../../packages/mock/src/server.ts"],
       "@repo/design-tokens/theme": ["../../packages/design-tokens/src/theme/index.ts"],
       "@repo/design-tokens/css": ["../../packages/design-tokens/src/to-css.ts"],
       "@repo/design-tokens/tailwind-preset": ["../../packages/design-tokens/src/theme/tailwind.ts"],
       "@repo/shared-ui": ["../../packages/shared-ui/src/index.ts"],
-      "@repo/shared-ui/style.css": ["../../packages/shared-ui/src/style.css"],
-      "@repo/resources": ["../../packages/resources/src/index.ts"],
-      "@repo/resources/*": ["../../packages/resources/src/*/index.ts"]
+      "@repo/shared-ui/style.css": ["../../packages/shared-ui/src/style.css"]
     }
   },
   "include": ["src"]

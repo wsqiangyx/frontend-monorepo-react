@@ -13,14 +13,11 @@ export default defineConfig({
   test: {
     projects: [
       // 基础共享层
-      'packages/shared-types/vitest.config.ts',
       'packages/shared-utils/vitest.config.ts',
-      'packages/shared-i18n/vitest.config.ts',
       // 平台内核层
       'packages/shared-service/vitest.config.ts',
-      // 设计令牌与静态资源
+      // 设计令牌
       'packages/design-tokens/vitest.config.ts',
-      'packages/resources/vitest.config.ts',
       // Mock 与 UI 适配层
       'packages/mock/vitest.config.ts',
       'packages/shared-ui/vitest.config.ts',
