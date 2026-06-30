@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { PageContainer, MetricCard, PermissionGate } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
-import { createHttpClient } from '@repo/shared-utils/http'
+import { api } from '@/services/shared'
 import { dashboardKeys } from '@/lib/query-keys'
 
 interface DashboardSummary {
@@ -13,15 +13,21 @@ interface DashboardSummary {
   welcomeMessage?: string
 }
 
-const api = createHttpClient({ baseURL: '/api' })
-
 export default function DashboardView() {
   const permissionSet = usePermissionStore((s) => s.permissionSet)
 
-  const { data: summary, isLoading } = useQuery({
+  const {
+    data: summary,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: dashboardKeys.summary(),
     queryFn: () => api.get<DashboardSummary>('/dashboard/summary'),
   })
+
+  if (error) {
+    return <PageContainer title="Dashboard">加载失败：{error.message}</PageContainer>
+  }
 
   if (isLoading || !summary) {
     return <PageContainer title="Dashboard">Loading...</PageContainer>

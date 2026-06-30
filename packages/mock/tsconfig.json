@@ -8,7 +8,10 @@
     "composite": true,
     // MSW 浏览器端（browser.ts）使用 ServiceWorker API，
     // 需要 DOM 和 DOM.Iterable lib 提供类型定义（如 navigator.serviceWorker）
-    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@repo/shared-utils/api-contract": ["../shared-utils/dist/api-contract/index.d.ts"]
+    }
   },
   "include": ["src"]
 }

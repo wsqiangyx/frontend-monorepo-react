@@ -8,11 +8,9 @@
 //   navigation/     — 菜单树与路由元数据模型（PlatformMenuNode, PlatformRouteMeta）
 //   permissions/    — 权限码品牌类型与权限集判断（PermissionCode, PermissionSet）
 //   workspace-tabs/ — 多标签页模型（WorkspaceTab 的 CRUD 操作）
-//   request/        — 请求/响应契约（ApiResponse, PlatformError 等类型重导出）
-//   contracts/      — 平台版本契约
-//   runtime/        — 运行时环境标识（development/production/test）
+//   platform.ts     — 平台版本契约与运行时环境标识
 //
-// 依赖方向：shared-service → shared-utils（平台类型来源）
+// 依赖方向：shared-service → shared-utils（平台类型与工具来源）
 // 禁止依赖：React、DOM、UI 框架（纯函数层，通过依赖注入传入存储）
 // ============================================================================
 
@@ -21,6 +19,4 @@ export * from './auth'
 export * from './navigation'
 export * from './permissions'
 export * from './workspace-tabs'
-export * from './request'
-export * from './contracts'
-export * from './runtime'
+export * from './platform'

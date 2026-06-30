@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useEffect, useMemo } from 'react'
-import { createTranslator } from '@repo/shared-i18n'
+import { createTranslator } from '@repo/shared-utils/i18n'
 import { ReactI18nContext } from './context'
 import { reactAppI18nMessages } from './messages'
 import { useLocaleStore } from '@/stores/locale'

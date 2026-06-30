@@ -25,18 +25,6 @@
     "./workspace-tabs": {
       "types": "./dist/workspace-tabs/index.d.ts",
       "default": "./dist/workspace-tabs/index.js"
-    },
-    "./request": {
-      "types": "./dist/request/index.d.ts",
-      "default": "./dist/request/index.js"
-    },
-    "./contracts": {
-      "types": "./dist/contracts/index.d.ts",
-      "default": "./dist/contracts/index.js"
-    },
-    "./runtime": {
-      "types": "./dist/runtime/index.d.ts",
-      "default": "./dist/runtime/index.js"
     }
   },
   "scripts": {
@@ -47,7 +35,6 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage --config vitest.config.ts"
   },
   "dependencies": {
-    "@repo/shared-types": "workspace:*",
     "@repo/shared-utils": "workspace:*"
   },
   "devDependencies": {

@@ -24,31 +24,33 @@ const sourceAlias = [
     ),
   },
   {
+    find: '@repo/shared-utils/ui-contract',
+    replacement: fileURLToPath(
+      new URL('../../packages/shared-utils/src/ui-contract/index.ts', import.meta.url),
+    ),
+  },
+  {
+    find: '@repo/shared-utils/api-contract',
+    replacement: fileURLToPath(
+      new URL('../../packages/shared-utils/src/api-contract/index.ts', import.meta.url),
+    ),
+  },
+  {
+    find: '@repo/shared-utils/routes',
+    replacement: fileURLToPath(
+      new URL('../../packages/shared-utils/src/routes/index.ts', import.meta.url),
+    ),
+  },
+  {
+    find: '@repo/shared-utils/i18n',
+    replacement: fileURLToPath(
+      new URL('../../packages/shared-utils/src/i18n/index.ts', import.meta.url),
+    ),
+  },
+  {
     find: '@repo/shared-utils',
     replacement: fileURLToPath(
       new URL('../../packages/shared-utils/src/index.ts', import.meta.url),
-    ),
-  },
-  {
-    find: '@repo/shared-i18n',
-    replacement: fileURLToPath(new URL('../../packages/shared-i18n/src/index.ts', import.meta.url)),
-  },
-  {
-    find: '@repo/shared-types/ui-contract',
-    replacement: fileURLToPath(
-      new URL('../../packages/shared-types/src/ui-contract/index.ts', import.meta.url),
-    ),
-  },
-  {
-    find: '@repo/shared-types/api-contract',
-    replacement: fileURLToPath(
-      new URL('../../packages/shared-types/src/api-contract/index.ts', import.meta.url),
-    ),
-  },
-  {
-    find: '@repo/shared-types/routes',
-    replacement: fileURLToPath(
-      new URL('../../packages/shared-types/src/routes/index.ts', import.meta.url),
     ),
   },
   {
@@ -90,10 +92,6 @@ const sourceAlias = [
   {
     find: '@repo/shared-ui',
     replacement: fileURLToPath(new URL('../../packages/shared-ui/src/index.ts', import.meta.url)),
-  },
-  {
-    find: '@repo/resources',
-    replacement: fileURLToPath(new URL('../../packages/resources/src', import.meta.url)),
   },
 ]
 

@@ -1,26 +1,10 @@
 // ============================================================================
 // @repo/mock — 响应信封工具
 // ============================================================================
-// 统一 mock 返回格式，与平台契约 ApiResponse<T> 对齐：
-//   { success: boolean, code: string, message: string, data: T, requestId?: string, timestamp: string }
+// 统一 mock 返回格式，复用 @repo/shared-utils/api-contract 的规范类型。
 // ============================================================================
 import { HttpResponse } from 'msw'
-
-interface ApiResponse<T> {
-  success: boolean
-  code: string
-  message: string
-  data: T
-  requestId?: string
-  timestamp: string
-}
-
-interface PaginatedData<T> {
-  items: T[]
-  total: number
-  page: number
-  pageSize: number
-}
+import type { ApiResponse, PaginatedData } from '@repo/shared-utils/api-contract'
 
 function makeTimestamp(): string {
   return new Date().toISOString()

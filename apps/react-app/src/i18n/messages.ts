@@ -1,4 +1,4 @@
-import { mergeMessages, sharedMessages, type Messages } from '@repo/shared-i18n'
+import { mergeMessages, sharedMessages, type Messages } from '@repo/shared-utils/i18n'
 
 const reactAppMessages: Messages = {
   'zh-CN': {

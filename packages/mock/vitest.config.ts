@@ -5,14 +5,20 @@
 // 中 projects 数组的一个子项目，由根配置聚合。
 // ============================================================================
 import { defineProject } from 'vitest/config'
+import { resolve } from 'node:path'
 
 export default defineProject({
+  resolve: {
+    alias: {
+      '@repo/shared-utils/api-contract': resolve(
+        __dirname,
+        '../shared-utils/src/api-contract/index.ts',
+      ),
+    },
+  },
   test: {
-    // 启用全局 API：允许直接使用 describe/it/expect 而无需 import
     globals: true,
-    // 测试环境：Node。mock 包的 handler 逻辑不依赖 DOM
     environment: 'node',
-    // 使用线程池并行执行测试
     pool: 'threads',
   },
 })

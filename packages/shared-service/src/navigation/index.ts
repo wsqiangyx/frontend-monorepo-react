@@ -61,6 +61,7 @@ export interface PlatformRouteMeta {
   layout?: string
 }
 
+/** @deprecated 暂无外部消费者，内部使用 NormalizedPlatformMenuNode 类型代替 */
 export interface NormalizedPlatformRouteMeta extends Omit<PlatformRouteMeta, 'requiresAuth'> {
   requiresAuth: boolean
 }
@@ -96,6 +97,7 @@ export function sortMenuNodes(nodes: PlatformMenuNode[]): PlatformMenuNode[] {
     .map((node) => (node.children ? { ...node, children: sortMenuNodes(node.children) } : node))
 }
 
+/** @deprecated 暂无外部消费者，路由元数据规范化尚未在宿主应用中使用 */
 export function normalizeRouteMeta(meta: PlatformRouteMeta): NormalizedPlatformRouteMeta {
   return {
     ...meta,

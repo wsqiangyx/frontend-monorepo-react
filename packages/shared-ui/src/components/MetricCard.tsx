@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import type { MetricTrend } from '@repo/shared-types/ui-contract'
+import type { MetricTrend } from '@repo/shared-utils/ui-contract'
 
 interface MetricCardProps extends HTMLAttributes<HTMLDivElement> {
   label: string

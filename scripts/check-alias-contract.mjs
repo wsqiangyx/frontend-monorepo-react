@@ -32,13 +32,6 @@ export function extractAliasEntriesFromText(text) {
 export function createAliasContractExpectation(aliasEntries) {
   return Object.fromEntries(
     aliasEntries.flatMap(({ find, target }) => {
-      if (find === '@repo/resources' && target.endsWith('/src')) {
-        return [
-          [find, [normalizeRelativePath(`${target}/index.ts`)]],
-          [`${find}/*`, [normalizeRelativePath(`${target}/*/index.ts`)]],
-        ]
-      }
-
       return [[find, [normalizeRelativePath(target)]]]
     }),
   )

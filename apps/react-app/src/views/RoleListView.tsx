@@ -1,22 +1,22 @@
-import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { DataPanel, PageContainer, PermissionGate } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
-import { fetchRoles, type RoleRecord } from '@/services/role-service'
+import { fetchRoles } from '@/services/role-service'
 import { roleKeys } from '@/lib/query-keys'
 
 export default function RoleListView() {
   const permissionSet = usePermissionStore((state) => state.permissionSet)
-  const [roles, setRoles] = useState<RoleRecord[]>([])
 
-  const { isLoading } = useQuery({
+  const {
+    data: result,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: roleKeys.list(),
-    queryFn: async () => {
-      const result = await fetchRoles()
-      setRoles(result.items)
-      return result
-    },
+    queryFn: fetchRoles,
   })
+
+  const roles = result?.items ?? []
 
   return (
     <PageContainer title="角色管理">
@@ -25,7 +25,7 @@ export default function RoleListView() {
         description="聚焦角色职责、权限规模与使用人数。"
         loading={isLoading}
         loadingText="正在加载角色数据..."
-        empty={!isLoading && roles.length === 0}
+        empty={!isLoading && !error && roles.length === 0}
         emptyContent={<div className="page-empty">暂无角色数据。</div>}
         toolbar={
           <PermissionGate permissionSet={permissionSet} code="system:role:create">
@@ -35,6 +35,7 @@ export default function RoleListView() {
           </PermissionGate>
         }
       >
+        {error && <div className="page-error">加载失败：{error.message}</div>}
         <div className="role-grid">
           {roles.map((role) => (
             <article key={role.key} className="role-card">

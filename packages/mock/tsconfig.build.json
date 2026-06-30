@@ -1,14 +1,14 @@
-// @repo/mock 的 TypeScript 构建配置 — tsc -p tsconfig.build.json 使用
-// 继承 tsconfig.json，在此基础上覆盖 noEmit 并排除测试文件。
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "@repo/shared-utils/api-contract": ["../shared-utils/dist/api-contract/index.d.ts"]
+    }
   },
   "include": ["src/**/*.ts"],
-  // 排除测试文件，它们不需要进入编译产物
   "exclude": ["src/**/*.test.ts"]
 }

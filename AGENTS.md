@@ -28,7 +28,7 @@
 当前正式范围包括：
 
 - 一个正式应用壳：`apps/react-app`
-- 八个正式共享包：`packages/shared-types`、`packages/shared-utils`、`packages/shared-i18n`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock`、`packages/shared-ui`
+- 五个正式共享包：`packages/shared-utils`、`packages/shared-service`、`packages/design-tokens`、`packages/mock`、`packages/shared-ui`
 - 一套统一工具链基线：TypeScript、Vite、Vitest、ESLint、Stylelint、Prettier、Husky、Commitlint、Tailwind CSS
 
 当前工作区现状补充说明：
@@ -47,7 +47,8 @@
 
 - `apps/react-app` 是正式宿主应用，也是 composition root
 - `packages/shared-service` 是平台共享内核
-- `packages/shared-types`、`packages/shared-utils`、`packages/shared-i18n`、`packages/design-tokens`、`packages/resources` 是基础共享层
+- `packages/shared-utils` 是基础共享层（类型契约 + 通用运行时 + 国际化）
+- `packages/design-tokens` 是视觉语义层
 - `packages/shared-ui`、`packages/mock` 是交付适配层
 - 共享规则优先沉淀在 package 层，app 只负责装配与交付
 
@@ -76,7 +77,7 @@
 
 补充构建约束：
 
-- 根 `build:shared` 当前负责先构建 `shared-types`、`shared-utils`、`shared-i18n`、`shared-service`、`design-tokens`、`resources`、`mock`、`shared-ui`
+- 根 `build:shared` 当前负责先构建 `shared-utils`、`shared-service`、`design-tokens`、`mock`、`shared-ui`
 - 根 `build:react` 必须先执行 `build:shared`，再构建 React app
 - app 自己的 `build` 脚本仍只负责构建自身，不反向承担根脚本编排职责
 
@@ -114,7 +115,7 @@
 - 保持 `serve -> sourceAlias`、`build -> buildAlias`、`vitest -> sourceAlias` 的分层契约
 - 当前已使用到的共享包源码入口，必须在 `tsconfig.app.json` 中镜像 path mappings
 - `paths.config.ts` 与 `tsconfig.app.json` 的共享包源码映射必须能通过根脚本 `pnpm check:alias`
-- `@repo/shared/routes`、`@repo/shared/routes/react` 与 `@repo/design-tokens/theme` 这类显式子路径变更时，必须同步四处检查
+- `@repo/shared-utils/ui-contract`、`@repo/shared-utils/api-contract`、`@repo/shared-utils/routes`、`@repo/shared-utils/i18n` 与 `@repo/design-tokens/theme` 这类显式子路径变更时，必须同步四处检查
 
 ### 5. 保持 `main` 与 `bootstrap` 分层
 
@@ -143,6 +144,7 @@
 - `@repo/design-tokens` 根入口优先承载 token、CSS 与 Tailwind 主题适配；主题运行时能力优先收敛到 `@repo/design-tokens/theme`
 - 不要在 app 内复制 token 逻辑
 - 当前正式主题偏好语义是 `ThemePreference = 'system' | 'light' | 'dark'`
+- 类型契约（`ThemeName`、`ThemeMode` 等）现在定义在 `@repo/shared-utils/ui-contract`（ADR-011）
 
 ### 7. `mock` 同时服务开发态与测试态
 
@@ -158,32 +160,19 @@
 - 如果 MSW worker 产物发生变化，要同步 `packages/mock/public/mockServiceWorker.js` 与正式 app 的 `public/mockServiceWorker.js`
 - 根 `verify` 已包含 `verify:mock-worker`，如需回写产物，优先执行 `pnpm sync:mock-worker`
 
-### 8. 保持 `resources` 的职责收敛
+### 8. 静态资源由宿主应用自行管理
 
-`packages/resources` 当前负责：
+`packages/resources` 已并入 `apps/react-app`（ADR-011）。静态资源（图片、字体、SVG、Sprite）由宿主应用自行管理，不再通过独立共享包中转。
 
-- 统一共享静态资源目录
-- 自有图标、SVG、SVG Sprite 资源管理
-- 基于 manifest 的资源索引
-- 基于 URL / href helper 的按需导入边界
-- build 阶段的非 TS 资源复制
+相关约束：
 
-这些边界应保持稳定：
-
-- 共享资源优先进入 `packages/resources`
-- 页面私有且不复用的素材才保留在 app 内
-- 不要把设计 token、主题映射职责塞进 `resources`
-- 不要让 app 直接穿透 `packages/resources/src`
-- ESLint 规则应继续禁止 `@repo/resources/*/*` 深层导入，以及 `packages/*/src/*`、`packages/*/dist/*` 直连路径
-- 如果修改资源接入链路，同时检查 app 的 `vite.config.ts`、`vitest.config.ts`、`paths.config.ts`、`tsconfig.app.json`
-- 开发态 / 测试态允许 app 通过 `@repo/resources -> packages/resources/src` 前缀 alias 消费源码
-- 构建态与对外契约必须继续走 `exports -> dist`
-- 图片、字体、SVG、Sprite 等非 TS 资源必须在 build 时进入 `dist`
-- `resources` build 在复制非 TS 资源后，还必须校验 `dist/assets/*` 产物完整性
+- 页面私有且不复用的素材保留在 app 内
+- 不要把设计 token、主题映射职责与静态资源混放
+- ESLint 规则继续禁止 `packages/*/src/*`、`packages/*/dist/*` 直连路径
 
 ### 9. package 的 `exports` 仍然只指向 `dist`
 
-`packages/shared-types`、`packages/shared-utils`、`packages/shared-i18n`、`packages/shared-service`、`packages/design-tokens`、`packages/resources`、`packages/mock` 的 `exports` 当前都应只指向 `dist/`。
+`packages/shared-utils`、`packages/shared-service`、`packages/design-tokens`、`packages/mock`、`packages/shared-ui` 的 `exports` 当前都应只指向 `dist/`。
 
 app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 对外契约仍然必须是 dist-based。
 
@@ -205,13 +194,14 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - `pnpm-workspace.yaml` 的 `overrides` 强制锁定关键依赖版本
 - 业务依赖在各应用/子包的 `package.json` 中声明
 - 运行时依赖放在实际消费它们的 app / package `dependencies` 中声明
-- `packages/shared-types` 是零依赖的纯类型契约包，不依赖任何 workspace 包
+- `packages/shared-utils` 是零 workspace 依赖的基础包，承载类型契约、通用运行时与国际化
 
 ### 12. 主题与共享 UI 按现行专题主文档与实施基线收敛
 
 后续涉及 `design-tokens`、`shared-ui`、`bootstrap`、主题 store、共享业务壳组件的修改时，必须遵守以下收敛方向：
 
 - 以 `docs/总体设计/详细设计/Phase0-基础能力详细设计.md` 与 `docs/总体设计/实施计划/Phase0-基础能力实施计划.md` 作为现行治理基线
+- 跨包共享的类型契约（`ThemeName`、`ThemeMode` 等）现在定义在 `@repo/shared-utils/ui-contract`（ADR-011）
 - 新增主题运行时规则时，优先收敛到共享层，不要继续在多个宿主里各写一套
 - 首屏主题落盘应朝“挂载前完成”方向推进
 - 当前主题持久化正式 key 已收敛为 `repo-theme-preference`
@@ -221,28 +211,27 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - `shared-ui` 的根入口应维护显式稳定导出清单，不要回退到无边界 `export *`
 - 新增或改造共享组件时，默认补最小可访问性语义与扩展入口
 
-### 13. 共享 i18n 运行时集中在 `packages/shared-i18n`
+### 13. 共享 i18n 运行时集中在 `packages/shared-utils/i18n`
 
 当前仓库的国际化边界已经固定为：
 
-- `@repo/shared-i18n` 是唯一共享国际化运行时
-- `@repo/shared/i18n` 保留向后兼容重导出
+- `@repo/shared-utils/i18n` 是唯一共享国际化运行时
 - 当前正式支持的语言只有 `zh-CN` 与 `en-US`
 - app 可以维护各自的 provider、store 和页面词典，但不要复制 shared i18n 运行时规则
-- `packages/shared-ui` 不直接依赖 `@repo/shared-i18n`，只消费翻译后的文案 props
+- `packages/shared-ui` 不直接依赖 `@repo/shared-utils/i18n`，只消费翻译后的文案 props
 
 ### 14. 中后台平台共享内核集中在 `packages/shared-service`
 
 当前总体设计已经明确：
 
 - `packages/shared-service` 是平台级共享规则的唯一正式收敛层
-- 它承载平台语义，而不是 `packages/shared-types`
+- 它承载平台语义，而不是 `packages/shared-utils`（后者承载类型契约与通用运行时）
 
 相关约束：
 
 - `packages/shared-service` 保持框架无关，不直接依赖 React、Ant Design、Radix UI
 - `packages/shared-service` 不直接操作 DOM，不承接浏览器副作用
-- `packages/shared-types` 只承载跨包共享的纯类型契约，不要把后台平台语义塞回 `shared-types`
+- `packages/shared-utils` 承载跨包共享的纯类型契约、通用运行时与国际化，不要把后台平台语义塞进 `shared-utils` 的非契约子模块
 - app 可以维护各自的 store、provider、guard 与页面编排，但不要复制平台共享规则
 
 ### 15. Phase 1 / Phase 2 平台数据链路以 `packages/mock` + MSW 为正式后端替身
@@ -282,6 +271,11 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - React + shadcn/ui + Tailwind CSS 应用壳
 - 主题通过 `@repo/shared-ui` 的 `ThemeProvider` 接入
 - app 内主题状态通过 Zustand store 管理
+- HTTP 客户端工厂在 `services/http-client.ts`，通过 `createPlatformClient()` 创建统一实例
+- token 注入通过 `registerTokenProvider()` 延迟注册，避免与 auth-store 的模块循环
+- 401 未授权通过 `setOnUnauthorized()` 注册全局处理器，自动清除会话并重定向到 `/login`
+- 所有 API 请求必须通过 `services/shared.ts` 导出的 `api` 实例发出，不要在 store 中自建 `createHttpClient`
+- `mockServiceWorker.js` 在生产构建时通过 Vite `closeBundle` 插件自动从 `dist/` 删除
 
 ### `apps/react-screen-designer`
 
@@ -292,24 +286,14 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 ### `packages/shared-utils`
 
+- 跨包共享的纯类型契约（零 workspace 依赖，ADR-011）
+  - UI 层类型契约（`ThemeName`、`ThemeMode`、`StatusTone`、`MetricTrend` 等）
+  - API 响应契约（`ApiResponse`、`PaginatedData`、`PlatformError` 等）
+  - 路由定义契约（`RouteDefinition`、`routeDefinitions`）
 - 通用工具函数（格式化、校验、存储、请求、日志）
 - HTTP 客户端（HttpClient 接口 + ky 适配器 + XHR 上传封装）
-- 平台响应类型（ApiResponse、PaginationParams 等）
+- 国际化运行时与语言包（`createTranslator`、locale 检测/持久化/切换）
 - 保持纯 TypeScript、框架无关
-
-### `packages/shared-i18n`
-
-- 国际化运行时与语言包
-- `createTranslator` 初始化函数
-- locale 检测、持久化与切换
-- 当前正式支持 `zh-CN` 与 `en-US`
-
-### `packages/shared-types`
-
-- 跨包共享的纯类型契约（零运行时依赖，ADR-010）
-- UI 层类型契约（ThemeName、ThemeMode、StatusTone、MetricTrend 等）
-- API 响应契约（ApiResponse、PaginatedData、PlatformError 等）
-- 路由定义契约（RouteDefinition、routeDefinitions）
 
 ### `packages/shared-service`
 
@@ -331,25 +315,20 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - shadcn/ui 组件源码（通过 CLI 生成到 `src/components/ui/`）
 - 仅承接框架内主题接入与共享 UI 壳，不承接业务状态
 
-### `packages/resources`
-
-- 共享图片、字体、SVG、图标、SVG Sprite
-- 资源索引与命名约定
-- 面向子应用的按需导入入口
-
 ### `packages/mock`
 
 - MSW handlers、浏览器 worker、Node server
+- 依赖 `@repo/shared-utils/api-contract` 复用 `ApiResponse`/`PaginatedData` 类型，不在本地重复定义
+- MSW 版本通过 `catalog:` 引用，与 `pnpm-workspace.yaml` 集中管理对齐
 
 ## 修改建议
 
 ### 新增共享能力
 
 - 纯工具函数或共享类型放到 `packages/shared-utils`
-- 国际化运行时、locale 规则和共享文案契约优先放到 `packages/shared-i18n`
+- 国际化运行时、locale 规则和共享文案契约优先放到 `packages/shared-utils/i18n`
 - 后台平台的初始化、认证、菜单、权限、多标签页、平台请求契约优先放到 `packages/shared-service`
 - 视觉语义能力放到 `packages/design-tokens`
-- 共享静态资源、图标、SVG、Sprite 放到 `packages/resources`
 - 网络 mock 能力放到 `packages/mock`
 
 ### 新增 app

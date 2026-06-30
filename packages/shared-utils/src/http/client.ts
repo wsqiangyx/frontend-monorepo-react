@@ -21,7 +21,7 @@
 import ky, { type KyInstance, type Options as KyOptions } from 'ky'
 import type { HttpClientConfig } from './types'
 import { ApiError } from './types'
-import type { ApiResponse } from '../types'
+import type { ApiResponse } from '../api-contract'
 
 export interface HttpClient {
   get<T>(url: string, params?: Record<string, unknown>): Promise<T>
@@ -61,6 +61,12 @@ export function createHttpClient(config: HttpClientConfig): HttpClient {
               message = body.message ?? message
             } catch {
               // 非 JSON 响应，使用默认值
+            }
+
+            // 401 Unauthorized — 令牌过期或无效
+            if (response.status === 401) {
+              code = 'UNAUTHORIZED'
+              message = message || '认证已过期，请重新登录'
             }
 
             throw new ApiError(code, message, response.status)

@@ -2,40 +2,28 @@ import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { DataPanel, PageContainer, PermissionGate } from '@repo/shared-ui'
 import { usePermissionStore } from '@/platform'
-import { fetchProfile, updateProfile } from '@/services/profile-service'
+import { fetchProfile, updateProfile, type ProfileRecord } from '@/services/profile-service'
 import { useLocaleStore } from '@/stores/locale'
 import { useThemeStore } from '@/stores/theme'
 import { profileKeys } from '@/lib/query-keys'
 
-export default function ProfileView() {
-  const permissionSet = usePermissionStore((state) => state.permissionSet)
+/** 表单子组件 — key={profile.id} 确保用户切换时表单自动重置 */
+function ProfileForm({
+  profile,
+  permissionSet,
+}: {
+  profile: ProfileRecord
+  permissionSet: ReturnType<typeof usePermissionStore.getState>['permissionSet']
+}) {
   const queryClient = useQueryClient()
-
-  const { data: profile, isLoading } = useQuery({
-    queryKey: profileKeys.detail(),
-    queryFn: fetchProfile,
-  })
-
-  const [formDisplayName, setFormDisplayName] = useState('')
-  const [formEmail, setFormEmail] = useState('')
-  const [formPhone, setFormPhone] = useState('')
-  const [formDepartment, setFormDepartment] = useState('')
-  const [formLocale, setFormLocale] = useState<'zh-CN' | 'en-US'>('zh-CN')
+  const [formDisplayName, setFormDisplayName] = useState(profile.displayName)
+  const [formEmail, setFormEmail] = useState(profile.email)
+  const [formPhone, setFormPhone] = useState(profile.phone)
+  const [formDepartment, setFormDepartment] = useState(profile.department)
+  const [formLocale, setFormLocale] = useState<'zh-CN' | 'en-US'>(profile.locale)
   const [formThemePreference, setFormThemePreference] = useState<'system' | 'light' | 'dark'>(
-    'system',
+    profile.themePreference,
   )
-
-  // 当 profile 数据加载后，初始化表单
-  const [formInitialized, setFormInitialized] = useState(false)
-  if (profile && !formInitialized) {
-    setFormDisplayName(profile.displayName)
-    setFormEmail(profile.email)
-    setFormPhone(profile.phone)
-    setFormDepartment(profile.department)
-    setFormLocale(profile.locale)
-    setFormThemePreference(profile.themePreference)
-    setFormInitialized(true)
-  }
 
   async function handleSave() {
     const updated = await updateProfile({
@@ -54,81 +42,61 @@ export default function ProfileView() {
     void updated // updated 用于类型安全，实际刷新由 invalidateQueries 触发
   }
 
-  if (!profile && !isLoading) {
-    return (
-      <PageContainer title="个人中心">
-        <DataPanel
-          title="基础资料"
-          description="当前登录用户的资料信息。"
-          loading={false}
-          loadingText="正在加载用户资料..."
-          empty
-          emptyContent={<div className="page-empty">暂无用户资料。</div>}
-        />
-      </PageContainer>
-    )
-  }
-
   return (
-    <PageContainer title="个人中心">
+    <>
       <DataPanel
         title="基础资料"
         description="当前登录用户的资料信息，支持部分字段更新。"
-        loading={isLoading}
-        loadingText="正在加载用户资料..."
-        empty={!isLoading && !profile}
-        emptyContent={<div className="page-empty">暂无用户资料。</div>}
+        loading={false}
       >
-        {profile && (
-          <div className="meta-grid">
-            <article className="meta-card">
-              <span>用户名</span>
-              <strong>{profile.name}</strong>
-            </article>
-            <article className="meta-card">
-              <span>昵称</span>
-              <input
-                className="meta-input"
-                value={formDisplayName}
-                onChange={(e) => setFormDisplayName(e.target.value)}
-              />
-            </article>
-            <article className="meta-card">
-              <span>邮箱</span>
-              <input
-                className="meta-input"
-                type="email"
-                value={formEmail}
-                onChange={(e) => setFormEmail(e.target.value)}
-              />
-            </article>
-            <article className="meta-card">
-              <span>手机</span>
-              <input
-                className="meta-input"
-                type="tel"
-                value={formPhone}
-                onChange={(e) => setFormPhone(e.target.value)}
-              />
-            </article>
-            <article className="meta-card">
-              <span>角色</span>
-              <strong>{profile.roleLabel}</strong>
-            </article>
-            <article className="meta-card">
-              <span>部门</span>
-              <input
-                className="meta-input"
-                value={formDepartment}
-                onChange={(e) => setFormDepartment(e.target.value)}
-              />
-            </article>
-            <article className="meta-card">
-              <span>最近登录</span>
-              <strong>{profile.lastLoginAt}</strong>
-            </article>
-          </div>
-        )}
+        <div className="meta-grid">
+          <article className="meta-card">
+            <span>用户名</span>
+            <strong>{profile.name}</strong>
+          </article>
+          <article className="meta-card">
+            <span>昵称</span>
+            <input
+              className="meta-input"
+              value={formDisplayName}
+              onChange={(e) => setFormDisplayName(e.target.value)}
+            />
+          </article>
+          <article className="meta-card">
+            <span>邮箱</span>
+            <input
+              className="meta-input"
+              type="email"
+              value={formEmail}
+              onChange={(e) => setFormEmail(e.target.value)}
+            />
+          </article>
+          <article className="meta-card">
+            <span>手机</span>
+            <input
+              className="meta-input"
+              type="tel"
+              value={formPhone}
+              onChange={(e) => setFormPhone(e.target.value)}
+            />
+          </article>
+          <article className="meta-card">
+            <span>角色</span>
+            <strong>{profile.roleLabel}</strong>
+          </article>
+          <article className="meta-card">
+            <span>部门</span>
+            <input
+              className="meta-input"
+              value={formDepartment}
+              onChange={(e) => setFormDepartment(e.target.value)}
+            />
+          </article>
+          <article className="meta-card">
+            <span>最近登录</span>
+            <strong>{profile.lastLoginAt}</strong>
+          </article>
+        </div>
       </DataPanel>
 
       <DataPanel
@@ -173,6 +141,54 @@ export default function ProfileView() {
           </PermissionGate>
         </div>
       </DataPanel>
+    </>
+  )
+}
+
+export default function ProfileView() {
+  const permissionSet = usePermissionStore((state) => state.permissionSet)
+
+  const {
+    data: profile,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: profileKeys.detail(),
+    queryFn: fetchProfile,
+  })
+
+  if (error) {
+    return (
+      <PageContainer title="个人中心">
+        <DataPanel title="基础资料" loading={false}>
+          <div className="page-error">加载失败：{error.message}</div>
+        </DataPanel>
+      </PageContainer>
+    )
+  }
+
+  if (!profile && !isLoading) {
+    return (
+      <PageContainer title="个人中心">
+        <DataPanel
+          title="基础资料"
+          description="当前登录用户的资料信息。"
+          loading={false}
+          loadingText="正在加载用户资料..."
+          empty
+          emptyContent={<div className="page-empty">暂无用户资料。</div>}
+        />
+      </PageContainer>
+    )
+  }
+
+  return (
+    <PageContainer title="个人中心">
+      {profile ? (
+        <ProfileForm profile={profile} permissionSet={permissionSet} key={profile.id} />
+      ) : (
+        <DataPanel title="基础资料" loading={isLoading} loadingText="正在加载用户资料..." empty />
+      )}
     </PageContainer>
   )
 }

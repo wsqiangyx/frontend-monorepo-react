@@ -14,17 +14,14 @@ function writeFile(filePath, content) {
 function createWorkspaceRoot() {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-check-status-'))
 
-  for (const appName of ['react-app', 'react-screen-designer']) {
+  for (const appName of ['react-app']) {
     mkdirSync(join(workspaceRoot, 'apps', appName), { recursive: true })
   }
 
   for (const packageName of [
-    'shared-types',
     'shared-utils',
-    'shared-i18n',
     'shared-service',
     'design-tokens',
-    'resources',
     'mock',
     'shared-ui',
   ]) {
@@ -35,24 +32,16 @@ function createWorkspaceRoot() {
     join(workspaceRoot, 'STATUS.yaml'),
     [
       'version: 1',
-      'updated_at: 2026-05-17',
+      'updated_at: 2026-06-30',
       'apps:',
       '  react-app:',
       '    status: stable',
-      '  react-screen-designer:',
-      '    status: experimental',
       'packages:',
-      '  shared-types:',
-      '    status: stable',
       '  shared-utils:',
-      '    status: stable',
-      '  shared-i18n:',
       '    status: stable',
       '  shared-service:',
       '    status: stable',
       '  design-tokens:',
-      '    status: stable',
-      '  resources:',
       '    status: stable',
       '  mock:',
       '    status: stable',
@@ -69,13 +58,13 @@ function createWorkspaceRoot() {
         scripts: {
           build: 'pnpm build:shared && pnpm --filter @repo/react-app build',
           'build:shared':
-            'pnpm --filter @repo/shared-types build && pnpm --filter @repo/shared-utils build && pnpm --filter @repo/shared-i18n build && pnpm --filter @repo/shared-service build && pnpm --filter @repo/design-tokens build && pnpm --filter @repo/resources build && pnpm --filter @repo/mock build && pnpm --filter @repo/shared-ui build',
+            'pnpm --filter @repo/shared-utils build && pnpm --filter @repo/shared-service build && pnpm --filter @repo/design-tokens build && pnpm --filter @repo/mock build && pnpm --filter @repo/shared-ui build',
           'build:react': 'pnpm build:shared && pnpm -F @repo/react-app build',
           typecheck:
-            'pnpm --filter @repo/shared-types build && pnpm --filter @repo/shared-utils build && pnpm --filter @repo/shared-i18n build && pnpm --filter @repo/shared-types typecheck && pnpm --filter @repo/shared-utils typecheck && pnpm --filter @repo/shared-i18n typecheck && pnpm --filter @repo/shared-service typecheck && pnpm --filter @repo/design-tokens typecheck && pnpm --filter @repo/resources typecheck && pnpm --filter @repo/mock typecheck && pnpm --filter @repo/shared-ui typecheck && pnpm --filter @repo/react-app typecheck',
-          test: 'pnpm --filter @repo/shared-types test && pnpm --filter @repo/shared-utils test && pnpm --filter @repo/shared-i18n test && pnpm --filter @repo/shared-service test && pnpm --filter @repo/design-tokens test && pnpm --filter @repo/resources test && pnpm --filter @repo/mock test && pnpm --filter @repo/shared-ui test && pnpm --filter @repo/react-app test',
+            'pnpm build:shared && pnpm --filter @repo/shared-utils typecheck && pnpm --filter @repo/shared-service typecheck && pnpm --filter @repo/design-tokens typecheck && pnpm --filter @repo/mock typecheck && pnpm --filter @repo/shared-ui typecheck && pnpm --filter @repo/react-app typecheck',
+          test: 'pnpm --filter @repo/shared-utils test && pnpm --filter @repo/shared-service test && pnpm --filter @repo/design-tokens test && pnpm --filter @repo/mock test && pnpm --filter @repo/shared-ui test && pnpm --filter @repo/react-app test',
           'test:coverage':
-            'pnpm --filter @repo/shared-types test:coverage && pnpm --filter @repo/shared-utils test:coverage && pnpm --filter @repo/shared-i18n test:coverage && pnpm --filter @repo/shared-service test:coverage && pnpm --filter @repo/design-tokens test:coverage && pnpm --filter @repo/resources test:coverage && pnpm --filter @repo/mock test:coverage && pnpm --filter @repo/shared-ui test:coverage && pnpm --filter @repo/react-app test:coverage',
+            'pnpm --filter @repo/shared-utils test:coverage && pnpm --filter @repo/shared-service test:coverage && pnpm --filter @repo/design-tokens test:coverage && pnpm --filter @repo/mock test:coverage && pnpm --filter @repo/shared-ui test:coverage && pnpm --filter @repo/react-app test:coverage',
           'test:scripts': 'node --test "scripts/__tests__/*.test.mjs"',
           verify: 'pnpm check:status && pnpm test:scripts',
         },
@@ -93,12 +82,9 @@ function createWorkspaceRoot() {
       'export default defineConfig({',
       '  test: {',
       '    projects: [',
-      "      'packages/shared-types/vitest.config.ts',",
       "      'packages/shared-utils/vitest.config.ts',",
-      "      'packages/shared-i18n/vitest.config.ts',",
       "      'packages/shared-service/vitest.config.ts',",
       "      'packages/design-tokens/vitest.config.ts',",
-      "      'packages/resources/vitest.config.ts',",
       "      'packages/mock/vitest.config.ts',",
       "      'packages/shared-ui/vitest.config.ts',",
       "      'apps/react-app/vitest.config.ts',",
@@ -115,37 +101,4 @@ function createWorkspaceRoot() {
 test('checkStatusConsistency passes when STATUS.yaml matches the current root contract', () => {
   const workspaceRoot = createWorkspaceRoot()
   assert.doesNotThrow(() => checkStatusConsistency(workspaceRoot))
-})
-
-test('checkStatusConsistency fails when an experimental app leaks into the root test matrix', () => {
-  const workspaceRoot = createWorkspaceRoot()
-  writeFile(
-    join(workspaceRoot, 'vitest.config.ts'),
-    [
-      "import { defineConfig } from 'vitest/config'",
-      '',
-      'export default defineConfig({',
-      '  test: {',
-      '    projects: [',
-      "      'packages/shared-types/vitest.config.ts',",
-      "      'packages/shared-utils/vitest.config.ts',",
-      "      'packages/shared-i18n/vitest.config.ts',",
-      "      'packages/shared-service/vitest.config.ts',",
-      "      'packages/design-tokens/vitest.config.ts',",
-      "      'packages/resources/vitest.config.ts',",
-      "      'packages/mock/vitest.config.ts',",
-      "      'packages/shared-ui/vitest.config.ts',",
-      "      'apps/react-app/vitest.config.ts',",
-      "      'apps/react-screen-designer/vitest.config.ts',",
-      '    ],',
-      '  },',
-      '})',
-      '',
-    ].join('\n'),
-  )
-
-  assert.throws(
-    () => checkStatusConsistency(workspaceRoot),
-    /must not be in the root vitest matrix/,
-  )
 })

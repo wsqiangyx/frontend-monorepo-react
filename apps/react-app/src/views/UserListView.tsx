@@ -9,7 +9,11 @@ export default function UserListView() {
   const permissionSet = usePermissionStore((state) => state.permissionSet)
   const [keyword, setKeyword] = useState('')
 
-  const { data: result, isLoading } = useQuery({
+  const {
+    data: result,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: userKeys.list({ keyword: keyword || undefined, page: 1, pageSize: 10 }),
     queryFn: () => fetchUsers({ keyword: keyword || undefined, page: 1, pageSize: 10 }),
   })
@@ -24,7 +28,7 @@ export default function UserListView() {
         description="基于平台 Mock 契约演示列表、筛选与权限按钮控制。"
         loading={isLoading}
         loadingText="正在加载用户数据..."
-        empty={!isLoading && users.length === 0}
+        empty={!isLoading && !error && users.length === 0}
         emptyContent={<div className="page-empty">未查询到匹配用户。</div>}
         toolbar={
           <PermissionGate permissionSet={permissionSet} code="system:user:create">
@@ -34,6 +38,7 @@ export default function UserListView() {
           </PermissionGate>
         }
       >
+        {error && <div className="page-error">加载失败：{error.message}</div>}
         <FilterBar
           actions={
             <div className="page-filter-actions">

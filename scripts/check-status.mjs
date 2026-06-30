@@ -8,12 +8,9 @@ const defaultRootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const STABLE_APP_NAMES = ['react-app']
 const EXPERIMENTAL_APP_NAMES = []
 const STABLE_PACKAGE_NAMES = [
-  'shared-types',
   'shared-utils',
-  'shared-i18n',
   'shared-service',
   'design-tokens',
-  'resources',
   'mock',
   'shared-ui',
 ]
