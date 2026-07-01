@@ -14,7 +14,7 @@ function writeFile(filePath, content) {
 function createWorkspaceRoot() {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-check-status-'))
 
-  for (const appName of ['react-app']) {
+  for (const appName of ['react-app', 'react-screen-designer']) {
     mkdirSync(join(workspaceRoot, 'apps', appName), { recursive: true })
   }
 
@@ -36,6 +36,8 @@ function createWorkspaceRoot() {
       'apps:',
       '  react-app:',
       '    status: stable',
+      '  react-screen-designer:',
+      '    status: experimental',
       'packages:',
       '  shared-utils:',
       '    status: stable',
