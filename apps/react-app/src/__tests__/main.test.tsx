@@ -16,12 +16,10 @@ describe('main startup contract', () => {
     vi.stubEnv('VITE_ENABLE_MSW', 'true')
 
     vi.doMock('@repo/mock/browser', () => ({
-      worker: {
-        start: vi.fn(async (...args: unknown[]) => {
-          order.push('worker')
-          return start(...args)
-        }),
-      },
+      startWorker: vi.fn(async (...args: unknown[]) => {
+        order.push('worker')
+        return start(...args)
+      }),
     }))
 
     vi.doMock('@/bootstrap', () => ({

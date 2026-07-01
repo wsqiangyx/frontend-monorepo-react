@@ -17,15 +17,18 @@
 //   VITE_MOCK_PASSTHROUGH=/api/user,/api/dashboard/summary
 // ============================================================================
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 // 兼容浏览器（import.meta.env）和 Node（process.env）两种环境
 declare const process: { env: Record<string, string | undefined> } | undefined
+
+interface ViteImportMeta {
+  env?: Record<string, string | undefined>
+}
 
 function getEnvVar(name: string): string | undefined {
   try {
     // Vite 浏览器端：import.meta.env 是 Vite 的编译时注入
-    const meta = typeof import.meta !== 'undefined' ? (import.meta as any) : undefined
+    const meta =
+      typeof import.meta !== 'undefined' ? (import.meta as unknown as ViteImportMeta) : undefined
     if (meta?.env?.[name]) return meta.env[name]
 
     // Node.js / 测试环境

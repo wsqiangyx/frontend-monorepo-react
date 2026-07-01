@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { WorkspaceTab } from '@repo/shared-service'
 import { createTab, closeTab, findTabByKey } from '@repo/shared-service'
+import { ROUTES } from '@/constants/routes'
 
 interface TabState {
   tabs: WorkspaceTab[]
@@ -14,7 +15,7 @@ interface TabState {
 const DASHBOARD_TAB: WorkspaceTab = {
   key: 'dashboard',
   routeName: 'Dashboard',
-  path: '/dashboard',
+  path: ROUTES.DASHBOARD,
   title: 'Dashboard',
   closable: false,
   affix: true,

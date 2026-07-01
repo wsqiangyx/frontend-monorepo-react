@@ -15,23 +15,16 @@
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { applyThemeToDocument } from '@repo/design-tokens/theme'
+import { createQueryClient } from '@/lib/query-client'
 import App from '@/App'
 import '@/styles/tailwind.css'
 import '@/styles/global.scss'
 import '@repo/shared-ui/style.css'
 import { useThemeStore } from '@/stores/theme'
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 分钟内数据视为新鲜
-      retry: 1, // 失败后重试 1 次
-      refetchOnWindowFocus: false, // 窗口聚焦时不自动重新获取
-    },
-  },
-})
+const queryClient = createQueryClient()
 
 export function bootstrap() {
   const themeState = useThemeStore.getState()
