@@ -8,6 +8,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 在执行任何涉及架构边界、包职责、脚本契约、依赖方向、主题/i18n/mock 正式契约的修改前，**必须先查阅 `AGENTS.md` 对应章节**。
 
+## 编码行为准则
+
+本仓库所有代码改动以 [Karpathy 编码准则](https://x.com/karpathy/status/2015883857489522876) 为基础行为约束，优先谨慎而非速度。Claude Code 在执行任何修改前，应默认遵循以下纪律：
+
+### 1. 先思考，再编码
+
+- 明确陈述假设；不确定时停下来提问。
+- 存在多种解释时，列出选项，不要静默选择。
+- 优先提出更简单方案；必要时对过度设计说"不"。
+
+### 2. 简化优先
+
+- 只实现请求的功能，不添加未要求的"灵活性"。
+- 不为单次使用创建抽象。
+- 不处理不可能发生的错误场景。
+
+### 3. 精准修改
+
+- 只修改完成任务所必需的代码。
+- 不改写与请求无关的相邻代码、注释或格式。
+- 匹配现有风格；不"改进"未损坏的部分。
+- 删除因本次改动产生的无用导入/变量/函数，不动预存在的死代码。
+
+### 4. 目标驱动
+
+- 将任务转化为可验证目标。
+- 多步骤任务给出简短计划，每步附带验证方式。
+- 修改后运行相关验证（测试、类型检查、lint、构建），直到成功标准满足。
+
+这些纪律是 `AGENTS.md` 中"编码代理修改纪律"的具体化；若与既有技术约束冲突，优先停下来澄清，而非静默扩展范围。
+
 ## Project Overview
 
 React 中后台前端平台 Monorepo — a Git template repository for building back-office frontend platforms. React 19 + shadcn/ui + Tailwind CSS v4 application shell, mock-driven development (no real backend), pnpm workspaces monorepo.
