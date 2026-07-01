@@ -96,12 +96,12 @@ test('checkTemplateResidue detects @repo/* scope identifiers in code', () => {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-template-residue-'))
 
   writeFile(
-    join(workspaceRoot, 'packages/shared-types/src/index.ts'),
-    "export { default } from '@repo/shared-types'\n",
+    join(workspaceRoot, 'packages/shared-utils/src/index.ts'),
+    "export { default } from '@repo/shared-utils'\n",
   )
   writeFile(
     join(workspaceRoot, 'apps/react-app/src/main.tsx'),
-    "import { createRoot } from '@repo/shared-types'\n",
+    "import { createRoot } from '@repo/shared-utils'\n",
   )
 
   const result = checkTemplateResidue({ workspaceRoot })
