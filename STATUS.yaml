@@ -1,9 +1,12 @@
 version: 1
-updated_at: 2026-06-30
+updated_at: 2026-07-01
 apps:
   react-app:
     status: stable
     notes: 正式默认宿主应用，已纳入根脚本、根测试矩阵与模板默认交付范围
+  react-screen-designer:
+    status: experimental
+    notes: 可视化专题子应用预研目录，尚未纳入根脚本、根测试矩阵与模板默认交付范围
 packages:
   shared-utils:
     status: stable
