@@ -16,7 +16,6 @@
 //   normalizeMenuNode  — 补全默认值，保证下游代码无需做空值判断
 //   flattenMenuNodes   — 递归展平菜单树（过滤 hidden 节点），用于搜索/面包屑
 //   sortMenuNodes      — 按 order 字段排序（递归）
-//   normalizeRouteMeta — 补全路由元数据默认值
 // ============================================================================
 
 export type MenuNodeType = 'directory' | 'route' | 'external' | 'iframe'
@@ -61,11 +60,6 @@ export interface PlatformRouteMeta {
   layout?: string
 }
 
-/** @deprecated 暂无外部消费者，内部使用 NormalizedPlatformMenuNode 类型代替 */
-export interface NormalizedPlatformRouteMeta extends Omit<PlatformRouteMeta, 'requiresAuth'> {
-  requiresAuth: boolean
-}
-
 export function normalizeMenuNode(node: PlatformMenuNode): NormalizedPlatformMenuNode {
   return {
     ...node,
@@ -95,19 +89,4 @@ export function sortMenuNodes(nodes: PlatformMenuNode[]): PlatformMenuNode[] {
   return [...nodes]
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
     .map((node) => (node.children ? { ...node, children: sortMenuNodes(node.children) } : node))
-}
-
-/** @deprecated 暂无外部消费者，路由元数据规范化尚未在宿主应用中使用 */
-export function normalizeRouteMeta(meta: PlatformRouteMeta): NormalizedPlatformRouteMeta {
-  return {
-    ...meta,
-    hidden: meta.hidden ?? false,
-    affix: meta.affix ?? false,
-    keepAlive: meta.keepAlive ?? false,
-    requiresAuth: meta.requiresAuth ?? true,
-    permissionCodes: meta.permissionCodes ?? [],
-    breadcrumb: meta.breadcrumb ?? true,
-    external: meta.external ?? false,
-    iframe: meta.iframe ?? false,
-  }
 }

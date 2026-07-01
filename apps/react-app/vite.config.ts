@@ -43,6 +43,9 @@ export default defineConfig(({ command, mode }) => {
             '/api': {
               target: proxyTarget,
               changeOrigin: true,
+              ws: false,
+              // 安全提示：生产/共享环境必须将 VITE_API_PROXY_TARGET 配置为 HTTPS，
+              // 避免在 HTTP 链路上透传 Authorization 等敏感头。
             },
           },
         }

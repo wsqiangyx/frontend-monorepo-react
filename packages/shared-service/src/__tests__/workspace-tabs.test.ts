@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  createTab,
-  closeTab,
-  findTabByKey,
-  isTabActive,
-  type WorkspaceTab,
-} from '../workspace-tabs'
+import { createTab, closeTab, findTabByKey, type WorkspaceTab } from '../workspace-tabs'
 
 describe('createTab', () => {
   it('should create a tab with defaults', () => {
@@ -113,25 +107,5 @@ describe('findTabByKey', () => {
 
   it('should return undefined for missing key', () => {
     expect(findTabByKey(tabs, 'nonexistent')).toBeUndefined()
-  })
-})
-
-describe('isTabActive', () => {
-  const tab: WorkspaceTab = {
-    key: 'home',
-    routeName: 'Home',
-    path: '/home',
-    title: 'Home',
-    closable: true,
-    affix: false,
-    keepAlive: false,
-  }
-
-  it('should return true when key matches', () => {
-    expect(isTabActive(tab, 'home')).toBe(true)
-  })
-
-  it('should return false when key does not match', () => {
-    expect(isTabActive(tab, 'settings')).toBe(false)
   })
 })

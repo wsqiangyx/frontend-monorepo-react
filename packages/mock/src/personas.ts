@@ -382,6 +382,9 @@ export const personas: Record<PersonaKey, Persona> = {
 // 默认人设为 operator
 let currentPersona: PersonaKey = 'operator'
 
+/** 按人设 key 存储的运行时 profile 覆盖值，避免直接修改只读 personas 定义。 */
+const profileOverrides: Partial<Record<PersonaKey, Partial<Persona>>> = {}
+
 export function getPersona(): Persona {
   return personas[currentPersona]
 }
@@ -392,6 +395,25 @@ export function setPersona(key: PersonaKey): void {
 
 export function resetPersona(): void {
   currentPersona = 'operator'
+  for (const key of Object.keys(profileOverrides)) {
+    delete profileOverrides[key as PersonaKey]
+  }
+}
+
+/**
+ * 获取指定人设，并合并运行时覆盖值。
+ */
+export function getPersonaByKey(key: PersonaKey): Persona {
+  const base = personas[key]
+  const overrides = profileOverrides[key]
+  return overrides ? { ...base, ...overrides } : base
+}
+
+/**
+ * 合并 profile 更新到运行时覆盖值。
+ */
+export function applyProfileOverrides(key: PersonaKey, updates: Partial<Persona>): void {
+  profileOverrides[key] = { ...profileOverrides[key], ...updates }
 }
 
 /**
@@ -419,5 +441,5 @@ export function resolvePersonaFromRequest(request: {
 }): Persona {
   const authorization = request.headers.get('Authorization')
   const key = resolvePersonaKeyFromToken(authorization)
-  return personas[key]
+  return getPersonaByKey(key)
 }
