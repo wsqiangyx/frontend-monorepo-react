@@ -34,8 +34,3 @@ export function createAnonymousSession(): PlatformSession {
 export function isAuthenticated(session: PlatformSession): boolean {
   return session.status === 'authenticated'
 }
-
-/** @deprecated 暂无消费者，预计在未来 token 刷新流程中使用 */
-export function isSessionExpired(session: PlatformSession): boolean {
-  return session.status === 'expired'
-}

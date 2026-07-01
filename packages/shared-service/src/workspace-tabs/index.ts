@@ -44,8 +44,3 @@ export function closeTab(tabs: WorkspaceTab[], key: string): WorkspaceTab[] {
 export function findTabByKey(tabs: WorkspaceTab[], key: string): WorkspaceTab | undefined {
   return tabs.find((tab) => tab.key === key)
 }
-
-/** @deprecated 暂无消费者，直接使用 tab.key === activeKey 判断即可 */
-export function isTabActive(tab: WorkspaceTab, activeKey: string): boolean {
-  return tab.key === activeKey
-}

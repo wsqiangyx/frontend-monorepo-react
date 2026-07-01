@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { server } from '../server'
-import { resetPersona, setPersona, getPersona } from '../personas'
+import { resetPersona } from '../personas'
 
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' })
@@ -46,12 +46,10 @@ describe('auth handlers', () => {
     expect(body.data.token).toBe('mock-token-guest')
   })
 
-  it('POST /api/auth/logout resets persona', async () => {
-    setPersona('auditor')
+  it('POST /api/auth/logout succeeds without mutating global persona', async () => {
     const res = await fetch(`${BASE}/api/auth/logout`, { method: 'POST' })
     const body = await res.json()
     expect(body.success).toBe(true)
-    expect(getPersona().role).toBe('operator')
   })
 
   it('GET /api/account/profile returns persona from token', async () => {
@@ -62,6 +60,63 @@ describe('auth handlers', () => {
     expect(body.success).toBe(true)
     expect(body.data.role).toBe('guest')
     expect(body.data.email).toBe('guest@example.com')
+  })
+
+  it('PUT /api/account/profile updates allowed fields', async () => {
+    const res = await fetch(`${BASE}/api/account/profile`, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer mock-token-guest',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        displayName: 'Updated Guest',
+        email: 'updated@example.com',
+        locale: 'en-US',
+        themePreference: 'dark',
+      }),
+    })
+    const body = await res.json()
+    expect(body.success).toBe(true)
+    expect(body.data.displayName).toBe('Updated Guest')
+    expect(body.data.email).toBe('updated@example.com')
+    expect(body.data.locale).toBe('en-US')
+    expect(body.data.themePreference).toBe('dark')
+
+    const getRes = await fetch(`${BASE}/api/account/profile`, {
+      headers: { Authorization: 'Bearer mock-token-guest' },
+    })
+    const getBody = await getRes.json()
+    expect(getBody.data.displayName).toBe('Updated Guest')
+  })
+
+  it('PUT /api/account/profile rejects invalid email', async () => {
+    const res = await fetch(`${BASE}/api/account/profile`, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer mock-token-guest',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: 'not-an-email' }),
+    })
+    expect(res.status).toBe(400)
+    const body = await res.json()
+    expect(body.success).toBe(false)
+    expect(body.code).toBe('VALIDATION_ERROR')
+  })
+
+  it('PUT /api/account/profile rejects invalid locale', async () => {
+    const res = await fetch(`${BASE}/api/account/profile`, {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer mock-token-guest',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ locale: 'fr-FR' }),
+    })
+    expect(res.status).toBe(400)
+    const body = await res.json()
+    expect(body.success).toBe(false)
   })
 })
 

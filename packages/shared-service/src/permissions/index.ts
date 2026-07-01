@@ -22,11 +22,6 @@ export function asPermissionCode(code: string): PermissionCode {
   return code as PermissionCode
 }
 
-/** @deprecated 暂无消费者，如需批量转换请使用 codes.map(asPermissionCode) */
-export function toPermissionCodes(codes: string[]): PermissionCode[] {
-  return codes.map(asPermissionCode)
-}
-
 export interface PermissionSet {
   codes: Set<PermissionCode>
 }

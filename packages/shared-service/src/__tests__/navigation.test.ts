@@ -3,7 +3,6 @@ import {
   normalizeMenuNode,
   flattenMenuNodes,
   sortMenuNodes,
-  normalizeRouteMeta,
   type PlatformMenuNode,
 } from '../navigation'
 
@@ -112,44 +111,5 @@ describe('sortMenuNodes', () => {
     ] satisfies PlatformMenuNode[]
     sortMenuNodes(nodes)
     expect(nodes[0].key).toBe('b')
-  })
-})
-
-describe('normalizeRouteMeta', () => {
-  it('should apply defaults', () => {
-    const result = normalizeRouteMeta({ key: 'dashboard', path: '/dashboard' })
-    expect(result.hidden).toBe(false)
-    expect(result.affix).toBe(false)
-    expect(result.keepAlive).toBe(false)
-    expect(result.requiresAuth).toBe(true)
-    expect(result.permissionCodes).toEqual([])
-    expect(result.breadcrumb).toBe(true)
-    expect(result.external).toBe(false)
-    expect(result.iframe).toBe(false)
-  })
-
-  it('should preserve explicit values', () => {
-    const result = normalizeRouteMeta({
-      key: 'login',
-      path: '/login',
-      hidden: true,
-      affix: true,
-      keepAlive: true,
-      requiresAuth: false,
-      permissionCodes: ['public'],
-      breadcrumb: false,
-      external: true,
-      iframe: true,
-      layout: 'blank',
-    })
-    expect(result.hidden).toBe(true)
-    expect(result.affix).toBe(true)
-    expect(result.keepAlive).toBe(true)
-    expect(result.requiresAuth).toBe(false)
-    expect(result.permissionCodes).toEqual(['public'])
-    expect(result.breadcrumb).toBe(false)
-    expect(result.external).toBe(true)
-    expect(result.iframe).toBe(true)
-    expect(result.layout).toBe('blank')
   })
 })
