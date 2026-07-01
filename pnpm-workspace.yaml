@@ -29,7 +29,7 @@ catalog:
 
   # —— 构建工具 ——
   vite: '8.0.10'
-  '@vitejs/plugin-react': '6.0.1'
+  '@vitejs/plugin-react': '6.0.3'
 
   # —— 类型定义 ——
   '@types/react': '19.2.14'
