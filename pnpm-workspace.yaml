@@ -11,7 +11,7 @@ catalog:
   react: '19.2.5'
   react-dom: '19.2.5'
   react-router-dom: '^7.15.0'
-  zustand: '^5.0.13'
+  zustand: '^5.0.14'
 
   # —— UI 组件库 ——
   # shadcn/ui 通过 CLI 代码生成，不通过 catalog 声明
