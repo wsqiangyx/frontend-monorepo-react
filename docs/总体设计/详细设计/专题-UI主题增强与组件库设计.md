@@ -360,7 +360,7 @@ export interface ThemeSnapshot {
 - `applyThemeToDocument()` DOM 注入
 - ThemeProvider context value
 - `write-theme-init.mjs` 预注入脚本（FOUC 防闪烁，硬编码 token 值副本）
-- `packages/shared-types/src/ui-contract/index.ts` 类型契约（如需新增类型）
+- `packages/shared-utils/src/ui-contract/index.ts` 类型契约（如需新增类型）
 
 ### 4.6 shadcn/ui CSS 变量桥接
 

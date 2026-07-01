@@ -59,7 +59,7 @@
 
 ### 任务 2：`packages/shared-service`
 
-- 落地 `app`、`auth`、`navigation`、`permissions`、`workspace-tabs`、`contracts`、`runtime`
+- 落地 `app`、`auth`、`navigation`、`permissions`、`workspace-tabs`、`platform`
 - 收敛平台初始化、认证、导航、权限、多标签页与请求契约的共享规则
 - `shared-service` 仅通过 `shared-utils` 暴露的 `HttpClient` 接口访问 HTTP 能力，不直接依赖 `ky` 或 `axios`（ADR-008）
 - `shared-service/request/` 重导出子模块已清理，消费者直接引用 `@repo/shared-utils`（ADR-010）

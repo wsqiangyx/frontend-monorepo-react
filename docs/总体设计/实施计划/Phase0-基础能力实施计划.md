@@ -74,7 +74,7 @@
 ### 任务 3：主题与共享 UI
 
 - 在 `packages/design-tokens` 落地主题注册表、主题运行时、CSS 变量生成和 Tailwind CSS 主题配置
-- 在 `packages/shared-types` 收敛跨层主题文案契约（`ThemeName`、`ThemeMode` 等）
+- 在 `packages/shared-utils` 收敛跨层主题文案契约（`ThemeName`、`ThemeMode` 等）
 - 在 `packages/shared-ui` 落地 `ThemeProvider`（基于 CSS 变量 + Tailwind dark 变体）、shadcn/ui 组件基线和显式样式子路径 `./style.css`
 - 在 `apps/react-app` 中接入主题 store、`theme-init.js` 预注入、`ThemeProvider` 和示例页面替换
 - 配置 Tailwind CSS（`@tailwindcss/vite` 插件或 PostCSS 方案）、移除 UnoCSS 依赖

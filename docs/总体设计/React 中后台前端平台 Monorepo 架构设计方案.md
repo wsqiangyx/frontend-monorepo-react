@@ -92,7 +92,7 @@
 
 **背景**：团队技术栈集中于 React，单一宿主可降低架构复杂度，同时保留共享包的复用能力。
 **决策**：正式宿主仅保留 `apps/react-app`，使用 React 19 + shadcn/ui + Tailwind CSS。不包含 Vue 宿主。
-**后果**：共享包无需跨框架适配，`shared-ui` 仅实现 React 组件，`shared-i18n` 仅提供 React 初始化，工程维护成本显著降低。
+**后果**：共享包无需跨框架适配，`shared-ui` 仅实现 React 组件，国际化运行时由 `packages/shared-utils/i18n` 提供并在 `react-app` 中初始化，工程维护成本显著降低。
 
 #### ADR-003：选用 shadcn/ui + Tailwind CSS 作为 UI 方案
 
@@ -138,7 +138,7 @@
 #### ADR-009：引入 TanStack Query 作为服务端状态管理层
 
 **背景**：现有方案使用手动 `useEffect` + `useState` 管理请求状态，缺乏智能缓存、请求去重、自动重试、背景刷新、分页查询等能力。中后台场景中，同一数据被多个组件消费的情况频繁（如用户信息、菜单树、权限集），手动管理导致冗余请求和状态不一致。TanStack Query 是 React 生态服务端状态管理的事实标准，提供声明式的数据获取与缓存管理。
-**决策**：引入 `@tanstack/react-query` 作为服务端状态管理层。`shared-service/modules/` 封装的 API 函数返回 `Promise`，宿主层通过 TanStack Query 的 `useQuery` / `useMutation` / `useInfiniteQuery` 消费。禁止在组件中直接调用 ky 或 `httpClient`，所有数据请求必须通过 TanStack Query 层。
+**决策**：引入 `@tanstack/react-query` 作为服务端状态管理层。`shared-service` 各子模块（`auth/`、`navigation/`、`permissions/`、`workspace-tabs/`、`app/`、`request/`）封装的 API 函数返回 `Promise`，宿主层通过 TanStack Query 的 `useQuery` / `useMutation` / `useInfiniteQuery` 消费。禁止在组件中直接调用 ky 或 `httpClient`，所有数据请求必须通过 TanStack Query 层。
 **替代方案**：SWR（功能较 TanStack Query 少，特别是服务端渲染和无限滚动支持较弱）、手写缓存层（维护成本高，易出 bug）、React Query v4（已停止维护）。
 **后果**：
 
@@ -151,8 +151,8 @@
 
 **背景**：`@repo/shared` 包存在三个结构性问题：
 
-1. **僵尸包**：包自身几乎没有自有代码，5 个子模块中 `./http`、`./i18n`、`./utils`、`./types` 全部是从 `shared-utils` 和 `shared-i18n` 的重导出，根 `index.ts` 只有一行 `export * from '@repo/shared-utils'`
-2. **依赖倒挂**：`ui-contract` 模块承载跨包共享的类型契约（`ThemeName`、`StatusTone` 等），被基础共享层的 `design-tokens` 依赖，但 `shared` 包自身依赖 `shared-utils` 和 `shared-i18n`，导致基础层间接依赖了上层包，违反分层架构原则
+1. **僵尸包**：包自身几乎没有自有代码，5 个子模块中 `./http`、`./i18n`、`./utils`、`./types` 全部是从 `shared-utils` 和 `shared-utils/i18n` 的重导出，根 `index.ts` 只有一行 `export * from '@repo/shared-utils'`
+2. **依赖倒挂**：`ui-contract` 模块承载跨包共享的类型契约（`ThemeName`、`StatusTone` 等），被基础共享层的 `design-tokens` 依赖，但 `shared` 包自身依赖 `shared-utils`（含其 `i18n` 子模块），导致基础层间接依赖了上层包，违反分层架构原则
 3. **路由定义未接入**：`shared/routes/` 只定义了一条路由（`/`），宿主应用未消费；`shared/routes/react` 的 `createReactRoutes()` 也从未被调用
 
 **决策**：
@@ -161,11 +161,11 @@
 - `shared-types` 包含原 `shared` 包中的 `ui-contract` 类型、原 `shared-service/request/` 中的 API 契约重导出类型、原 `shared/routes/definitions.ts` 中的路由类型
 - 废弃 `@repo/shared` 包，所有消费者直接引用源头包：
   - `@repo/shared/http` → `@repo/shared-utils/http`
-  - `@repo/shared/i18n` → `@repo/shared-i18n`
-  - `@repo/shared/ui-contract` → `@repo/shared-types`
-  - `@repo/shared/routes` → `@repo/shared-types/routes`（如需）
+  - `@repo/shared/i18n` → `@repo/shared-utils/i18n`
+  - `@repo/shared/ui-contract` → `@repo/shared-utils/ui-contract`
+  - `@repo/shared/routes` → `@repo/shared-utils/routes`（如需）
 - `shared-service` 的 `request/` 子模块（从 `shared-utils` 重导出）同步清理，消费者直接引用 `@repo/shared-utils`
-- `design-tokens` 的依赖从 `shared` 改为 `shared-types`，解除基础层对上层包的间接依赖
+- `design-tokens` 的依赖从 `shared` 改为 `shared-utils`，解除基础层对上层包的间接依赖
 
 **替代方案**：
 
@@ -174,7 +174,7 @@
 
 **后果**：
 
-- 依赖图无环、层次清晰：`shared-types`（零依赖）→ `shared-utils` → `shared-service` → `shared-ui` → `react-app`
+- 依赖图无环、层次清晰：`shared-utils`（零 workspace 依赖）→ `shared-service` → `shared-ui` → `react-app`
 - `design-tokens` 不再间接依赖 `shared-utils` 和 `shared-i18n`
 - 所有 `@repo/shared` 的 import 路径需迁移（影响 `react-app`、`shared-ui`、`design-tokens`）
 - 路由适配器 `createReactRoutes()` 从 `shared/routes/react` 移入宿主应用（它是 React 专属逻辑，不属于共享包）
@@ -255,7 +255,7 @@ frontend-monorepo/
 │  ├─ shared-utils/            # 通用工具 + 类型契约 + 国际化运行时
 │  ├─ design-tokens/           # 设计令牌（CSS 变量、Tailwind 主题配置）
 │  ├─ shared-service/          # 服务层（API 封装、Token 管理、权限判断、Mock）
-│  ├─ shared-ui/               # React UI 组件、图表组件、布局 Hooks
+│  ├─ shared-ui/               # React UI 组件、布局 Hooks
 │  └─ mock/                    # MSW handlers（开发态 + 测试态双环境）
 ├─ docs/
 │  ├─ 总体设计/                # 上游概要设计、详细设计与实施计划
@@ -310,7 +310,7 @@ mock                             ← 零 workspace 依赖（仅依赖 msw）
 - `shared-ui` 不反向定义平台规则
 - 宿主应用不能复制共享层的主题或 i18n 运行时
 - `shared-service/mock-setup` 仅限开发/测试环境引入，生产构建时 Tree Shaking 剔除
-- `@repo/shared` 包已废弃（ADR-010），禁止新增任何 import
+- `@repo/shared` 包已废弃（ADR-010），目录已移除，禁止新增任何 import
 - `@repo/shared-types` 和 `@repo/shared-i18n` 包已合并到 `shared-utils`（ADR-011），禁止新增任何 import
 
 ### 5.3 依赖检查规则
@@ -324,7 +324,7 @@ mock                             ← 零 workspace 依赖（仅依赖 msw）
 - `shared-ui` 不得依赖 `apps/*`
 - `apps/react-app` 不得依赖其他 `apps/*`
 - 生产依赖不得直接引用 `msw`
-- 任何包不得新增 `@repo/shared` 依赖（该包已废弃，ADR-010）
+- 任何包不得新增 `@repo/shared` 依赖（该包已废弃且目录已移除，ADR-010）
 - 任何包不得新增 `@repo/shared-types` 或 `@repo/shared-i18n` 依赖（已合并至 `shared-utils`，ADR-011）
 
 ### 5.4 包间依赖矩阵
@@ -364,12 +364,11 @@ interface HttpClient {
   post<T>(url: string, data?: unknown, config?: RequestConfig): Promise<T>
   put<T>(url: string, data?: unknown, config?: RequestConfig): Promise<T>
   delete<T>(url: string, config?: RequestConfig): Promise<T>
-  upload<T>(url: string, file: File | Blob, onProgress?: (percent: number) => void): Promise<T>
 }
 ```
 
 - `RequestConfig` 统一承载 headers、params、timeout、signal 等请求配置
-- `upload` 方法内部委托给 `uploadWithProgress`（XHR），其余方法委托给 ky 适配器
+- 常规请求委托给 ky 适配器；上传场景使用同目录下的 `uploadWithProgress` 工具函数（XHR 封装）
 - ky 适配器作为默认实现；未来如需切换，只需新增适配器并替换注入点，业务层零感知
 
 #### `design-tokens` – 设计令牌
@@ -383,7 +382,7 @@ interface HttpClient {
 
 #### `shared-service` – 服务与契约
 
-- **API 模块**：按业务域拆分，响应格式 `{ code, msg, data }`
+- **API 模块**：按业务域拆分于 `auth/`、`navigation/`、`permissions/`、`workspace-tabs/`、`app/`、`platform.ts` 等子模块，响应格式 `{ code, msg, data }`
 - **HTTP 访问约束**：`shared-service` 仅依赖 `shared-utils` 暴露的 `HttpClient` 接口，不直接依赖 `ky` 或 `axios`
 - **服务端状态消费**：API 模块封装后返回 `Promise`，宿主层通过 TanStack Query 的 `useQuery` / `useMutation` / `useInfiniteQuery` 消费。禁止在组件中直接调用 `httpClient`，所有数据请求必须通过 TanStack Query 层
 - **TokenManager**：双 Token 刷新队列，并发请求排队
@@ -394,7 +393,7 @@ interface HttpClient {
 **扩展预留**：当前权限模型为 RBAC（基于角色）。若未来需要支持多租户或数据权限（如“只能查看本部门数据”），扩展路径如下：
 
 - 在 `shared-service/types.ts` 中扩展 `ApiResponse` 或请求参数，增加 `tenantId` 字段
-- 在 `shared-service/modules/` 的 API 封装中透传租户上下文
+- 在 `shared-service/request/` 重导出子模块中透传租户上下文
 - 权限判断函数 `checkPermission` 保持不变（数据权限属于接口过滤层，不在前端权限判断范围）
 - 宿主 store 中增加 `tenantId` 状态，登录后从后端获取
 
@@ -470,7 +469,7 @@ interface HttpClient {
 
 **常规请求链路**：
 
-`shared-service/modules/` 封装 API（通过 `HttpClient` 接口，返回 `Promise<ApiResponse<T>>`）→ TanStack Query 层（`useQuery` / `useMutation`，提供缓存/去重/重试/背景刷新）→ 页面组件消费 → 开发环境 MSW 拦截
+`shared-service` 各子模块封装 API（通过 `HttpClient` 接口，返回 `Promise<ApiResponse<T>>`）→ TanStack Query 层（`useQuery` / `useMutation`，提供缓存/去重/重试/背景刷新）→ 页面组件消费 → 开发环境 MSW 拦截
 
 **上传请求链路**：
 
@@ -577,10 +576,9 @@ interface HttpClient {
 | 服务端状态 | TanStack Query (@tanstack/react-query)                                          | ^5.0                         |
 | 路由       | react-router                                                                    | ^7.15.0                      |
 | 组件库     | shadcn/ui (Radix UI + CVA + tailwind-merge)                                     | — (CLI 代码生成)             |
-| 图标       | lucide-react                                                                    | ^0.5                         |
+| 图标       | lucide-react                                                                    | ^0.469                       |
 | 样式       | Tailwind CSS, @tailwindcss/vite                                                 | ^4, ^4                       |
 | 国际化     | react-i18next, i18next                                                          | ^15, ^24                     |
-| 图表       | Recharts (候选)                                                                 | ^2                           |
 | 请求       | ky                                                                              | ^1.8                         |
 | Mock       | MSW                                                                             | ^2.5                         |
 | 类型定义   | @types/react, @types/react-dom, @types/node                                     | 19.2.14, 19.2.3, 24.12.2     |
@@ -604,7 +602,7 @@ interface HttpClient {
 
 ## 14. 后端对接策略
 
-- API 封装于 `shared-service/modules/`，通过 `HttpClient` 接口访问
+- API 封装于 `shared-service` 各子模块（如 `auth/`、`navigation/`、`permissions/`、`workspace-tabs/`），通过 `HttpClient` 接口访问
 - 响应格式 `{ code, msg, data }`
 - 开发环境通过 Vite proxy 转发 `/admin-api`，Mock 环境提供模拟数据
 - 功能对接应通过适配层映射到既有平台契约，不预设固定后端风格
@@ -637,7 +635,7 @@ interface HttpClient {
 
 1. 在 `shared-ui` 中重写所有组件适配代码
 2. 更新 `design-tokens` 中的主题导出（如从 Tailwind CSS 变量切换为其他组件库主题配置）
-3. 更新 `shared-i18n` 中的 locale 映射（如从 i18next 切换为其他库的语言包方案）
+3. 更新 `shared-utils/i18n` 中的 locale 映射（如从 i18next 切换为其他库的语言包方案）
 4. 更新 `apps/react-app` 中的全局配置和启动链
 5. 更新 Vite 配置中的 CSS 插件（移除 `@tailwindcss/vite`，替换为新方案插件）
 
@@ -646,7 +644,7 @@ interface HttpClient {
 若对接真实后端：
 
 1. 保持 `shared-service/types.ts` 中的通用响应格式，或替换为你自己的类型定义
-2. 替换 `shared-service/modules/` 下的 API 实现，保持函数签名不变或按需调整
+2. 替换 `shared-service` 各子模块下的 API 实现，保持函数签名不变或按需调整
 3. 同步更新 `shared-service/mock/handlers/` 中的 Mock 处理器以匹配新接口
 4. 如需替换底层 HTTP 库（如从 ky 切换到 ofetch），只需在 `shared-utils` 中新增 `HttpClient` 适配器实现，业务层零感知
 5. 如宿主新增运行时变量，先同步 app 级 `.env.example` 与根文档
@@ -715,7 +713,7 @@ apps:
 
 **v4.0** (2026-06-30)：
 
-- 新增 ADR-011：合并 `shared-types`、`shared-i18n`、`resources` 包，精简共享包结构（8 包 → 4 包）
+- 新增 ADR-011：合并 `shared-types`、`shared-i18n`、`resources` 包，精简共享包结构（8 包 → 5 包，另保留 `shared-workflow` 规划包）
 - §4 仓库顶层结构：移除 `shared-types/`、`shared-i18n/`、`resources/`、`shared-workflow/`；`shared-utils/` 承接类型契约 + 国际化 + 通用工具
 - §5.1 层次划分：基础共享层从 4 包收缩为 2 包（`shared-utils` + `design-tokens`）
 - §5.2 正式依赖方向：重绘依赖图，`shared-utils` 为最底层零 workspace 依赖包
@@ -754,7 +752,7 @@ apps:
 - §3.2 架构重议触发条件新增 ky 停止维护条件
 - §5.3 依赖检查规则：`shared-service` 禁止直接依赖 `ky`、`axios`，仅通过 `HttpClient` 接口访问
 - §5.4 包间依赖矩阵：`shared-utils` 新增 `ky` 可依赖项；`shared-service` 移除 `axios`，可依赖项改为 `shared-utils, msw`，禁止项新增 `ky, axios`；`apps/react-app` 新增 `@tanstack/react-query`
-- §6.1 `shared-utils` 新增 `HttpClient` 接口抽象（含 `get/post/put/delete/upload` 五个方法）、ky 适配器实现、`uploadWithProgress` 工具函数（XHR 封装）
+- §6.1 `shared-utils` 新增 `HttpClient` 接口抽象（含 `get/post/put/delete` 四个方法）、ky 适配器实现，新增 `uploadWithProgress` 工具函数（XHR 封装）用于上传场景
 - §6.2 `shared-service` 新增 HTTP 访问约束（仅依赖 `HttpClient` 接口）和服务端状态消费说明（通过 TanStack Query 消费，禁止组件直接调用 httpClient）
 - §6.4 宿主技术栈新增 TanStack Query，启动链新增 QueryClient 步骤
 - §7.1 启动链新增"创建 TanStack Query QueryClient 实例"步骤
