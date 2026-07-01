@@ -22,6 +22,29 @@ export interface UploadConfig {
   headers?: Record<string, string>
   getToken?: () => string | null
   abortSignal?: AbortSignal
+  /** 最大文件大小（字节）。未设置时不校验。 */
+  maxFileSize?: number
+  /** 允许的 MIME 类型列表。未设置时不校验。 */
+  allowedMimeTypes?: string[]
+}
+
+/**
+ * 校验待上传文件是否满足大小与类型限制。
+ * 在校验通过时静默返回，否则抛出 ApiError。
+ */
+export function validateUploadFile(file: File | Blob, config: UploadConfig): void {
+  const { maxFileSize, allowedMimeTypes } = config
+
+  if (maxFileSize !== undefined && file.size > maxFileSize) {
+    throw new ApiError('FILE_TOO_LARGE', `文件大小超过限制（最大 ${maxFileSize} 字节）`, 0)
+  }
+
+  if (allowedMimeTypes !== undefined && allowedMimeTypes.length > 0) {
+    const actualType = file.type
+    if (!allowedMimeTypes.includes(actualType)) {
+      throw new ApiError('INVALID_FILE_TYPE', `不支持的文件类型：${actualType || 'unknown'}`, 0)
+    }
+  }
 }
 
 /**
@@ -41,6 +64,8 @@ export function uploadWithProgress<T>(
     getToken = () => null,
     abortSignal,
   } = config
+
+  validateUploadFile(file, config)
 
   return new Promise<T>((resolve, reject) => {
     const xhr = new XMLHttpRequest()

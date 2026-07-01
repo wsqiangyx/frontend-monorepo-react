@@ -4,6 +4,7 @@ import { DataPanel, FilterBar, PageContainer, PermissionGate, StatusTag } from '
 import { usePermissionStore } from '@/platform'
 import { fetchUsers, type UserRecord } from '@/services/user-service'
 import { userKeys } from '@/lib/query-keys'
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination'
 
 export default function UserListView() {
   const permissionSet = usePermissionStore((state) => state.permissionSet)
@@ -14,8 +15,13 @@ export default function UserListView() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: userKeys.list({ keyword: keyword || undefined, page: 1, pageSize: 10 }),
-    queryFn: () => fetchUsers({ keyword: keyword || undefined, page: 1, pageSize: 10 }),
+    queryKey: userKeys.list({
+      keyword: keyword || undefined,
+      page: 1,
+      pageSize: DEFAULT_PAGE_SIZE,
+    }),
+    queryFn: () =>
+      fetchUsers({ keyword: keyword || undefined, page: 1, pageSize: DEFAULT_PAGE_SIZE }),
   })
 
   const users = result?.items ?? []

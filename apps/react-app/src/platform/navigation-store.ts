@@ -20,9 +20,10 @@ export const useNavigationStore = create<NavigationState>((set) => ({
     try {
       const nodes = await api.get<PlatformMenuNode[]>('/navigation/menu-tree')
       const normalized = nodes.map(normalizeMenuNode)
-      set({ menuNodes: sortMenuNodes(normalized) })
+      set({ menuNodes: sortMenuNodes(normalized), error: null })
     } catch (e) {
       set({ error: e instanceof Error ? e.message : '获取菜单失败' })
+      throw e
     } finally {
       set({ loading: false })
     }

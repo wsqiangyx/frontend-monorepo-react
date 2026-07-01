@@ -4,13 +4,14 @@ import { DataPanel, FilterBar, PageContainer, PermissionGate, StatusTag } from '
 import { usePermissionStore } from '@/platform'
 import { fetchMenus } from '@/services/menu-service'
 import { menuKeys } from '@/lib/query-keys'
+import { DEFAULT_PAGE_SIZE } from '@/constants/pagination'
 
 export default function MenuListView() {
   const permissionSet = usePermissionStore((state) => state.permissionSet)
   const [keyword, setKeyword] = useState('')
   const [typeFilter, setTypeFilter] = useState<'directory' | 'route' | ''>('')
   const [page, setPage] = useState(1)
-  const pageSize = 10
+  const pageSize = DEFAULT_PAGE_SIZE
 
   const queryKey = menuKeys.list({
     keyword: keyword.trim() || undefined,

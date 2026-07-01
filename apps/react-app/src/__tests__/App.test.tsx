@@ -1,10 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import App from '@/App'
 import { useLocaleStore } from '@/stores/locale'
 import { useThemeStore } from '@/stores/theme'
 import { useAuthStore } from '@/platform'
 import { applyThemeToDocument } from '@repo/design-tokens/theme'
+import { renderWithProviders } from '@/test/test-utils'
 
 function stubBrowserLocale(locale: 'zh-CN' | 'en-US') {
   vi.stubGlobal('navigator', {
@@ -65,7 +66,7 @@ describe('App', () => {
   })
 
   it('shows login view when not authenticated', () => {
-    render(<App />)
+    renderWithProviders(<App />)
 
     expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument()
     expect(document.documentElement.dataset.themeMode).toBe('light')

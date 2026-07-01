@@ -3,6 +3,7 @@ import type { PlatformSession, AuthStatus, PlatformUser } from '@repo/shared-ser
 import { createAnonymousSession, isAuthenticated } from '@repo/shared-service'
 import { registerTokenProvider, setOnUnauthorized } from '@/services/http-client'
 import { api } from '@/services/shared'
+import { ROUTES } from '@/constants/routes'
 
 interface LoginParams {
   username: string
@@ -82,6 +83,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       })
     } catch (e) {
       set({ error: e instanceof Error ? e.message : '获取用户资料失败' })
+      throw e
     }
   },
 }))
@@ -92,5 +94,5 @@ registerTokenProvider(() => useAuthStore.getState().session.token ?? null)
 // 注册 401 未授权处理器 — 清除会话并重定向到登录页
 setOnUnauthorized(() => {
   useAuthStore.setState({ session: createAnonymousSession(), error: '认证已过期，请重新登录' })
-  window.location.href = '/login'
+  window.location.href = ROUTES.LOGIN
 })

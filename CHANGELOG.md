@@ -17,7 +17,7 @@ The format is based on Keep a Changelog, but the repository currently maintains 
 - Vite `closeBundle` 插件，生产构建自动排除 `mockServiceWorker.js`
 - 所有 View 组件的 `useQuery` error 状态处理
 - 所有 Zustand store 异步 action 的 try/catch 错误处理
-- HTTP 客户端 401 响应标记为 `UNAUTHORIZED` 错误码
+- `packages/shared-utils/http/uploadWithProgress` 新增可选的 `maxFileSize` 与 `allowedMimeTypes` 校验，防御异常文件上传
 - `.gitignore` 新增 `.env.*` 模式，防止环境变量文件泄露
 
 ### Changed
@@ -31,7 +31,6 @@ The format is based on Keep a Changelog, but the repository currently maintains 
 - `ProfileView` 重构为 key 模式子组件，消除渲染阶段 setState 反模式
 - `DictionaryListView` 改用派生状态替代 queryFn 中的 setState
 - `RoleListView` 直接消费 `useQuery` 返回数据，移除 queryFn 中的 setState
-- `packages/shared-utils/http` 移除未使用的 `uploadWithProgress` 和 `UploadConfig` 导出
 
 ### Removed
 

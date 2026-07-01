@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation, useMatches, useNavigate } from 'react-ro
 import { AdminShell, AppBreadcrumb, ExceptionState, PageContainer } from '@repo/shared-ui'
 import { isAuthenticated, flattenMenuNodes, type PlatformMenuNode } from '@repo/shared-service'
 import { useAuthStore, useNavigationStore, usePermissionStore, useTabStore } from '@/platform'
+import { ROUTES } from '@/constants/routes'
 
 interface RouteHandle {
   title?: string
@@ -35,7 +36,9 @@ export default function AdminLayout() {
 
   useEffect(() => {
     if (!authenticated) return
-    void Promise.all([fetchProfile(), loadMenu(), loadPermissions()])
+    Promise.all([fetchProfile(), loadMenu(), loadPermissions()]).catch((error: unknown) => {
+      console.error('Admin layout initialization failed', error)
+    })
   }, [authenticated, fetchProfile, loadMenu, loadPermissions])
 
   const currentHandle = (matches[matches.length - 1]?.handle ?? {}) as RouteHandle
@@ -77,7 +80,7 @@ export default function AdminLayout() {
 
   async function handleLogout() {
     await logout()
-    navigate('/login')
+    navigate(ROUTES.LOGIN)
   }
 
   function handleMenuSelect(node: PlatformMenuNode) {
@@ -95,12 +98,12 @@ export default function AdminLayout() {
     removeTab(tab.key)
     if (location.pathname === tab.path) {
       const nextTab = tabs.find((item) => item.key !== tab.key)
-      navigate(nextTab?.path ?? '/dashboard')
+      navigate(nextTab?.path ?? ROUTES.DASHBOARD)
     }
   }
 
   if (!authenticated) {
-    return <Navigate to="/login" replace />
+    return <Navigate to={ROUTES.LOGIN} replace />
   }
 
   if (requiredCodes.length > 0 && !checkAny(requiredCodes)) {
@@ -114,7 +117,7 @@ export default function AdminLayout() {
             <button
               type="button"
               className="page-primary-button"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(ROUTES.DASHBOARD)}
             >
               返回仪表盘
             </button>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/platform'
+import { ROUTES } from '@/constants/routes'
 
 export default function LoginView() {
   const [username, setUsername] = useState('')
@@ -14,7 +15,7 @@ export default function LoginView() {
     setError(null)
     try {
       await login({ username, password })
-      navigate('/dashboard')
+      navigate(ROUTES.DASHBOARD)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed')
     }
