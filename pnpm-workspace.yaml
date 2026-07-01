@@ -34,7 +34,7 @@ catalog:
   # —— 类型定义 ——
   '@types/react': '19.2.14'
   '@types/react-dom': '19.2.3'
-  '@types/node': '24.12.2'
+  '@types/node': '24.13.2'
 
   # —— 测试 ——
   '@testing-library/dom': '10.4.1'
