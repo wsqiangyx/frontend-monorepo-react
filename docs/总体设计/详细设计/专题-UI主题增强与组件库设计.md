@@ -309,7 +309,7 @@ export const themeRegistry: ThemeRegistry = {
 
 #### 4.4.1 契约扩展
 
-`packages/shared-types/src/ui-contract/index.ts`：
+`packages/shared-utils/src/ui-contract/index.ts`：
 
 ```ts
 export type ThemeName = 'default' | 'compact'
