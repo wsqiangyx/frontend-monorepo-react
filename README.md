@@ -101,5 +101,6 @@ frontend-monorepo/
 - `bootstrap.tsx` 负责接入 Theme Provider、引入共享 UI 包样式并挂载应用
 - `@repo/shared-utils/i18n` 是唯一共享国际化运行时
 - package `exports` 继续只指向 `dist/`
+- 代码改动须遵循 `AGENTS.md` 中的编码代理修改纪律（Karpathy 准则：先思考、简化优先、精准修改、目标驱动）
 
 更完整的维护约束见 [`AGENTS.md`](./AGENTS.md)。
