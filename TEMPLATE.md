@@ -19,7 +19,7 @@
 - [ ] 阅读 `docs/教程/模板初始化与裁剪指南.md`
 - [ ] 决定是否需要先执行 `pnpm template:init`
 - [ ] 决定第一天是否保留 `@repo/*` 与 `repo-*` 技术标识
-- [ ] 确认是否保留当前工作区中的 `apps/react-screen-designer` 专题目录，还是将其单独列入后续清理任务
+- [ ] 确认是否保留当前工作区中的 `apps/taro-miniapp` 和 `packages/cross-platform-utils` 跨端候选目录，还是将其纳入正式应用规划
 - [ ] 复制 React app 的 `.env.example` 为本地环境文件
 - [ ] 执行 `pnpm install`
 - [ ] 执行 `pnpm verify`
@@ -54,6 +54,8 @@
 - `repo-theme-style`
 - `repo-locale`
 - `react-screen-designer`
+- `taro-miniapp`
+- `cross-platform-utils`
 
 ## 裁剪提醒
 
@@ -76,8 +78,8 @@ Day 0 完成时，你至少应该能回答：
 
 - 这个仓库现在的正式技术栈是不是 React-only
 - 这个仓库当前的正式架构分层是不是已经理解清楚
-- 当前哪些目录处于 `stable`，哪些还只是 `experimental`
-- `apps/react-screen-designer` 是被保留为专题目录，还是已经进入你的正式应用规划
+- 当前哪些目录处于 `stable`，哪些还只是 `candidate` 或 `experimental`
+- `apps/taro-miniapp` 和 `packages/cross-platform-utils` 是否保留为跨端候选目录，还是已进入正式应用规划
 - 当前哪些技术标识被保留，哪些被重命名
 - 你的 CI 是不是真的已经可用
 - 你的本地 `pnpm verify` 是否已经通过

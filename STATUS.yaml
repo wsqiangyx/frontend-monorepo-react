@@ -1,12 +1,12 @@
 version: 1
-updated_at: 2026-07-01
+updated_at: 2026-07-02
 apps:
   react-app:
     status: stable
     notes: 正式默认宿主应用，已纳入根脚本、根测试矩阵与模板默认交付范围
-  react-screen-designer:
-    status: experimental
-    notes: 可视化专题子应用预研目录，尚未纳入根脚本、根测试矩阵与模板默认交付范围
+  taro-miniapp:
+    status: candidate
+    notes: Taro 小程序宿主（ADR-012），Phase 1 跨端基座，尚未纳入默认验证链路
 packages:
   shared-utils:
     status: stable
@@ -19,3 +19,6 @@ packages:
     status: stable
   shared-ui:
     status: stable
+  cross-platform-utils:
+    status: candidate
+    notes: 跨端运行时适配层（ADR-012），HTTP/Storage/Theme/Locale

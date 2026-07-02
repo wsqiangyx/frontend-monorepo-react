@@ -14,11 +14,12 @@ function writeFile(filePath, content) {
 function createWorkspaceRoot() {
   const workspaceRoot = mkdtempSync(join(tmpdir(), 'repo-check-status-'))
 
-  for (const appName of ['react-app', 'react-screen-designer']) {
+  for (const appName of ['react-app', 'taro-miniapp']) {
     mkdirSync(join(workspaceRoot, 'apps', appName), { recursive: true })
   }
 
   for (const packageName of [
+    'cross-platform-utils',
     'shared-utils',
     'shared-service',
     'design-tokens',
@@ -32,13 +33,15 @@ function createWorkspaceRoot() {
     join(workspaceRoot, 'STATUS.yaml'),
     [
       'version: 1',
-      'updated_at: 2026-06-30',
+      'updated_at: 2026-07-02',
       'apps:',
       '  react-app:',
       '    status: stable',
-      '  react-screen-designer:',
-      '    status: experimental',
+      '  taro-miniapp:',
+      '    status: candidate',
       'packages:',
+      '  cross-platform-utils:',
+      '    status: candidate',
       '  shared-utils:',
       '    status: stable',
       '  shared-service:',
@@ -62,6 +65,7 @@ function createWorkspaceRoot() {
           'build:shared':
             'pnpm --filter @repo/shared-utils build && pnpm --filter @repo/shared-service build && pnpm --filter @repo/design-tokens build && pnpm --filter @repo/mock build && pnpm --filter @repo/shared-ui build',
           'build:react': 'pnpm build:shared && pnpm -F @repo/react-app build',
+          'build:cross-platform-utils': 'pnpm -F @repo/cross-platform-utils build',
           typecheck:
             'pnpm build:shared && pnpm --filter @repo/shared-utils typecheck && pnpm --filter @repo/shared-service typecheck && pnpm --filter @repo/design-tokens typecheck && pnpm --filter @repo/mock typecheck && pnpm --filter @repo/shared-ui typecheck && pnpm --filter @repo/react-app typecheck',
           test: 'pnpm --filter @repo/shared-utils test && pnpm --filter @repo/shared-service test && pnpm --filter @repo/design-tokens test && pnpm --filter @repo/mock test && pnpm --filter @repo/shared-ui test && pnpm --filter @repo/react-app test',
@@ -90,6 +94,8 @@ function createWorkspaceRoot() {
       "      'packages/mock/vitest.config.ts',",
       "      'packages/shared-ui/vitest.config.ts',",
       "      'apps/react-app/vitest.config.ts',",
+      "      'packages/cross-platform-utils/vitest.config.ts',",
+      "      'apps/taro-miniapp/vitest.config.ts',",
       '    ],',
       '  },',
       '})',

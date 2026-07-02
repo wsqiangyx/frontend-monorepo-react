@@ -1,0 +1,8 @@
+export type { PlatformStorage } from './storage/types'
+export { createTaroStorage } from './storage/taro'
+export type { TaroHttpClientConfig } from './http/taro'
+export { createTaroHttpClient } from './http/taro'
+export type { ThemePreference, ThemeRuntimeState, PlatformThemeRuntime } from './theme/types'
+export { createTaroThemeRuntime } from './theme/taro'
+export type { PlatformLocaleManager } from './locale/types'
+export { createTaroLocaleManager } from './locale/taro'

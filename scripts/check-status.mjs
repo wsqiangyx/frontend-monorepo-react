@@ -6,7 +6,9 @@ import { fileURLToPath } from 'node:url'
 const defaultRootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 const STABLE_APP_NAMES = ['react-app']
-const EXPERIMENTAL_APP_NAMES = ['react-screen-designer']
+const EXPERIMENTAL_APP_NAMES = []
+const CANDIDATE_APP_NAMES = ['taro-miniapp']
+const CANDIDATE_PACKAGE_NAMES = ['cross-platform-utils']
 const STABLE_PACKAGE_NAMES = [
   'shared-utils',
   'shared-service',
@@ -170,6 +172,28 @@ export function checkStatusConsistency(rootDir = defaultRootDir) {
     invariant(
       !vitestConfig.includes(`apps/${name}/vitest.config.ts`),
       `Experimental app ${name} must not be in the root vitest matrix`,
+    )
+  }
+
+  for (const name of CANDIDATE_APP_NAMES) {
+    invariant(
+      appNames.includes(name),
+      `Candidate app ${name} must exist in STATUS.yaml apps`,
+    )
+    invariant(
+      vitestConfig.includes(`apps/${name}/vitest.config.ts`),
+      `Root vitest matrix missing candidate app ${name}`,
+    )
+  }
+
+  for (const name of CANDIDATE_PACKAGE_NAMES) {
+    invariant(
+      packageNames.includes(name),
+      `Candidate package ${name} must exist in STATUS.yaml packages`,
+    )
+    invariant(
+      vitestConfig.includes(`packages/${name}/vitest.config.ts`),
+      `Root vitest matrix missing candidate package ${name}`,
     )
   }
 

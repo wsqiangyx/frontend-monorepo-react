@@ -1,7 +1,7 @@
 # React 中后台前端平台 Monorepo 架构设计方案
 
-**文档版本**：v4.1
-**修订日期**：2026-07-01
+**文档版本**：v4.2
+**修订日期**：2026-07-02
 **适用仓库**：`frontend-monorepo`  
 **文档性质**：唯一上游概要设计
 
@@ -79,6 +79,7 @@
 | ADR-009  | 引入 TanStack Query 作为服务端状态管理层                                  | 2026-06-25 | ✅ 已采纳 | 待补全   |
 | ADR-010  | 废弃 `shared` 包，新建 `shared-types` 纯类型契约包                        | 2026-06-26 | ✅ 已采纳 | 待补全   |
 | ADR-011  | 合并 `shared-types`、`shared-i18n`、`resources` 包，精简共享包结构        | 2026-06-30 | ✅ 已采纳 | 待补全   |
+| ADR-012  | 引入跨端能力：小程序采用 Taro，App 采用 Expo (React Native)               | 2026-07-02 | ✅ 已采纳 | 已完成   |
 
 > **补充说明**：ADR-002 和 ADR-003 为技术栈选择的根基性决策，建议在仓库初始化后一个月内完成正式决策文档的编写，记录完整的背景、替代方案评估及决策后果。
 
@@ -209,6 +210,48 @@
 - `design-tokens`、`shared-service`、`shared-ui` 的 `@repo/shared-types` 依赖替换为 `@repo/shared-utils`
 - 所有 `@repo/shared-types/*` 和 `@repo/shared-i18n` 的 import 路径需迁移
 
+#### ADR-012：引入跨端能力：小程序采用 Taro，App 采用 Expo (React Native)
+
+**背景**：
+
+随着模板产品化推进，单一 Web 宿主已无法覆盖中后台平台在小程序与移动 App 场景的交付需求。现有仓库通过 ADR-002 限定为 React 单应用壳，目的是降低初期复杂度；但 `packages/shared-service` 已按框架无关方式实现（ADR-001），`packages/shared-utils` 也已承载类型契约、国际化运行时与通用工具，这为多宿主复用平台内核提供了可行基础。
+
+跨端扩展的核心目标不是追求一套代码覆盖所有端，而是在**保持 Web 中后台基线稳定**的前提下，让小程序和 App 能最大程度复用既有平台规则（认证、菜单、权限、标签页、API 契约、国际化），同时允许各端使用最适合自身运行时的 UI 与网络方案。
+
+**决策**：
+
+- **小程序端采用 Taro 3+/4**：使用 React/TSX 语法，作为 `apps/taro-miniapp` 宿主；一套代码可输出微信小程序、支付宝小程序、H5，并在需要时输出 React Native。
+- **App 端采用 Expo（React Native）**：作为 `apps/expo-mobile` 宿主；使用 React 技术栈，通过 EAS Build 托管原生构建，通过 EAS Update 提供热更新。
+- **为跨端新增三个共享包**：
+  - `packages/cross-platform-utils`：封装平台差异（HTTP、Storage、Theme、Locale），框架无关，仅依赖 `@repo/shared-utils`
+  - `packages/cross-platform-ui`：跨端 UI 组件，基于 Taro 组件与 React Native 组件分别实现，消费 `@repo/design-tokens` 原始 token 值与 `@repo/shared-service` 平台内核
+  - `packages/cross-platform-mock`：平台无关的 Mock 数据生成，从 `packages/mock` 提取 fixtures 与 personas，供小程序/App 的本地拦截层使用
+- **重议 ADR-002**：正式宿主不再限定为单一 React 应用壳；`apps/react-app` 继续作为默认桌面 Web 宿主，`apps/taro-miniapp` 与 `apps/expo-mobile` 作为跨端正式宿主进入基线。
+
+**替代方案**：
+
+- **微信小程序原生**：性能最好，但 WXML/WXSS 与现有 React/TypeScript 资产完全割裂，不适合复用型模板。
+- **uni-app（Vue）**：国内生态大，但要求团队维护 React + Vue 双栈，与现有 `shared-ui`、shadcn/ui 不兼容。
+- **Flutter**：UI 一致性与性能最佳，但需用 Dart 重写 `shared-service`、`shared-utils` 全部逻辑，破坏现有 TypeScript 资产。
+- **Kotlin Multiplatform**：适合共享业务逻辑，但需 Kotlin + Swift/Compose 分别写 UI，且要重写现有平台内核。
+- **Taro 全覆盖（小程序 + H5 + React Native）**：维护成本最低，但 Taro 的 React Native 输出成熟度与性能弱于原生 Expo；若团队资源有限或 App 为次要场景，可作为过渡方案。
+
+**后果**：
+
+- ADR-002 的“正式宿主为 React 单应用壳”被 ADR-012 修订为多宿主架构。
+- `packages/shared-service` 的框架无关价值被进一步验证：认证、菜单、权限、标签页等规则无需改动即可被 Taro/Expo 复用。
+- `packages/shared-utils` 的类型契约、国际化运行时、路由定义继续被所有宿主共享；HTTP 客户端底层 ky 仅用于 Web，跨端需通过 `cross-platform-utils` 注入 `Taro.request`/`fetch` 适配实现。
+- `packages/design-tokens` 的原始 token 值（颜色、间距、圆角）可被跨端复用，但 CSS 变量/Tailwind 输出仅用于 Web，需新增平台适配输出。
+- `packages/shared-ui` 与 `packages/mock` 保持 Web 专用；跨端需新建 `cross-platform-ui` 与 `cross-platform-mock`。
+- 新增根脚本：
+  - `build:cross-platform-utils = pnpm -F @repo/cross-platform-utils build`（taro-miniapp 的前置依赖构建）
+  - `dev:taro:weapp = pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp dev:weapp`
+  - `build:taro:weapp = pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp build:weapp`
+  - `dev:taro:h5 = pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp dev:h5`
+  - `build:taro:h5 = pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp build:h5`
+  - 以上脚本不破坏现有 `build:react` 与 `verify` 主线。
+- `STATUS.yaml`、`AGENTS.md`、`README.md`、`TEMPLATE.md` 需同步登记新宿主与共享包，并更新目录职责。
+
 #### ADR-004：pnpm catalog 统一版本管理
 
 **背景**：多包 Monorepo 需避免依赖版本碎片化。  
@@ -250,13 +293,15 @@
 ```
 frontend-monorepo/
 ├─ apps/
-│  └─ react-app/               # React 正式宿主应用
+│  ├─ react-app/               # React 正式宿主应用 (stable)
+│  └─ taro-miniapp/            # Taro 小程序宿主 (candidate, ADR-012)
 ├─ packages/
 │  ├─ shared-utils/            # 通用工具 + 类型契约 + 国际化运行时
 │  ├─ design-tokens/           # 设计令牌（CSS 变量、Tailwind 主题配置）
 │  ├─ shared-service/          # 服务层（API 封装、Token 管理、权限判断、Mock）
 │  ├─ shared-ui/               # React UI 组件、布局 Hooks
-│  └─ mock/                    # MSW handlers（开发态 + 测试态双环境）
+│  ├─ mock/                    # MSW handlers（开发态 + 测试态双环境）
+│  └─ cross-platform-utils/    # 跨端运行时适配层 (candidate, ADR-012)
 ├─ docs/
 │  ├─ 总体设计/                # 上游概要设计、详细设计与实施计划
 │  ├─ 教程/                    # 初始化与操作手册
@@ -300,6 +345,10 @@ react-app                        ← 依赖所有共享包
 design-tokens                    ← 只依赖 shared-utils 的 UI 契约
 
 mock                             ← 零 workspace 依赖（仅依赖 msw）
+
+cross-platform-utils             ← 依赖 shared-utils + design-tokens (ADR-012)
+  ↑
+taro-miniapp                     ← 依赖 cross-platform-utils + shared-service + shared-utils (ADR-012)
 ```
 
 **强制约束**：
@@ -329,14 +378,16 @@ mock                             ← 零 workspace 依赖（仅依赖 msw）
 
 ### 5.4 包间依赖矩阵
 
-| 包名             | 可依赖项                                                               | 禁止依赖项              |
-| ---------------- | ---------------------------------------------------------------------- | ----------------------- |
-| `shared-utils`   | ky                                                                     | React, workspace 包     |
-| `design-tokens`  | shared-utils                                                           | 其他 workspace 包       |
-| `shared-service` | shared-utils, msw                                                      | UI 框架, DOM, ky, axios |
-| `shared-ui`      | shared-utils, design-tokens, shared-service, @radix-ui/\*, tailwindcss | 宿主应用                |
-| `mock`           | shared-utils, msw                                                      | UI 框架                 |
-| `apps/react-app` | 所有共享包, @tanstack/react-query                                      | 无                      |
+| 包名                   | 可依赖项                                                               | 禁止依赖项                     |
+| ---------------------- | ---------------------------------------------------------------------- | ------------------------------ |
+| `shared-utils`         | ky                                                                     | React, workspace 包            |
+| `design-tokens`        | shared-utils                                                           | 其他 workspace 包              |
+| `shared-service`       | shared-utils, msw                                                      | UI 框架, DOM, ky, axios        |
+| `shared-ui`            | shared-utils, design-tokens, shared-service, @radix-ui/\*, tailwindcss | 宿主应用                       |
+| `mock`                 | shared-utils, msw                                                      | UI 框架                        |
+| `cross-platform-utils` | shared-utils, design-tokens                                            | UI 框架, React, DOM            |
+| `apps/react-app`       | 所有共享包, @tanstack/react-query                                      | 无                             |
+| `apps/taro-miniapp`    | cross-platform-utils, shared-service, shared-utils                     | React 19, DOM, shared-ui, mock |
 
 ---
 
@@ -423,9 +474,34 @@ interface HttpClient {
 **布局 Hooks**：`useMenu`, `useLayout`，消费权限数组返回菜单树
 **类型契约**：UI 组件的类型契约（`ThemeName`, `StatusTone` 等）从 `@repo/shared-utils/ui-contract` 消费
 
-### 6.4 宿主层
+### 6.4 跨端运行时适配层
 
-#### `apps/react-app` – 组合根
+#### `cross-platform-utils` – 跨端运行时适配
+
+**状态**：candidate（Phase 1 跨端基座）
+
+**定位**：框架无关的跨端运行时适配层，封装小程序与 App 宿主与平台原生能力的差异。不依赖 React、Taro 或任何 UI 框架（`@tarojs/taro` 仅为 optional peerDependency）。
+
+**子模块**：
+
+| 子模块      | 职责                                                                                                                                    |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `./storage` | `PlatformStorage` 接口抽象：`getItem/setItem/removeItem/clear`，Taro 适配器基于 `Taro.getStorage/setStorage/removeStorage/clearStorage` |
+| `./http`    | `TaroHttpClient`：基于 `Taro.request` 的 HTTP 客户端，统一 request/response 拦截、超时、重试                                            |
+| `./theme`   | `PlatformThemeRuntime`：`Taro.getSystemInfo` 获取系统主题，`Taro.onThemeChange` 监听主题切换，`Taro.setNavigationBarColor` 同步导航栏   |
+| `./locale`  | `PlatformLocaleManager`：`Taro.getSystemInfo` 获取设备语言，`Taro.setStorageSync` 持久化                                                |
+
+**依赖**：`@repo/shared-utils`（类型契约、HttpClient 接口）、`@repo/design-tokens`（原始 token 值）
+
+**约束**：
+
+- 框架无关，不依赖 Taro 具体 API 之外的 UI 框架
+- `@tarojs/taro` 为 optional peerDependency，允许 Web 宿主不安装 Taro 也能通过条件编译/类型体操使用类型
+- 不依赖 `@repo/shared-service`（平台内核在跨端宿主中通过 taro-miniapp 直接消费）
+
+### 6.5 宿主层
+
+#### `apps/react-app` – React 组合根
 
 - **技术栈**：React 19 + Zustand + react-router + shadcn/ui + Tailwind CSS + TanStack Query + react-i18next
 - **启动链**：环境校验 → Mock 启动 → 样式注入 → i18n → QueryClient → Router/Store → 挂载
@@ -441,6 +517,17 @@ interface HttpClient {
 | `platform/`               | 平台级 Zustand store（auth、permission、navigation）                              |
 | `layouts/AdminLayout.tsx` | 宿主级布局、菜单、语言切换                                                        |
 | `views/`                  | 页面组件                                                                          |
+
+#### `apps/taro-miniapp` – Taro 小程序宿主
+
+**状态**：candidate（Phase 1 跨端基座）
+
+- **技术栈**：React 18 + Taro 3/4 + zustand + TypeScript
+- **输出目标**：微信小程序（weapp）、H5
+- **启动链**：`app.ts` → `app.config.ts`（页面注册）→ 各页面 Page 组件（服务层调用 + 状态管理）
+- **依赖**：`@repo/cross-platform-utils`（跨端运行时适配）、`@repo/shared-service`（平台内核）、`@repo/shared-utils`（类型契约、国际化）
+- **不与 React 19 catalog 冲突**：taro-miniapp 使用 React 18（Taro 3/4 要求的版本），通过独立 `dependencies` 声明，不受根 catalog 的 React 19 约束
+- **Mock 策略**：Taro 环境不支持 MSW，通过 `cross-platform-utils/http` 封装的 `TaroHttpClient` 在开发态注入本地拦截逻辑
 
 ---
 
@@ -672,6 +759,7 @@ packages:
   shared-service: stable
   shared-ui: stable
   mock: stable
+  cross-platform-utils: candidate
   # shared-types: 已合并至 shared-utils（ADR-011）
   # shared-i18n: 已合并至 shared-utils（ADR-011）
   # resources: 已并入 react-app（ADR-011）
@@ -679,7 +767,7 @@ packages:
 
 apps:
   react-app: stable
-  react-screen-designer: experimental
+  taro-miniapp: candidate
 ```
 
 包状态变更规则见 §3.2 ADR-006 中的文档修订流程，任何状态变更需通过 PR 审核并更新本表。
@@ -705,6 +793,16 @@ apps:
 - 根 `STATUS.yaml`
 
 ### 18.3 本版主要变更
+
+**v4.2** (2026-07-02)：
+
+- §3.2 ADR-012 后果详述新增 `build:cross-platform-utils`、`dev:taro:weapp`、`build:taro:weapp`、`dev:taro:h5`、`build:taro:h5` 等根脚本说明
+- §4 仓库顶层结构：新增 `apps/taro-miniapp`（candidate）、`packages/cross-platform-utils`（candidate）
+- §5.2 正式依赖方向：新增 `cross-platform-utils → shared-utils + design-tokens` 和 `taro-miniapp → cross-platform-utils + shared-service + shared-utils` 依赖链路
+- §5.4 包间依赖矩阵：新增 `cross-platform-utils` 行（依赖 shared-utils + design-tokens，禁止 UI 框架/React/DOM）和 `apps/taro-miniapp` 行（依赖 cross-platform-utils + shared-service + shared-utils，禁止 React 19/DOM/shared-ui/mock）
+- §6.4 新增跨端运行时适配层（`cross-platform-utils`）职责说明，含 storage/http/theme/locale 四个子模块
+- §6.5 宿主层新增 `apps/taro-miniapp` 小节（React 18 + Taro 3/4，输出微信小程序 + H5）
+- §17 包治理状态：`apps/react-app` 更新为 stable，新增 `packages/cross-platform-utils: candidate` 和 `apps/taro-miniapp: candidate`；移除已不存在的 `react-screen-designer: experimental` 条目
 
 **v4.1** (2026-07-01)：
 

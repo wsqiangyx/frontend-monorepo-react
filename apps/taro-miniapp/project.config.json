@@ -1,0 +1,26 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "taro-miniapp",
+  "description": "跨端小程序宿主",
+  "appid": "touristappid",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "enhance": false,
+    "compileHotReLoad": false,
+    "postcss": false,
+    "minified": false,
+    "newFeature": false,
+    "coverView": true,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "uglifyFileName": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": true,
+    "babelSetting": { "ignore": [], "plugins": [], "presets": [] }
+  },
+  "condition": {}
+}

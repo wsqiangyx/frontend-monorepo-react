@@ -23,6 +23,7 @@ export default defineConfig({
       'packages/shared-ui/vitest.config.ts',
       // 正式宿主应用
       'apps/react-app/vitest.config.ts',
+      // 跨端适配层（candidate）      'packages/cross-platform-utils/vitest.config.ts',      // 跨端宿主应用（candidate）      'apps/taro-miniapp/vitest.config.ts',
     ],
   },
 })

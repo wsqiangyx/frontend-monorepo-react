@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@repo/cross-platform-utils": ["../../packages/cross-platform-utils/src/index.ts"],
+      "@repo/shared-utils": ["../../packages/shared-utils/src/index.ts"],
+      "@repo/shared-service": ["../../packages/shared-service/src/index.ts"]
+    }
+  },
+  "include": ["src", "config"]
+}

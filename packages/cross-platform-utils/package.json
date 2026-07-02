@@ -1,0 +1,49 @@
+{
+  "name": "@repo/cross-platform-utils",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./storage": {
+      "types": "./dist/storage/index.d.ts",
+      "default": "./dist/storage/index.js"
+    },
+    "./http": {
+      "types": "./dist/http/index.d.ts",
+      "default": "./dist/http/index.js"
+    },
+    "./theme": {
+      "types": "./dist/theme/index.d.ts",
+      "default": "./dist/theme/index.js"
+    },
+    "./locale": {
+      "types": "./dist/locale/index.d.ts",
+      "default": "./dist/locale/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node -e \"import{rmSync}from'node:fs';rmSync('dist',{recursive:true,force:true});rmSync('tsconfig.build.tsbuildinfo',{force:true});\" && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node ../../scripts/vitest.cjs run",
+    "test:watch": "node ../../scripts/vitest.cjs",
+    "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
+  },
+  "dependencies": {
+    "@repo/shared-utils": "workspace:*",
+    "@repo/design-tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tarojs/taro": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tarojs/taro": {
+      "optional": true
+    }
+  }
+}

@@ -15,25 +15,28 @@
 
 这是一个以 React 为正式宿主应用的前端 monorepo 基线仓库，不是单应用仓库，也不是通用前端空白模板。
 
-- `apps/react-app`：React 19 + shadcn/ui + Tailwind CSS 应用壳
+- `apps/react-app`：React 19 + shadcn/ui + Tailwind CSS 应用壳（stable）
+- `apps/taro-miniapp`：Taro 3/4 小程序宿主，React 18 + zustand（candidate，ADR-012）
 - `packages/shared-utils`：通用工具 + 类型契约 + 国际化运行时（零 workspace 依赖，ADR-011）
 - `packages/shared-service`：平台共享内核，承载初始化、认证、菜单、权限、多标签页与平台请求契约
 - `packages/design-tokens`：设计令牌、CSS 变量、主题快照、Tailwind CSS 主题适配、共享主题运行时
 - `packages/mock`：MSW handlers、browser worker、Node server
 - `packages/shared-ui`：React 共享主题 Provider 与公共业务壳组件（基于 shadcn/ui）
+- `packages/cross-platform-utils`：跨端运行时适配层，封装 HTTP/Storage/Theme/Locale 平台差异（candidate，ADR-012）
 
 当前工作区与正式基线：
 
 - 正式默认基线：`apps/react-app` + 5 个共享包
-- 当前工作区现状：`apps/` 下额外存在 `apps/react-screen-designer/` 目录，用于可视化专题子应用预研 / 占位
-- `react-screen-designer` 尚未进入仓库级默认验收矩阵
+- 跨端候选基线：`apps/taro-miniapp` + `packages/cross-platform-utils`（Phase 1 扩展，尚未纳入默认验证链路）
 
 ## 当前架构
 
-- `apps/react-app`：正式宿主应用，也是 composition root
+- `apps/react-app`：正式宿主应用，也是 composition root（stable）
+- `apps/taro-miniapp`：Taro 小程序宿主（candidate，ADR-012）
 - `packages/shared-service`：平台领域模型与应用规则
 - `packages/shared-utils`、`packages/design-tokens`：基础共享运行时
 - `packages/shared-ui`、`packages/mock`：交付与边界适配层
+- `packages/cross-platform-utils`：跨端运行时适配层（candidate，ADR-012）
 
 ## 快速开始
 
@@ -63,16 +66,21 @@ pnpm verify
 
 ## 常用脚本
 
-| 命令                | 说明                            |
-| ------------------- | ------------------------------- |
-| `pnpm dev:react`    | 启动 React 应用                 |
-| `pnpm build:shared` | 构建共享包                      |
-| `pnpm build:react`  | 先构建共享包，再构建 React 应用 |
-| `pnpm build`        | 执行仓库完整构建链路            |
-| `pnpm typecheck`    | 执行全仓类型检查                |
-| `pnpm lint`         | 执行 ESLint                     |
-| `pnpm test`         | 执行全仓测试                    |
-| `pnpm verify`       | 聚合执行所有校验                |
+| 命令                              | 说明                                  |
+| --------------------------------- | ------------------------------------- |
+| `pnpm dev:react`                  | 启动 React 应用                       |
+| `pnpm build:shared`               | 构建 5 个共享包                       |
+| `pnpm build:react`                | 先构建共享包，再构建 React 应用       |
+| `pnpm build`                      | 执行仓库完整构建链路                  |
+| `pnpm typecheck`                  | 执行全仓类型检查                      |
+| `pnpm lint`                       | 执行 ESLint                           |
+| `pnpm test`                       | 执行全仓测试                          |
+| `pnpm verify`                     | 聚合执行所有校验                      |
+| `pnpm build:cross-platform-utils` | 构建跨端运行时适配层（taro 前置依赖） |
+| `pnpm dev:taro:weapp`             | 开发态启动微信小程序                  |
+| `pnpm build:taro:weapp`           | 构建微信小程序                        |
+| `pnpm dev:taro:h5`                | 开发态启动 Taro H5                    |
+| `pnpm build:taro:h5`              | 构建 Taro H5                          |
 
 ## 目录结构
 
@@ -80,13 +88,14 @@ pnpm verify
 frontend-monorepo/
 ├─ apps/
 │  ├─ react-app/                 # React 正式宿主应用
-│  └─ react-screen-designer/     # 专题子应用（experimental）
+│  └─ taro-miniapp/              # Taro 小程序宿主 (candidate)
 ├─ packages/
 │  ├─ shared-utils/              # 通用工具 + 类型契约 + 国际化
 │  ├─ shared-service/            # 平台共享内核
 │  ├─ design-tokens/             # 设计令牌与主题
 │  ├─ mock/                      # MSW handlers
-│  └─ shared-ui/                 # React 共享 UI 组件
+│  ├─ shared-ui/                 # React 共享 UI 组件
+│  └─ cross-platform-utils/      # 跨端运行时适配层 (candidate)
 ├─ docs/
 │  └─ 总体设计/                   # React 架构设计方案
 ├─ scripts/

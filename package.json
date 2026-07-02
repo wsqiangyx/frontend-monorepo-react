@@ -31,7 +31,12 @@
     "test:watch": "node ./scripts/vitest.cjs",
     "test:scripts": "node --test \"scripts/__tests__/*.test.mjs\"",
     "test:coverage": "pnpm --filter @repo/shared-utils test:coverage && pnpm --filter @repo/shared-service test:coverage && pnpm --filter @repo/design-tokens test:coverage && pnpm --filter @repo/mock test:coverage && pnpm --filter @repo/shared-ui test:coverage && pnpm --filter @repo/react-app test:coverage",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:cross-platform-utils": "pnpm -F @repo/cross-platform-utils build",
+    "dev:taro:weapp": "pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp dev:weapp",
+    "build:taro:weapp": "pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp build:weapp",
+    "dev:taro:h5": "pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp dev:h5",
+    "build:taro:h5": "pnpm build:cross-platform-utils && pnpm -F @repo/taro-miniapp build:h5"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

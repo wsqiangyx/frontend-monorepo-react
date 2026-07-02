@@ -31,11 +31,20 @@
 - 五个正式共享包：`packages/shared-utils`、`packages/shared-service`、`packages/design-tokens`、`packages/mock`、`packages/shared-ui`
 - 一套统一工具链基线：TypeScript、Vite、Vitest、ESLint、Stylelint、Prettier、Husky、Commitlint、Tailwind CSS
 
+跨端扩展已纳入架构决策（ADR-012），计划新增：
+
+- 小程序宿主：`apps/taro-miniapp`（Taro 3+/4）
+- 移动 App 宿主：`apps/expo-mobile`（Expo / React Native）
+- 跨端共享包：`packages/cross-platform-utils`、`packages/cross-platform-ui`、`packages/cross-platform-mock`
+
+上述跨端目录当前尚未创建，待 Phase 实施；在目录创建并进入默认验证链路前，参考 `apps/react-screen-designer` 的治理方式，不要提前把它们当成已纳入根脚本与根测试矩阵的正式应用。
+
 当前工作区现状补充说明：
 
-- `apps/` 目录下当前还存在 `apps/react-screen-designer`
+- `STATUS.yaml` 中登记了 `apps/react-screen-designer`，状态为 `experimental`
+- 但 `apps/react-screen-designer` 目录当前在磁盘上不存在，属于已登记的治理缺口
 - 它属于可视化专题子应用的预研 / 占位目录，不等同于已经进入正式默认范围
-- 在根 `package.json`、根 `vitest.config.ts`、根 `README.md`、本文件与总体设计主文档未成组同步之前，不要把它当成已纳入仓库级默认验证链路的正式应用
+- 在目录恢复并成组同步根 `package.json`、根 `vitest.config.ts`、根 `README.md`、本文件与总体设计主文档之前，不要把它当成已纳入仓库级默认验证链路的正式应用
 
 当前总体设计已经把主线收敛为：
 
@@ -49,7 +58,8 @@
 - `packages/shared-service` 是平台共享内核
 - `packages/shared-utils` 是基础共享层（类型契约 + 通用运行时 + 国际化）
 - `packages/design-tokens` 是视觉语义层
-- `packages/shared-ui`、`packages/mock` 是交付适配层
+- `packages/shared-ui`、`packages/mock` 是 Web 交付适配层
+- `packages/cross-platform-utils`、`packages/cross-platform-ui`、`packages/cross-platform-mock` 是跨端交付适配层（ADR-012）
 - 共享规则优先沉淀在 package 层，app 只负责装配与交付
 
 治理补充约束：
@@ -333,6 +343,44 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - 依赖 `@repo/shared-utils/api-contract` 复用 `ApiResponse`/`PaginatedData` 类型，不在本地重复定义
 - MSW 版本通过 `catalog:` 引用，与 `pnpm-workspace.yaml` 集中管理对齐
 
+### `packages/cross-platform-utils`（ADR-012）
+
+- 跨平台运行时适配层，框架无关，不依赖 React、DOM、浏览器 API
+- 统一封装 HTTP 客户端底层（Web fetch / `Taro.request` / React Native fetch）、Storage、主题应用、Locale 持久化
+- 仅依赖 `@repo/shared-utils`，保持零 workspace 依赖（除 shared-utils）
+- 为 `shared-service` 的依赖注入提供平台化实现
+
+### `packages/cross-platform-ui`（ADR-012）
+
+- 跨端 UI 组件库，基于 Taro 组件与 React Native 组件分别实现
+- 消费 `@repo/design-tokens` 原始 token 值，不直接消费 CSS 变量或 Tailwind 预设
+- 消费 `@repo/shared-service` 的平台内核（认证、权限、菜单等）
+- 组件 API 设计尽量与 `packages/shared-ui` 对齐，降低跨端认知成本
+- 不直接依赖 `@repo/shared-ui`（技术栈不同）
+
+### `packages/cross-platform-mock`（ADR-012）
+
+- 平台无关的 Mock 数据生成
+- 从 `packages/mock` 提取 fixtures、personas 与数据生成逻辑
+- 不依赖 MSW，提供纯函数供各端拦截层消费
+- 各端（小程序/App）自行实现网络拦截或本地数据注入
+
+### `apps/taro-miniapp`（ADR-012）
+
+- Taro 3+/4 小程序宿主，使用 React/TSX 语法
+- 输出微信小程序、支付宝小程序、H5，可选输出 React Native
+- 依赖 `@repo/cross-platform-utils`、`@repo/cross-platform-ui`、`@repo/cross-platform-mock`
+- 复用 `@repo/shared-service` 与 `@repo/shared-utils` 的平台内核和类型契约
+- 主题、网络、Storage 通过 `cross-platform-utils` 接入，不直接操作 `localStorage` 或 `fetch`
+
+### `apps/expo-mobile`（ADR-012）
+
+- Expo / React Native 移动 App 宿主
+- 依赖 `@repo/cross-platform-utils`、`@repo/cross-platform-ui`、`@repo/cross-platform-mock`
+- 复用 `@repo/shared-service` 与 `@repo/shared-utils` 的平台内核和类型契约
+- 使用 Expo Router 进行文件系统路由，与现有 Web 路由概念对齐
+- 通过 EAS Build 进行原生构建，EAS Update 提供热更新
+
 ## 修改建议
 
 ### 新增共享能力
@@ -342,10 +390,21 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 - 后台平台的初始化、认证、菜单、权限、多标签页、平台请求契约优先放到 `packages/shared-service`
 - 视觉语义能力放到 `packages/design-tokens`
 - 网络 mock 能力放到 `packages/mock`
+- 跨平台运行时适配（HTTP、Storage、Theme、Locale）放到 `packages/cross-platform-utils`
+- 跨平台 UI 组件放到 `packages/cross-platform-ui`
+- 跨平台 Mock 数据生成放到 `packages/cross-platform-mock`
 
 ### 新增 app
 
 当前正式主线只有 React 宿主。若新增宿主应用，必须先更新总体设计与本文件，明确它是否进入正式范围。
+
+跨端宿主（ADR-012）的补充要求：
+
+- 小程序宿主统一放到 `apps/taro-miniapp`
+- 移动 App 宿主统一放到 `apps/expo-mobile`
+- 新增宿主必须先创建目录，再在 `STATUS.yaml` 登记状态（通常为 `candidate` 或 `experimental`）；`STATUS.yaml` 中的 apps/packages 必须与 workspace 实际目录一一对应
+- 新增宿主必须同步更新根 `package.json`、根 `vitest.config.ts`、根 `README.md`、本文件、总体设计主文档与测试规范
+- 各端 UI 不直接依赖 `@repo/shared-ui`，而是通过 `@repo/cross-platform-ui` 消费跨端组件
 
 ### 文档改动
 
