@@ -10,5 +10,3 @@ coverage
 .superpowers/
 .codex/
 *.tgz
-.env
-.env.*
