@@ -17,7 +17,12 @@ import { typography } from './typography'
 import { breakpoints } from './breakpoints'
 import { shadows } from './shadows'
 import { radius } from './radius'
+import { motion } from './motion'
+import { zIndex } from './zIndex'
+import { opacity } from './opacity'
+import { transitions } from './transitions'
 import type { ThemeSnapshot } from './theme/types'
+import { shadcnCssBridgeVars } from './shadcn-bridge'
 
 // 递归类型：token 值可以是字符串、数字或嵌套对象
 type TokenValue = string | number | Readonly<{ [key: string]: TokenValue }>
@@ -87,6 +92,10 @@ export function tokensToCssVars(): Record<string, string> {
     breakpoint: breakpoints,
     shadow: shadows,
     radius,
+    motion,
+    zIndex,
+    opacity,
+    transition: transitions,
   } satisfies TokenRecord
   return flattenTokens(allTokens)
 }
@@ -119,9 +128,12 @@ function themeSnapshotToCssVars(snapshot: ThemeSnapshot): Record<string, string>
  *   }
  */
 export function generateCssVarsString(snapshot?: ThemeSnapshot): string {
-  const vars = snapshot
+  const baseVars = snapshot
     ? { ...tokensToCssVars(), ...themeSnapshotToCssVars(snapshot) }
     : tokensToCssVars()
+  // When a theme snapshot is provided, append shadcn/ui bridge variables
+  // that reference --theme-* runtime variables for automatic theme switching
+  const vars = snapshot ? { ...baseVars, ...shadcnCssBridgeVars } : baseVars
   const lines = Object.entries(vars).map(([key, value]) => `  --${key}: ${value};`)
   return `:root {\n${lines.join('\n')}\n}`
 }

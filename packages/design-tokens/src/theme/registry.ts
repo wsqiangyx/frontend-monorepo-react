@@ -1,32 +1,32 @@
-import {
-  themeModeValues,
-  themeNameValues,
-  type ThemeMode,
-  type ThemeName,
-} from '@repo/shared-utils/ui-contract'
-import {
-  defaultDarkTheme,
-  defaultLightTheme,
-  type ThemeRegistry,
-  type ThemeSnapshot,
-} from './types'
+import { type ThemeMode, type ThemeName } from '@repo/shared-utils/ui-contract'
+import type { ThemeRegistry, ThemeSnapshot } from './types'
+import { defaultLightTheme } from './types'
+import { deriveDarkFromLight } from './derive-dark'
+import { compactLightTheme } from './compact'
 
 const defaultThemeName: ThemeName = 'default'
 const defaultThemeMode: ThemeMode = 'light'
+
+/** Backward-compatible export: dark theme derived from default light theme */
+export const defaultDarkTheme = deriveDarkFromLight(defaultLightTheme)
 
 export const themeRegistry: ThemeRegistry = {
   default: {
     light: defaultLightTheme,
     dark: defaultDarkTheme,
   },
+  compact: {
+    light: compactLightTheme,
+    dark: deriveDarkFromLight(compactLightTheme),
+  },
 }
 
 export function isThemeName(value: unknown): value is ThemeName {
-  return typeof value === 'string' && themeNameValues.includes(value as ThemeName)
+  return typeof value === 'string' && value in themeRegistry
 }
 
 export function isThemeMode(value: unknown): value is ThemeMode {
-  return typeof value === 'string' && themeModeValues.includes(value as ThemeMode)
+  return value === 'light' || value === 'dark'
 }
 
 export function resolveTheme(themeName: unknown, mode: unknown): ThemeSnapshot {

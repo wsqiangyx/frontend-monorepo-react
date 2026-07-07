@@ -346,7 +346,7 @@ design-tokens                    ← 只依赖 shared-utils 的 UI 契约
 
 mock                             ← 零 workspace 依赖（仅依赖 msw）
 
-cross-platform-utils             ← 依赖 shared-utils + design-tokens (ADR-012)
+cross-platform-utils             ← 只依赖 shared-utils (ADR-012)
   ↑
 taro-miniapp                     ← 依赖 cross-platform-utils + shared-service + shared-utils (ADR-012)
 ```
@@ -385,7 +385,7 @@ taro-miniapp                     ← 依赖 cross-platform-utils + shared-servic
 | `shared-service`       | shared-utils, msw                                                      | UI 框架, DOM, ky, axios        |
 | `shared-ui`            | shared-utils, design-tokens, shared-service, @radix-ui/\*, tailwindcss | 宿主应用                       |
 | `mock`                 | shared-utils, msw                                                      | UI 框架                        |
-| `cross-platform-utils` | shared-utils, design-tokens                                            | UI 框架, React, DOM            |
+| `cross-platform-utils` | shared-utils                                                           | UI 框架, React, DOM            |
 | `apps/react-app`       | 所有共享包, @tanstack/react-query                                      | 无                             |
 | `apps/taro-miniapp`    | cross-platform-utils, shared-service, shared-utils                     | React 19, DOM, shared-ui, mock |
 
@@ -484,14 +484,14 @@ interface HttpClient {
 
 **子模块**：
 
-| 子模块      | 职责                                                                                                                                    |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| `./storage` | `PlatformStorage` 接口抽象：`getItem/setItem/removeItem/clear`，Taro 适配器基于 `Taro.getStorage/setStorage/removeStorage/clearStorage` |
-| `./http`    | `TaroHttpClient`：基于 `Taro.request` 的 HTTP 客户端，统一 request/response 拦截、超时、重试                                            |
-| `./theme`   | `PlatformThemeRuntime`：`Taro.getSystemInfo` 获取系统主题，`Taro.onThemeChange` 监听主题切换，`Taro.setNavigationBarColor` 同步导航栏   |
-| `./locale`  | `PlatformLocaleManager`：`Taro.getSystemInfo` 获取设备语言，`Taro.setStorageSync` 持久化                                                |
+| 子模块      | 职责                                                                                                                                                                                                                                                                                    |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `./storage` | `PlatformStorage` 接口抽象：`getItem/setItem/removeItem/clear`，Taro 适配器基于 `Taro.getStorage/setStorage/removeStorage/clearStorage`                                                                                                                                                 |
+| `./http`    | `TaroHttpClient`：基于 `Taro.request` 的 HTTP 客户端，统一 request/response 拦截、超时、重试                                                                                                                                                                                            |
+| `./theme`   | `PlatformThemeRuntime`：`Taro.getSystemInfo` 获取系统主题，`Taro.onThemeChange` 监听主题切换，`Taro.setNavigationBarColor` 同步导航栏。ADR-011 后主题类型契约已合并至 `shared-utils/ui-contract`；运行时通过 `ThemeResolver` 回调（由消费方注入）而非直接导入 `resolveTheme` 获取主题值 |
+| `./locale`  | `PlatformLocaleManager`：`Taro.getSystemInfo` 获取设备语言，`Taro.setStorageSync` 持久化                                                                                                                                                                                                |
 
-**依赖**：`@repo/shared-utils`（类型契约、HttpClient 接口）、`@repo/design-tokens`（原始 token 值）
+**依赖**：`@repo/shared-utils`（类型契约、HttpClient 接口、UI 运行时类型）
 
 **约束**：
 

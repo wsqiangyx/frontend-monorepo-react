@@ -9,7 +9,7 @@ import {
 
 describe('@repo/shared-utils/ui-contract', () => {
   it('should export themeNameValues', () => {
-    expect(themeNameValues).toEqual(['default'])
+    expect(themeNameValues).toEqual(['default', 'compact'])
   })
 
   it('should export themeModeValues', () => {

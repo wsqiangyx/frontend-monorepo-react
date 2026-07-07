@@ -48,6 +48,12 @@ const sourceAlias = [
     ),
   },
   {
+    find: '@repo/shared-utils/theme',
+    replacement: fileURLToPath(
+      new URL('../../packages/shared-utils/src/theme/index.ts', import.meta.url),
+    ),
+  },
+  {
     find: '@repo/shared-utils',
     replacement: fileURLToPath(
       new URL('../../packages/shared-utils/src/index.ts', import.meta.url),

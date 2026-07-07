@@ -176,10 +176,7 @@ export function checkStatusConsistency(rootDir = defaultRootDir) {
   }
 
   for (const name of CANDIDATE_APP_NAMES) {
-    invariant(
-      appNames.includes(name),
-      `Candidate app ${name} must exist in STATUS.yaml apps`,
-    )
+    invariant(appNames.includes(name), `Candidate app ${name} must exist in STATUS.yaml apps`)
     invariant(
       vitestConfig.includes(`apps/${name}/vitest.config.ts`),
       `Root vitest matrix missing candidate app ${name}`,

@@ -12,6 +12,7 @@ export default defineProject({
   },
   resolve: {
     alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@repo/shared-service': fileURLToPath(
         new URL('../shared-service/src/index.ts', import.meta.url),
       ),

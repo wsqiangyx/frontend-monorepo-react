@@ -30,6 +30,14 @@ export interface ThemeSnapshot {
   radiusLg: string
   spacingPanelX: string
   spacingPanelY: string
+  colorBgHover: string
+  colorBgPressed: string
+  colorBgSelected: string
+  colorBorderHover: string
+  colorBorderFocus: string
+  colorDestructive: string
+  colorDestructiveHover: string
+  colorDestructivePressed: string
 }
 
 export interface ThemeDefinition {
@@ -64,31 +72,15 @@ export const defaultLightTheme: ThemeSnapshot = {
   radiusLg: radius.lg,
   spacingPanelX: '24px',
   spacingPanelY: '24px',
+  colorBgHover: 'rgba(0, 0, 0, 0.04)',
+  colorBgPressed: 'rgba(0, 0, 0, 0.08)',
+  colorBgSelected: 'rgba(22, 119, 255, 0.08)',
+  colorBorderHover: '#bfbfbf',
+  colorBorderFocus: '#1677ff',
+  colorDestructive: '#ef4444',
+  colorDestructiveHover: '#dc2626',
+  colorDestructivePressed: '#b91c1c',
 }
 
-export const defaultDarkTheme: ThemeSnapshot = {
-  name: 'default',
-  mode: 'dark',
-  colorBgPage: '#141414',
-  colorBgCard: '#1f1f1f',
-  colorBgElevated: '#262626',
-  colorTextPrimary: '#e8e8e8',
-  colorTextSecondary: '#bfbfbf',
-  colorTextMuted: '#8c8c8c',
-  colorBorder: '#303030',
-  colorBorderStrong: '#434343',
-  colorBrandPrimary: colors.primary,
-  colorBrandPrimaryHover: '#69b1ff',
-  colorBrandPrimaryActive: '#0958d9',
-  colorSuccess: '#73d13d',
-  colorWarning: '#ffc53d',
-  colorError: '#ff7875',
-  colorInfo: '#69b1ff',
-  shadowPanel: '0 10px 30px rgba(0, 0, 0, 0.35)',
-  shadowRaised: '0 20px 45px rgba(0, 0, 0, 0.45)',
-  radiusSm: radius.sm,
-  radiusMd: radius.md,
-  radiusLg: radius.lg,
-  spacingPanelX: '24px',
-  spacingPanelY: '24px',
-}
+// NOTE: defaultDarkTheme is now derived via deriveDarkFromLight() in registry.ts.
+// The hardcoded constant is removed; import defaultDarkTheme from './registry' instead.

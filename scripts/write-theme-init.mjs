@@ -22,10 +22,31 @@ const colors = {
   primary: '#1677ff',
   primaryHover: '#4096ff',
   primaryPressed: '#0958d9',
+  primaryScale: {
+    50: '#e6f4ff',
+    100: '#bae0ff',
+    200: '#91caff',
+    300: '#69b1ff',
+    400: '#4096ff',
+    500: '#1677ff',
+    600: '#0958d9',
+    700: '#003eb3',
+    800: '#002c8c',
+    900: '#001d66',
+  },
   success: '#52c41a',
   warning: '#faad14',
   error: '#ff4d4f',
   info: '#1677ff',
+  secondary: '#64748b',
+  secondaryHover: '#475569',
+  secondaryPressed: '#334155',
+  accent: '#8b5cf6',
+  accentHover: '#7c3aed',
+  accentPressed: '#6d28d9',
+  destructive: '#ef4444',
+  destructiveHover: '#dc2626',
+  destructivePressed: '#b91c1c',
   neutral: {
     50: '#fafafa',
     100: '#f5f5f5',
@@ -49,10 +70,15 @@ const colors = {
     container: '#ffffff',
     elevated: '#ffffff',
     spotlight: '#f5f5f5',
+    hover: 'rgba(0, 0, 0, 0.04)',
+    pressed: 'rgba(0, 0, 0, 0.08)',
+    selected: 'rgba(22, 119, 255, 0.08)',
   },
   border: {
     default: '#d9d9d9',
     secondary: '#f0f0f0',
+    hover: '#bfbfbf',
+    focus: '#1677ff',
   },
 }
 
@@ -131,60 +157,193 @@ const radius = {
   full: '9999px',
 }
 
+const motion = {
+  duration: {
+    fast: '150ms',
+    normal: '200ms',
+    slow: '300ms',
+    slower: '500ms',
+  },
+  easing: {
+    default: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    in: 'cubic-bezier(0.4, 0, 1, 1)',
+    out: 'cubic-bezier(0, 0, 0.2, 1)',
+    inOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    spring: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  },
+}
+
+const zIndex = {
+  base: 0,
+  dropdown: 1000,
+  sticky: 1020,
+  fixed: 1030,
+  overlay: 1040,
+  drawer: 1050,
+  modal: 1060,
+  popover: 1070,
+  toast: 1080,
+  tooltip: 1090,
+}
+
+const opacity = {
+  hover: 0.08,
+  pressed: 0.12,
+  disabled: 0.4,
+  placeholder: 0.45,
+  overlay: 0.5,
+  backdrop: 0.8,
+}
+
+const transitions = {
+  fast: '150ms cubic-bezier(0.4, 0, 0.2, 1)',
+  normal: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
+  slow: '300ms cubic-bezier(0.4, 0, 0.2, 1)',
+  color: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
+  transform: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
+  shadow: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
+  fade: '150ms cubic-bezier(0, 0, 0.2, 1)',
+  slide: '300ms cubic-bezier(0.4, 0, 0.2, 1)',
+  scale: '200ms cubic-bezier(0.4, 0, 0.2, 1)',
+}
+
+const shadcnCssBridgeVars = {
+  '--background': 'var(--theme-color-bg-page)',
+  '--foreground': 'var(--theme-color-text-primary)',
+  '--card': 'var(--theme-color-bg-card)',
+  '--card-foreground': 'var(--theme-color-text-primary)',
+  '--popover': 'var(--theme-color-bg-elevated)',
+  '--popover-foreground': 'var(--theme-color-text-primary)',
+  '--primary': 'var(--theme-color-brand-primary)',
+  '--primary-foreground': '#ffffff',
+  '--secondary': 'var(--theme-color-bg-card)',
+  '--secondary-foreground': 'var(--theme-color-text-primary)',
+  '--muted': 'var(--theme-color-bg-card)',
+  '--muted-foreground': 'var(--theme-color-text-secondary)',
+  '--accent': 'var(--theme-color-bg-hover)',
+  '--accent-foreground': 'var(--theme-color-text-primary)',
+  '--destructive': 'var(--theme-color-destructive)',
+  '--destructive-foreground': '#ffffff',
+  '--border': 'var(--theme-color-border)',
+  '--input': 'var(--theme-color-border)',
+  '--ring': 'var(--theme-color-border-focus)',
+  '--radius': 'var(--theme-radius-md)',
+}
+
+// ---------------------------------------------------------------------------
+// Theme snapshots
+// ---------------------------------------------------------------------------
+
+const defaultLightTheme = {
+  name: 'default',
+  mode: 'light',
+  colorBgPage: colors.bg.default,
+  colorBgCard: colors.bg.container,
+  colorBgElevated: colors.bg.elevated,
+  colorTextPrimary: colors.text.primary,
+  colorTextSecondary: colors.text.secondary,
+  colorTextMuted: colors.text.tertiary,
+  colorBorder: colors.border.default,
+  colorBorderStrong: colors.neutral[400],
+  colorBrandPrimary: colors.primary,
+  colorBrandPrimaryHover: colors.primaryHover,
+  colorBrandPrimaryActive: colors.primaryPressed,
+  colorSuccess: colors.success,
+  colorWarning: colors.warning,
+  colorError: colors.error,
+  colorInfo: colors.info,
+  shadowPanel: shadows.base,
+  shadowRaised: shadows.lg,
+  radiusSm: radius.sm,
+  radiusMd: radius.md,
+  radiusLg: radius.lg,
+  spacingPanelX: '24px',
+  spacingPanelY: '24px',
+  colorBgHover: 'rgba(0, 0, 0, 0.04)',
+  colorBgPressed: 'rgba(0, 0, 0, 0.08)',
+  colorBgSelected: 'rgba(22, 119, 255, 0.08)',
+  colorBorderHover: '#bfbfbf',
+  colorBorderFocus: '#1677ff',
+  colorDestructive: '#ef4444',
+  colorDestructiveHover: '#dc2626',
+  colorDestructivePressed: '#b91c1c',
+}
+
+const compactLightTheme = {
+  ...defaultLightTheme,
+  name: 'compact',
+  spacingPanelX: '16px',
+  spacingPanelY: '16px',
+  radiusSm: '1px',
+  radiusMd: '3px',
+  radiusLg: '4px',
+}
+
+// ---------------------------------------------------------------------------
+// deriveDarkFromLight — inline JS version matching derive-dark.ts logic
+// ---------------------------------------------------------------------------
+
+function deriveDarkFromLight(light) {
+  return {
+    ...light,
+    mode: 'dark',
+
+    // Backgrounds: move to neutral dark values
+    colorBgPage: '#141414',
+    colorBgCard: '#1f1f1f',
+    colorBgElevated: '#262626',
+
+    // Text: invert hierarchy
+    colorTextPrimary: '#e8e8e8',
+    colorTextSecondary: '#bfbfbf',
+    colorTextMuted: '#8c8c8c',
+
+    // Border: use neutral mid-dark
+    colorBorder: '#434343',
+    colorBorderStrong: '#595959',
+
+    // Brand: keep primary, brighten hover
+    colorBrandPrimary: light.colorBrandPrimary,
+    colorBrandPrimaryHover: '#69b1ff',
+    colorBrandPrimaryActive: light.colorBrandPrimaryActive,
+
+    // Semantic colors: brighten 15-20% for dark background contrast
+    colorSuccess: '#73d13d',
+    colorWarning: '#ffc53d',
+    colorError: '#ff7875',
+    colorInfo: '#69b1ff',
+
+    // Interaction states: invert overlay direction
+    colorBgHover: 'rgba(255, 255, 255, 0.08)',
+    colorBgPressed: 'rgba(255, 255, 255, 0.12)',
+    colorBgSelected: 'rgba(22, 119, 255, 0.16)',
+    colorBorderHover: '#434343',
+    colorBorderFocus: '#69b1ff',
+
+    // Destructive: same absolute values in both modes
+    colorDestructive: light.colorDestructive,
+    colorDestructiveHover: light.colorDestructiveHover,
+    colorDestructivePressed: light.colorDestructivePressed,
+
+    // Shadows: increase opacity for visibility on dark backgrounds
+    shadowPanel: '0 1px 2px 0 rgba(0, 0, 0, 0.35), 0 1px 3px 0 rgba(0, 0, 0, 0.25)',
+    shadowRaised: '0 4px 12px 0 rgba(0, 0, 0, 0.35), 0 2px 6px 0 rgba(0, 0, 0, 0.25)',
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Theme registry
+// ---------------------------------------------------------------------------
+
 const themeRegistry = {
   default: {
-    light: {
-      name: 'default',
-      mode: 'light',
-      colorBgPage: colors.bg.default,
-      colorBgCard: colors.bg.container,
-      colorBgElevated: colors.bg.elevated,
-      colorTextPrimary: colors.text.primary,
-      colorTextSecondary: colors.text.secondary,
-      colorTextMuted: colors.text.tertiary,
-      colorBorder: colors.border.default,
-      colorBorderStrong: colors.neutral[400],
-      colorBrandPrimary: colors.primary,
-      colorBrandPrimaryHover: colors.primaryHover,
-      colorBrandPrimaryActive: colors.primaryPressed,
-      colorSuccess: colors.success,
-      colorWarning: colors.warning,
-      colorError: colors.error,
-      colorInfo: colors.info,
-      shadowPanel: shadows.base,
-      shadowRaised: shadows.lg,
-      radiusSm: radius.sm,
-      radiusMd: radius.md,
-      radiusLg: radius.lg,
-      spacingPanelX: '24px',
-      spacingPanelY: '24px',
-    },
-    dark: {
-      name: 'default',
-      mode: 'dark',
-      colorBgPage: '#141414',
-      colorBgCard: '#1f1f1f',
-      colorBgElevated: '#262626',
-      colorTextPrimary: '#e8e8e8',
-      colorTextSecondary: '#bfbfbf',
-      colorTextMuted: '#8c8c8c',
-      colorBorder: '#303030',
-      colorBorderStrong: '#434343',
-      colorBrandPrimary: colors.primary,
-      colorBrandPrimaryHover: '#69b1ff',
-      colorBrandPrimaryActive: '#0958d9',
-      colorSuccess: '#73d13d',
-      colorWarning: '#ffc53d',
-      colorError: '#ff7875',
-      colorInfo: '#69b1ff',
-      shadowPanel: '0 10px 30px rgba(0, 0, 0, 0.35)',
-      shadowRaised: '0 20px 45px rgba(0, 0, 0, 0.45)',
-      radiusSm: radius.sm,
-      radiusMd: radius.md,
-      radiusLg: radius.lg,
-      spacingPanelX: '24px',
-      spacingPanelY: '24px',
-    },
+    light: defaultLightTheme,
+    dark: deriveDarkFromLight(defaultLightTheme),
+  },
+  compact: {
+    light: compactLightTheme,
+    dark: deriveDarkFromLight(compactLightTheme),
   },
 }
 
@@ -233,6 +392,10 @@ function tokensToCssVars() {
     breakpoint: breakpoints,
     shadow: shadows,
     radius,
+    motion,
+    zIndex,
+    opacity,
+    transition: transitions,
   })
 }
 
@@ -251,9 +414,12 @@ function themeSnapshotToCssVars(snapshot) {
 }
 
 function generateCssVarsString(snapshot) {
-  const vars = snapshot
+  const baseVars = snapshot
     ? { ...tokensToCssVars(), ...themeSnapshotToCssVars(snapshot) }
     : tokensToCssVars()
+  // When a theme snapshot is provided, append shadcn/ui bridge variables
+  // that reference --theme-* runtime variables for automatic theme switching
+  const vars = snapshot ? { ...baseVars, ...shadcnCssBridgeVars } : baseVars
   const lines = Object.entries(vars).map(([key, value]) => `  --${key}: ${value};`)
 
   return `:root {\n${lines.join('\n')}\n}`

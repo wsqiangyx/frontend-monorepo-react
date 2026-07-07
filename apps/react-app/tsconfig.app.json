@@ -12,6 +12,7 @@
       "@repo/shared-utils/api-contract": ["../../packages/shared-utils/src/api-contract/index.ts"],
       "@repo/shared-utils/routes": ["../../packages/shared-utils/src/routes/index.ts"],
       "@repo/shared-utils/i18n": ["../../packages/shared-utils/src/i18n/index.ts"],
+      "@repo/shared-utils/theme": ["../../packages/shared-utils/src/theme/index.ts"],
       "@repo/shared-utils": ["../../packages/shared-utils/src/index.ts"],
       "@repo/shared-service": ["../../packages/shared-service/src/index.ts"],
       "@repo/mock/browser": ["../../packages/mock/src/browser.ts"],

@@ -5,9 +5,9 @@
 // 零运行时依赖，纯类型与常量导出。
 // ============================================================================
 
-export type ThemeName = 'default'
+export type ThemeName = 'default' | 'compact'
 
-export const themeNameValues = ['default'] as const satisfies readonly ThemeName[]
+export const themeNameValues = ['default', 'compact'] as const satisfies readonly ThemeName[]
 
 export type ThemeMode = 'light' | 'dark'
 

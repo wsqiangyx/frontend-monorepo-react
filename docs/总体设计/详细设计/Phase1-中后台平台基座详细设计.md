@@ -233,7 +233,7 @@ interface TaroHttpClientConfig {
 - `getSystemTheme(): Promise<'dark' | 'light'>` — 基于 `Taro.getSystemInfo` 获取系统主题
 - `onThemeChange(callback: (theme: 'dark' | 'light') => void): void` — 基于 `Taro.onThemeChange`
 - `setNavigationBarColor(color: string): Promise<void>` — 基于 `Taro.setNavigationBarColor`
-- 消费 `@repo/design-tokens` 的原始 token 值（颜色变量）
+- **ADR-011 后主题类型契约已合并至 `shared-utils/ui-contract`**；`cross-platform-utils/theme` 消费 `shared-utils/theme` 的运行时类型，并通过 `ThemeResolver` 回调（由消费方注入）获取具体主题值，而非直接导入 `design-tokens` 的 `resolveTheme`
 
 #### PlatformLocaleManager
 
@@ -306,7 +306,7 @@ stores/ 管理状态 → cross-platform-utils 处理平台差异
 ```
 shared-utils (零 workspace 依赖)
   ↑
-cross-platform-utils (依赖 shared-utils + design-tokens)
+cross-platform-utils (只依赖 shared-utils)
   ↑
 taro-miniapp (依赖 cross-platform-utils + shared-service + shared-utils)
 ```

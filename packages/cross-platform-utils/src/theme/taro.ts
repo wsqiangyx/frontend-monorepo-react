@@ -1,7 +1,8 @@
-import { resolveThemeMode, resolveTheme } from '@repo/design-tokens/theme'
-import type { ThemePreference, ThemeRuntimeState, PlatformThemeRuntime } from './types'
 import type { ThemeName, ThemeMode } from '@repo/shared-utils/ui-contract'
+import type { ThemePreference, ThemeRuntimeState, ThemeResolver } from '@repo/shared-utils/theme'
+import { resolveThemeMode } from '@repo/shared-utils/theme'
 import type { PlatformStorage } from '../storage/types'
+import type { PlatformThemeRuntime } from './types'
 
 interface TaroThemeApi {
   getSystemInfo(): { theme?: string }
@@ -13,6 +14,7 @@ interface TaroThemeApi {
 interface TaroThemeRuntimeOptions {
   storage: PlatformStorage
   taro: TaroThemeApi
+  resolveTheme: ThemeResolver
   defaultPreference?: ThemePreference
   themeName?: ThemeName
   storageKey?: string
@@ -35,6 +37,7 @@ export function createTaroThemeRuntime(options: TaroThemeRuntimeOptions): Platfo
   const {
     storage,
     taro,
+    resolveTheme,
     themeName = DEFAULT_THEME_NAME,
     defaultPreference = DEFAULT_PREFERENCE,
     storageKey = DEFAULT_STORAGE_KEY,

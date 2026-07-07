@@ -9,6 +9,7 @@ import DictionaryListView from '@/views/DictionaryListView'
 import SystemMetaView from '@/views/SystemMetaView'
 import MenuListView from '@/views/MenuListView'
 import ProfileView from '@/views/ProfileView'
+import ComponentShowcaseView from '@/views/showcase/ComponentShowcaseView'
 import phase2RouteMeta from './phase2-route-meta.json'
 
 type Phase2RouteMeta = (typeof phase2RouteMeta)[number]
@@ -99,6 +100,13 @@ export const router = createBrowserRouter([
         element: <HomeView />,
         handle: {
           title: '首页',
+        },
+      },
+      {
+        path: '/components',
+        element: <ComponentShowcaseView />,
+        handle: {
+          title: '组件展示',
         },
       },
     ],

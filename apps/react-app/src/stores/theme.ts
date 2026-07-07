@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import {
+  applyThemeToDocument,
   detectSystemThemeMode,
   createThemeRuntimeState,
   resolveThemeMode,
@@ -15,6 +16,7 @@ interface ThemeState {
   themeName: ThemeName
   preference: ThemePreference
   mode: ThemeMode
+  setThemeName: (name: ThemeName) => void
   setPreference: (preference: ThemePreference) => void
   setMode: (mode: ThemeMode) => void
   toggleMode: () => void
@@ -32,6 +34,11 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   themeName: initialRuntimeState.themeName,
   preference: initialRuntimeState.preference,
   mode: initialRuntimeState.resolvedMode,
+  setThemeName: (nextName) => {
+    const { preference, mode } = get()
+    applyThemeToDocument({ themeName: nextName, preference, resolvedMode: mode })
+    set({ themeName: nextName })
+  },
   setPreference: (nextPreference) => {
     get().stopSystemSync()
 
@@ -82,7 +89,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     })
 
     set({
-      themeName: runtimeState.themeName,
+      themeName: DEFAULT_THEME_NAME,
       preference: runtimeState.preference,
       mode: runtimeState.resolvedMode,
     })

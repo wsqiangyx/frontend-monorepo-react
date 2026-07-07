@@ -1,14 +1,12 @@
 import { type ThemeMode, type ThemeName } from '@repo/shared-utils/ui-contract'
+import {
+  type ThemePreference,
+  type ThemeRuntimeState,
+  isThemePreference,
+  resolveThemeMode,
+} from '@repo/shared-utils/theme'
 import { generateCssVarsString } from '../to-css'
 import { resolveTheme } from './registry'
-
-export type ThemePreference = ThemeMode | 'system'
-
-export interface ThemeRuntimeState {
-  themeName: ThemeName
-  preference: ThemePreference
-  resolvedMode: ThemeMode
-}
 
 const THEME_PREFERENCE_STORAGE_KEY = 'repo-theme-preference'
 const DEFAULT_THEME_NAME: ThemeName = 'default'
@@ -19,10 +17,6 @@ interface ThemeInitPayload {
   themeName: ThemeName
   defaultPreference: ThemePreference
   cssByMode: Record<ThemeMode, string>
-}
-
-export function isThemePreference(value: unknown): value is ThemePreference {
-  return value === 'light' || value === 'dark' || value === 'system'
 }
 
 export function resolveInitialThemeMode(input?: {
@@ -38,17 +32,6 @@ export function resolveInitialThemeMode(input?: {
   }
 
   return 'light'
-}
-
-export function resolveThemeMode(
-  preference: ThemePreference,
-  systemMode: ThemeMode = 'light',
-): ThemeMode {
-  if (preference === 'system') {
-    return systemMode
-  }
-
-  return preference
 }
 
 export function detectSystemThemeMode(): ThemeMode {
@@ -202,3 +185,5 @@ export function subscribeToSystemThemeChange(callback: (mode: ThemeMode) => void
     mediaQuery.removeEventListener('change', listener)
   }
 }
+
+export { resolveThemeMode } from '@repo/shared-utils/theme'

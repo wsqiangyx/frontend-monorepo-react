@@ -35,8 +35,7 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
-    "@repo/shared-utils": "workspace:*",
-    "@repo/design-tokens": "workspace:*"
+    "@repo/shared-utils": "workspace:*"
   },
   "peerDependencies": {
     "@tarojs/taro": ">=3.0.0"

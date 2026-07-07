@@ -1,12 +1,6 @@
-import type { ThemeMode, ThemeName } from '@repo/shared-utils/ui-contract'
+import type { ThemePreference, ThemeRuntimeState } from '@repo/shared-utils/theme'
 
-export type ThemePreference = ThemeMode | 'system'
-
-export interface ThemeRuntimeState {
-  themeName: ThemeName
-  preference: ThemePreference
-  resolvedMode: ThemeMode
-}
+export type { ThemePreference, ThemeRuntimeState } from '@repo/shared-utils/theme'
 
 export interface PlatformThemeRuntime {
   getState(): ThemeRuntimeState

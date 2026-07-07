@@ -8,6 +8,7 @@
     "declaration": true,
     "declarationMap": true,
     "paths": {
+      "@/*": ["./src/*"],
       "@repo/shared-service": ["../shared-service/dist/index.d.ts"],
       "@repo/shared-utils/ui-contract": ["../shared-utils/dist/ui-contract/index.d.ts"],
       "@repo/design-tokens": ["../design-tokens/dist/index.d.ts"],

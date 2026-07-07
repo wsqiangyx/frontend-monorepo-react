@@ -19,6 +19,10 @@ function mockStorage(): PlatformStorage {
   }
 }
 
+function mockResolveTheme() {
+  return vi.fn(() => ({ colorBgPage: '#ffffff' }))
+}
+
 describe('createTaroThemeRuntime', () => {
   it('initializes with default preference and system mode', () => {
     const taro = mockTaroTheme()
@@ -26,6 +30,7 @@ describe('createTaroThemeRuntime', () => {
     const runtime = createTaroThemeRuntime({
       storage,
       taro: taro as unknown as Parameters<typeof createTaroThemeRuntime>[0]['taro'],
+      resolveTheme: mockResolveTheme(),
     })
 
     const state = runtime.getState()
@@ -39,6 +44,7 @@ describe('createTaroThemeRuntime', () => {
     const runtime = createTaroThemeRuntime({
       storage,
       taro: taro as unknown as Parameters<typeof createTaroThemeRuntime>[0]['taro'],
+      resolveTheme: mockResolveTheme(),
     })
 
     runtime.setPreference('dark')
@@ -53,6 +59,7 @@ describe('createTaroThemeRuntime', () => {
     const runtime = createTaroThemeRuntime({
       storage,
       taro: taro as unknown as Parameters<typeof createTaroThemeRuntime>[0]['taro'],
+      resolveTheme: mockResolveTheme(),
     })
     const listener = vi.fn()
 
@@ -67,6 +74,7 @@ describe('createTaroThemeRuntime', () => {
     const runtime = createTaroThemeRuntime({
       storage,
       taro: taro as unknown as Parameters<typeof createTaroThemeRuntime>[0]['taro'],
+      resolveTheme: mockResolveTheme(),
     })
 
     runtime.apply()
