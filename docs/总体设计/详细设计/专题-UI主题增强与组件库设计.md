@@ -257,6 +257,134 @@ border: {
 - `--color-bg-hover`、`--color-bg-pressed`、`--color-bg-selected`
 - `--color-border-hover`、`--color-border-focus`
 
+#### 4.2.5 明暗主题色值规范
+
+> **设计目标**：不依赖外部组件库，建立一套本项目自有的明暗双主题。亮色主题清爽、通透，暗色主题保持相同品牌色相，通过中性色叠印确保可读性。
+
+所有运行时可切换颜色均通过 `ThemeSnapshot` 暴露，生成 `--theme-*` 运行时变量。暗色主题由 `deriveDarkFromLight()` 从亮色快照自动派生，禁止单独硬编码维护。
+
+##### 设计原则
+
+1. **品牌色相统一**：light 与 dark 使用相同品牌主色，只在背景/文本/边框等中性色上区分。
+2. **暗色表面三层**：页面 `#0a0a0a`、卡片 `#141414`、浮层 `#1d1e1f`。
+3. **暗色中性色叠印**：用接近白色的色调按不同透明度压到暗色表面上，再合成为不透明 hex，避免半透明叠加浑浊。
+4. **语义色适度提亮**：暗色模式下 success / warning / error / info 适度提亮，保持对比度。
+5. **阴影在暗色下加重**：方向不变，透明度提高，保证暗背景上 elevation 可辨。
+
+##### 亮色主题色值（default light）
+
+| 字段                      | 色值                    | 说明                                     |
+| ------------------------- | ----------------------- | ---------------------------------------- |
+| `colorBgPage`             | `#f2f3f5`               | 页面背景                                 |
+| `colorBgCard`             | `#ffffff`               | 卡片/默认表面                            |
+| `colorBgElevated`         | `#ffffff`               | 提升表面                                 |
+| `colorBgOverlay`          | `#ffffff`               | 覆盖层表面（Modal/Dropdown）             |
+| `colorBgBlank`            | `#ffffff`               | 空白画布                                 |
+| `colorTextPrimary`        | `#303133`               | 主文本                                   |
+| `colorTextSecondary`      | `#606266`               | 次要文本                                 |
+| `colorTextMuted`          | `#909399`               | 辅助文本                                 |
+| `colorTextRegular`        | `#606266`               | 常规文本（兼容 shadcn muted-foreground） |
+| `colorTextPlaceholder`    | `#a8abb2`               | placeholder 文本                         |
+| `colorTextDisabled`       | `#c0c4cc`               | disabled 文本                            |
+| `colorBorder`             | `#dcdfe6`               | 默认边框                                 |
+| `colorBorderStrong`       | `#d4d7de`               | 强调边框                                 |
+| `colorBorderLight`        | `#e4e7ed`               | 浅色边框                                 |
+| `colorBorderLighter`      | `#ebeef5`               | 更浅边框                                 |
+| `colorBorderExtraLight`   | `#f2f6fc`               | 最浅边框                                 |
+| `colorBorderDark`         | `#d4d7de`               | 深色边框                                 |
+| `colorBorderDarker`       | `#cdd0d6`               | 更深边框                                 |
+| `colorFill`               | `#f0f2f5`               | 填充背景                                 |
+| `colorFillLight`          | `#f5f7fa`               | 浅填充                                   |
+| `colorFillLighter`        | `#fafafa`               | 更浅填充                                 |
+| `colorFillExtraLight`     | `#fafcff`               | 最浅填充                                 |
+| `colorFillDark`           | `#ebedf0`               | 深填充                                   |
+| `colorFillDarker`         | `#e6e8eb`               | 更深填充                                 |
+| `colorBrandPrimary`       | `#1677ff`               | 品牌主色（Ant Design 蓝）                |
+| `colorBrandPrimaryHover`  | `#4096ff`               | 主色 hover                               |
+| `colorBrandPrimaryActive` | `#0958d9`               | 主色 active                              |
+| `colorSuccess`            | `#67c23a`               | 成功                                     |
+| `colorWarning`            | `#e6a23c`               | 警告                                     |
+| `colorError`              | `#f56c6c`               | 错误                                     |
+| `colorInfo`               | `#909399`               | 信息                                     |
+| `colorDestructive`        | `#ef4444`               | destructive                              |
+| `colorDestructiveHover`   | `#dc2626`               | destructive hover                        |
+| `colorDestructivePressed` | `#b91c1c`               | destructive pressed                      |
+| `colorBgHover`            | `#f5f7fa`               | 背景 hover                               |
+| `colorBgPressed`          | `#e4e7ed`               | 背景 pressed                             |
+| `colorBgSelected`         | `rgba(22,119,255,0.08)` | 选中态                                   |
+| `colorBorderHover`        | `#c0c4cc`               | 边框 hover                               |
+| `colorBorderFocus`        | `#1677ff`               | 边框 focus                               |
+| `colorMask`               | `rgba(255,255,255,0.9)` | 亮色遮罩                                 |
+| `colorOverlay`            | `rgba(0,0,0,0.5)`       | 通用遮罩                                 |
+| `shadowPanel`             | 见 §4.2.6               | 面板阴影                                 |
+| `shadowRaised`            | 见 §4.2.6               | 强提升阴影                               |
+| `shadowLight`             | 见 §4.2.6               | 轻阴影                                   |
+| `shadowLighter`           | 见 §4.2.6               | 更轻阴影                                 |
+| `shadowDark`              | 见 §4.2.6               | 重阴影                                   |
+
+##### 暗色主题色值（default dark）
+
+| 字段                      | 色值                    | 说明                      |
+| ------------------------- | ----------------------- | ------------------------- |
+| `colorBgPage`             | `#0a0a0a`               | 页面背景                  |
+| `colorBgCard`             | `#141414`               | 卡片/默认表面             |
+| `colorBgElevated`         | `#1d1e1f`               | 提升表面                  |
+| `colorBgOverlay`          | `#1d1e1f`               | 覆盖层表面                |
+| `colorBgBlank`            | `transparent`           | 空白画布                  |
+| `colorTextPrimary`        | `#cfd3dc`               | 主文本                    |
+| `colorTextSecondary`      | `#a3a6ad`               | 次要文本                  |
+| `colorTextMuted`          | `#8d9095`               | 辅助文本                  |
+| `colorTextRegular`        | `#a3a6ad`               | 常规文本                  |
+| `colorTextPlaceholder`    | `#6c6e72`               | placeholder 文本          |
+| `colorTextDisabled`       | `#6c6e72`               | disabled 文本             |
+| `colorBorder`             | `#4c4d4f`               | 默认边框                  |
+| `colorBorderStrong`       | `#58585b`               | 强调边框                  |
+| `colorBorderLight`        | `#414243`               | 浅色边框                  |
+| `colorBorderLighter`      | `#363637`               | 更浅边框                  |
+| `colorBorderExtraLight`   | `#2b2b2c`               | 最浅边框                  |
+| `colorBorderDark`         | `#58585b`               | 深色边框                  |
+| `colorBorderDarker`       | `#525457`               | 更深边框                  |
+| `colorFill`               | `#262727`               | 填充背景                  |
+| `colorFillLight`          | `#1d1d1f`               | 浅填充                    |
+| `colorFillLighter`        | `#1a1a1c`               | 更浅填充                  |
+| `colorFillExtraLight`     | `#131415`               | 最浅填充                  |
+| `colorFillDark`           | `#272727`               | 深填充                    |
+| `colorFillDarker`         | `#2a2a2b`               | 更深填充                  |
+| `colorBrandPrimary`       | `#1677ff`               | 品牌主色（与 light 一致） |
+| `colorBrandPrimaryHover`  | `#69b1ff`               | 主色 hover（提亮）        |
+| `colorBrandPrimaryActive` | `#0958d9`               | 主色 active               |
+| `colorSuccess`            | `#85ce61`               | 成功（提亮）              |
+| `colorWarning`            | `#ebb563`               | 警告（提亮）              |
+| `colorError`              | `#f78989`               | 错误（提亮）              |
+| `colorInfo`               | `#a6a9ad`               | 信息（提亮）              |
+| `colorDestructive`        | `#f78989`               | destructive（提亮）       |
+| `colorDestructiveHover`   | `#f89898`               | destructive hover         |
+| `colorDestructivePressed` | `#b85c5c`               | destructive pressed       |
+| `colorBgHover`            | `#1d1d1f`               | 背景 hover                |
+| `colorBgPressed`          | `#262727`               | 背景 pressed              |
+| `colorBgSelected`         | `rgba(22,119,255,0.16)` | 选中态（加深）            |
+| `colorBorderHover`        | `#6c6e72`               | 边框 hover                |
+| `colorBorderFocus`        | `#69b1ff`               | 边框 focus（提亮）        |
+| `colorMask`               | `rgba(0,0,0,0.9)`       | 暗色遮罩                  |
+| `colorOverlay`            | `rgba(0,0,0,0.5)`       | 通用遮罩                  |
+| `shadowPanel`             | 见 §4.2.6               | 面板阴影                  |
+| `shadowRaised`            | 见 §4.2.6               | 强提升阴影                |
+| `shadowLight`             | 见 §4.2.6               | 轻阴影                    |
+| `shadowLighter`           | 见 §4.2.6               | 更轻阴影                  |
+| `shadowDark`              | 见 §4.2.6               | 重阴影                    |
+
+##### 4.2.6 阴影色值
+
+扩展 `shadows.ts` 加入以下四级阴影，light 与 dark 共享方向但调整透明度：
+
+| Token           | Light                                                                                                     | Dark                                                                                                      |
+| --------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `shadowPanel`   | `0px 12px 32px 4px rgba(0,0,0,0.04), 0px 8px 20px rgba(0,0,0,0.08)`                                       | `0px 12px 32px 4px rgba(0,0,0,0.36), 0px 8px 20px rgba(0,0,0,0.42)`                                       |
+| `shadowRaised`  | `0px 16px 48px 16px rgba(0,0,0,0.08), 0px 12px 32px rgba(0,0,0,0.12), 0px 8px 16px -8px rgba(0,0,0,0.16)` | `0px 16px 48px 16px rgba(0,0,0,0.36), 0px 12px 32px rgba(0,0,0,0.42), 0px 8px 16px -8px rgba(0,0,0,0.48)` |
+| `shadowLight`   | `0px 0px 12px rgba(0,0,0,0.12)`                                                                           | `0px 0px 12px rgba(0,0,0,0.42)`                                                                           |
+| `shadowLighter` | `0px 0px 6px rgba(0,0,0,0.12)`                                                                            | `0px 0px 6px rgba(0,0,0,0.42)`                                                                            |
+| `shadowDark`    | 同 `shadowRaised`                                                                                         | 同 dark `shadowRaised`                                                                                    |
+
 ### 4.3 暗色主题自动派生
 
 #### 4.3.1 设计原则
@@ -264,12 +392,68 @@ border: {
 - 暗色主题由亮色主题**算法派生**，而非硬编码
 - 新增主题变体时只需定义亮色快照，暗色自动生成
 - 派生函数为纯函数，输入 `ThemeSnapshot`，输出 `ThemeSnapshot`
+- 暗色中性色使用**近白叠印**方式：将接近白色的色调按透明度压到暗色表面上，合成为不透明 hex
 
-#### 4.3.2 新增文件
+#### 4.3.2 叠印公式
+
+```
+Result = Upper * alpha + Base * (1 - alpha)
+```
+
+其中 `Upper` 为近白色调，`Base` 为暗色表面（`#141414` 或 `#0a0a0a`），`alpha` 为透明度。`deriveDarkFromLight()` 内部提供 `mixHex(upper, base, alpha)` 工具实现该合成。
+
+各语义使用的近白叠印基色与透明度：
+
+| 语义     | 上层色    | 透明度序列                              | 用途                                                    |
+| -------- | --------- | --------------------------------------- | ------------------------------------------------------- |
+| 文本灰阶 | `#f0f5ff` | 0.95 / 0.85 / 0.65 / 0.55 / 0.4         | primary / regular / secondary / placeholder / disabled  |
+| 边框灰阶 | `#f5f8ff` | 0.35 / 0.30 / 0.25 / 0.20 / 0.15 / 0.10 | darker / dark / default / light / lighter / extra-light |
+| 填充灰阶 | `#fafcff` | 0.20 / 0.16 / 0.12 / 0.08 / 0.04 / 0.02 | darker / dark / default / light / lighter / extra-light |
+
+#### 4.3.3 派生规则
+
+| 字段                                                                            | 派生规则                                                |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `colorBgPage`                                                                   | 固定 `#0a0a0a`                                          |
+| `colorBgCard`                                                                   | 固定 `#141414`                                          |
+| `colorBgElevated` / `colorBgOverlay`                                            | 固定 `#1d1e1f`                                          |
+| `colorBgBlank`                                                                  | `transparent`                                           |
+| `colorTextPrimary`                                                              | `mixHex('#f0f5ff', '#141414', 0.95)` → `#cfd3dc`        |
+| `colorTextSecondary` / `colorTextRegular`                                       | `mixHex('#f0f5ff', '#141414', 0.85)` → `#a3a6ad`        |
+| `colorTextMuted`                                                                | `mixHex('#f0f5ff', '#141414', 0.65)` → `#8d9095`        |
+| `colorTextPlaceholder` / `colorTextDisabled`                                    | `mixHex('#f0f5ff', '#141414', 0.55)` → `#6c6e72`        |
+| `colorBorder`                                                                   | `mixHex('#f5f8ff', '#141414', 0.25)` → `#4c4d4f`        |
+| `colorBorderStrong`                                                             | `mixHex('#f5f8ff', '#141414', 0.30)` → `#58585b`        |
+| `colorBorderLight`                                                              | `mixHex('#f5f8ff', '#141414', 0.20)` → `#414243`        |
+| `colorBorderLighter`                                                            | `mixHex('#f5f8ff', '#141414', 0.15)` → `#363637`        |
+| `colorBorderExtraLight`                                                         | `mixHex('#f5f8ff', '#141414', 0.10)` → `#2b2b2c`        |
+| `colorBorderDark`                                                               | 同 `colorBorderStrong`                                  |
+| `colorBorderDarker`                                                             | `mixHex('#f5f8ff', '#141414', 0.35)` → `#525457`        |
+| `colorFill`                                                                     | `mixHex('#fafcff', '#141414', 0.12)` → `#262727`        |
+| `colorFillLight`                                                                | `mixHex('#fafcff', '#141414', 0.08)` → `#1d1d1f`        |
+| `colorFillLighter`                                                              | `mixHex('#fafcff', '#141414', 0.06)` → `#1a1a1c`        |
+| `colorFillExtraLight`                                                           | `mixHex('#fafcff', '#141414', 0.02)` → `#131415`        |
+| `colorFillDark`                                                                 | `mixHex('#fafcff', '#141414', 0.16)` → `#272727`        |
+| `colorFillDarker`                                                               | `mixHex('#fafcff', '#141414', 0.20)` → `#2a2a2b`        |
+| `colorBrandPrimary`                                                             | 保持与 light 一致 `#1677ff`                             |
+| `colorBrandPrimaryHover`                                                        | 提亮 `#69b1ff`                                          |
+| `colorBrandPrimaryActive`                                                       | 保持 `#0958d9`                                          |
+| `colorSuccess` / `colorWarning` / `colorError` / `colorInfo`                    | 在 light 值基础上适度提亮 10-20%                        |
+| `colorDestructive` / `colorDestructiveHover` / `colorDestructivePressed`        | 与 `error` 系列同策略提亮                               |
+| `colorBgHover`                                                                  | 同 `colorFillLight`                                     |
+| `colorBgPressed`                                                                | 同 `colorFill`                                          |
+| `colorBgSelected`                                                               | `rgba(22,119,255,0.16)`（加深透明度）                   |
+| `colorBorderHover`                                                              | `mixHex('#f5f8ff', '#141414', 0.45)` → `#6c6e72`        |
+| `colorBorderFocus`                                                              | 同 `colorBrandPrimaryHover` `#69b1ff`                   |
+| `colorMask`                                                                     | `rgba(0,0,0,0.9)`（亮色为白色遮罩，暗色翻转为黑色遮罩） |
+| `colorOverlay`                                                                  | `rgba(0,0,0,0.5)`（明暗一致）                           |
+| `shadowPanel` / `shadowRaised` / `shadowLight` / `shadowLighter` / `shadowDark` | 提高透明度，见 §4.2.6                                   |
+
+#### 4.3.4 新增文件
 
 `packages/design-tokens/src/theme/derive-dark.ts`
 
-#### 4.3.3 派生规则
+#### 4.3.5 注册表更新
 
 | 字段                                | 派生规则                                     |
 | ----------------------------------- | -------------------------------------------- |
