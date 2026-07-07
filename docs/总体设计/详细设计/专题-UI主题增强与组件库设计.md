@@ -1,7 +1,7 @@
 # UI 主题增强与组件库设计
 
 > 制定日期：2026-06-26
-> 最近修订：2026-06-26
+> 最近修订：2026-07-07
 > 适用范围：`packages/design-tokens`、`packages/shared-ui`、`apps/react-app`
 > 文档性质：专题详细设计
 > 上游设计：`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`（ADR-003、ADR-007）、`docs/总体设计/详细设计/Phase0-基础能力详细设计.md`（§4 主题与共享 UI）
@@ -78,6 +78,7 @@
 - Storybook 集成
 - 图表组件封装
 - 独立的示例应用
+- Drawer / Command / Form / Steps 组件（前三个 peer 依赖 `vaul`、`cmdk`、`react-hook-form` 已声明但宿主应用未安装；Steps 为自定义组件待实现）
 
 ---
 
@@ -259,219 +260,149 @@ border: {
 
 #### 4.2.5 明暗主题色值规范
 
-> **设计目标**：不依赖外部组件库，建立一套本项目自有的明暗双主题。亮色主题清爽、通透，暗色主题保持相同品牌色相，通过中性色叠印确保可读性。
+> **设计目标**：不依赖外部组件库，建立一套本项目自有的明暗双主题。亮色主题以白色表面为主，暗色主题保持相同品牌色相，通过中性色反色确保可读性。
 
-所有运行时可切换颜色均通过 `ThemeSnapshot` 暴露，生成 `--theme-*` 运行时变量。暗色主题由 `deriveDarkFromLight()` 从亮色快照自动派生，禁止单独硬编码维护。
+所有运行时可切换颜色均通过 `ThemeSnapshot` 暴露，生成 `--theme-*` 运行时变量。暗色主题由 `deriveDarkFromLight()` 从亮色快照自动派生，禁止单独硬编码维护暗色快照。
 
 ##### 设计原则
 
 1. **品牌色相统一**：light 与 dark 使用相同品牌主色，只在背景/文本/边框等中性色上区分。
-2. **暗色表面三层**：页面 `#0a0a0a`、卡片 `#141414`、浮层 `#1d1e1f`。
-3. **暗色中性色叠印**：用接近白色的色调按不同透明度压到暗色表面上，再合成为不透明 hex，避免半透明叠加浑浊。
+2. **暗色表面三层**：页面 `#141414`、卡片 `#1f1f1f`、浮层 `#262626`。
+3. **交互态叠加方向反转**：亮色使用 `rgba(0,0,0,*)` 压暗，暗色使用 `rgba(255,255,255,*)` 提亮。
 4. **语义色适度提亮**：暗色模式下 success / warning / error / info 适度提亮，保持对比度。
 5. **阴影在暗色下加重**：方向不变，透明度提高，保证暗背景上 elevation 可辨。
 
+> **注意**：`ThemeSnapshot` 只包含实际运行时切换所需的字段。以下表格中仅列出 `ThemeSnapshot` 中存在的字段；`colors.ts` 中定义、但未进入 `ThemeSnapshot` 的静态色（如 `colorBgOverlay`、`colorBgBlank`、`colorFill*` 系列等）不纳入本表。
+
 ##### 亮色主题色值（default light）
 
-| 字段                      | 色值                    | 说明                                     |
-| ------------------------- | ----------------------- | ---------------------------------------- |
-| `colorBgPage`             | `#f2f3f5`               | 页面背景                                 |
-| `colorBgCard`             | `#ffffff`               | 卡片/默认表面                            |
-| `colorBgElevated`         | `#ffffff`               | 提升表面                                 |
-| `colorBgOverlay`          | `#ffffff`               | 覆盖层表面（Modal/Dropdown）             |
-| `colorBgBlank`            | `#ffffff`               | 空白画布                                 |
-| `colorTextPrimary`        | `#303133`               | 主文本                                   |
-| `colorTextSecondary`      | `#606266`               | 次要文本                                 |
-| `colorTextMuted`          | `#909399`               | 辅助文本                                 |
-| `colorTextRegular`        | `#606266`               | 常规文本（兼容 shadcn muted-foreground） |
-| `colorTextPlaceholder`    | `#a8abb2`               | placeholder 文本                         |
-| `colorTextDisabled`       | `#c0c4cc`               | disabled 文本                            |
-| `colorBorder`             | `#dcdfe6`               | 默认边框                                 |
-| `colorBorderStrong`       | `#d4d7de`               | 强调边框                                 |
-| `colorBorderLight`        | `#e4e7ed`               | 浅色边框                                 |
-| `colorBorderLighter`      | `#ebeef5`               | 更浅边框                                 |
-| `colorBorderExtraLight`   | `#f2f6fc`               | 最浅边框                                 |
-| `colorBorderDark`         | `#d4d7de`               | 深色边框                                 |
-| `colorBorderDarker`       | `#cdd0d6`               | 更深边框                                 |
-| `colorFill`               | `#f0f2f5`               | 填充背景                                 |
-| `colorFillLight`          | `#f5f7fa`               | 浅填充                                   |
-| `colorFillLighter`        | `#fafafa`               | 更浅填充                                 |
-| `colorFillExtraLight`     | `#fafcff`               | 最浅填充                                 |
-| `colorFillDark`           | `#ebedf0`               | 深填充                                   |
-| `colorFillDarker`         | `#e6e8eb`               | 更深填充                                 |
-| `colorBrandPrimary`       | `#1677ff`               | 品牌主色（Ant Design 蓝）                |
-| `colorBrandPrimaryHover`  | `#4096ff`               | 主色 hover                               |
-| `colorBrandPrimaryActive` | `#0958d9`               | 主色 active                              |
-| `colorSuccess`            | `#67c23a`               | 成功                                     |
-| `colorWarning`            | `#e6a23c`               | 警告                                     |
-| `colorError`              | `#f56c6c`               | 错误                                     |
-| `colorInfo`               | `#909399`               | 信息                                     |
-| `colorDestructive`        | `#ef4444`               | destructive                              |
-| `colorDestructiveHover`   | `#dc2626`               | destructive hover                        |
-| `colorDestructivePressed` | `#b91c1c`               | destructive pressed                      |
-| `colorBgHover`            | `#f5f7fa`               | 背景 hover                               |
-| `colorBgPressed`          | `#e4e7ed`               | 背景 pressed                             |
-| `colorBgSelected`         | `rgba(22,119,255,0.08)` | 选中态                                   |
-| `colorBorderHover`        | `#c0c4cc`               | 边框 hover                               |
-| `colorBorderFocus`        | `#1677ff`               | 边框 focus                               |
-| `colorMask`               | `rgba(255,255,255,0.9)` | 亮色遮罩                                 |
-| `colorOverlay`            | `rgba(0,0,0,0.5)`       | 通用遮罩                                 |
-| `shadowPanel`             | 见 §4.2.6               | 面板阴影                                 |
-| `shadowRaised`            | 见 §4.2.6               | 强提升阴影                               |
-| `shadowLight`             | 见 §4.2.6               | 轻阴影                                   |
-| `shadowLighter`           | 见 §4.2.6               | 更轻阴影                                 |
-| `shadowDark`              | 见 §4.2.6               | 重阴影                                   |
+| 字段                      | 色值                       | 说明                                        |
+| ------------------------- | -------------------------- | ------------------------------------------- |
+| `colorBgPage`             | `#ffffff`                  | 页面背景（来自 `colors.bg.default`）        |
+| `colorBgCard`             | `#ffffff`                  | 卡片/默认表面（来自 `colors.bg.container`） |
+| `colorBgElevated`         | `#ffffff`                  | 提升表面（来自 `colors.bg.elevated`）       |
+| `colorTextPrimary`        | `rgba(0, 0, 0, 0.88)`      | 主文本                                      |
+| `colorTextSecondary`      | `rgba(0, 0, 0, 0.65)`      | 次要文本                                    |
+| `colorTextMuted`          | `rgba(0, 0, 0, 0.45)`      | 辅助文本                                    |
+| `colorBorder`             | `#d9d9d9`                  | 默认边框（来自 `colors.border.default`）    |
+| `colorBorderStrong`       | `#bfbfbf`                  | 强调边框（来自 `colors.neutral[400]`）      |
+| `colorBrandPrimary`       | `#1677ff`                  | 品牌主色                                    |
+| `colorBrandPrimaryHover`  | `#4096ff`                  | 主色 hover                                  |
+| `colorBrandPrimaryActive` | `#0958d9`                  | 主色 active                                 |
+| `colorSuccess`            | `#52c41a`                  | 成功                                        |
+| `colorWarning`            | `#faad14`                  | 警告                                        |
+| `colorError`              | `#ff4d4f`                  | 错误                                        |
+| `colorInfo`               | `#1677ff`                  | 信息                                        |
+| `shadowPanel`             | `shadows.base`             | 面板阴影                                    |
+| `shadowRaised`            | `shadows.lg`               | 强提升阴影                                  |
+| `radiusSm`                | `2px`                      | 小圆角                                      |
+| `radiusMd`                | `6px`                      | 中圆角                                      |
+| `radiusLg`                | `8px`                      | 大圆角                                      |
+| `spacingPanelX`           | `24px`                     | 面板水平间距                                |
+| `spacingPanelY`           | `24px`                     | 面板垂直间距                                |
+| `colorBgHover`            | `rgba(0, 0, 0, 0.04)`      | 悬停背景                                    |
+| `colorBgPressed`          | `rgba(0, 0, 0, 0.08)`      | 按下背景                                    |
+| `colorBgSelected`         | `rgba(22, 119, 255, 0.08)` | 选中背景                                    |
+| `colorBorderHover`        | `#bfbfbf`                  | 悬停边框                                    |
+| `colorBorderFocus`        | `#1677ff`                  | 聚焦环色                                    |
+| `colorDestructive`        | `#ef4444`                  | 危险色                                      |
+| `colorDestructiveHover`   | `#dc2626`                  | 危险色 hover                                |
+| `colorDestructivePressed` | `#b91c1c`                  | 危险色 pressed                              |
 
 ##### 暗色主题色值（default dark）
 
-| 字段                      | 色值                    | 说明                      |
-| ------------------------- | ----------------------- | ------------------------- |
-| `colorBgPage`             | `#0a0a0a`               | 页面背景                  |
-| `colorBgCard`             | `#141414`               | 卡片/默认表面             |
-| `colorBgElevated`         | `#1d1e1f`               | 提升表面                  |
-| `colorBgOverlay`          | `#1d1e1f`               | 覆盖层表面                |
-| `colorBgBlank`            | `transparent`           | 空白画布                  |
-| `colorTextPrimary`        | `#cfd3dc`               | 主文本                    |
-| `colorTextSecondary`      | `#a3a6ad`               | 次要文本                  |
-| `colorTextMuted`          | `#8d9095`               | 辅助文本                  |
-| `colorTextRegular`        | `#a3a6ad`               | 常规文本                  |
-| `colorTextPlaceholder`    | `#6c6e72`               | placeholder 文本          |
-| `colorTextDisabled`       | `#6c6e72`               | disabled 文本             |
-| `colorBorder`             | `#4c4d4f`               | 默认边框                  |
-| `colorBorderStrong`       | `#58585b`               | 强调边框                  |
-| `colorBorderLight`        | `#414243`               | 浅色边框                  |
-| `colorBorderLighter`      | `#363637`               | 更浅边框                  |
-| `colorBorderExtraLight`   | `#2b2b2c`               | 最浅边框                  |
-| `colorBorderDark`         | `#58585b`               | 深色边框                  |
-| `colorBorderDarker`       | `#525457`               | 更深边框                  |
-| `colorFill`               | `#262727`               | 填充背景                  |
-| `colorFillLight`          | `#1d1d1f`               | 浅填充                    |
-| `colorFillLighter`        | `#1a1a1c`               | 更浅填充                  |
-| `colorFillExtraLight`     | `#131415`               | 最浅填充                  |
-| `colorFillDark`           | `#272727`               | 深填充                    |
-| `colorFillDarker`         | `#2a2a2b`               | 更深填充                  |
-| `colorBrandPrimary`       | `#1677ff`               | 品牌主色（与 light 一致） |
-| `colorBrandPrimaryHover`  | `#69b1ff`               | 主色 hover（提亮）        |
-| `colorBrandPrimaryActive` | `#0958d9`               | 主色 active               |
-| `colorSuccess`            | `#85ce61`               | 成功（提亮）              |
-| `colorWarning`            | `#ebb563`               | 警告（提亮）              |
-| `colorError`              | `#f78989`               | 错误（提亮）              |
-| `colorInfo`               | `#a6a9ad`               | 信息（提亮）              |
-| `colorDestructive`        | `#f78989`               | destructive（提亮）       |
-| `colorDestructiveHover`   | `#f89898`               | destructive hover         |
-| `colorDestructivePressed` | `#b85c5c`               | destructive pressed       |
-| `colorBgHover`            | `#1d1d1f`               | 背景 hover                |
-| `colorBgPressed`          | `#262727`               | 背景 pressed              |
-| `colorBgSelected`         | `rgba(22,119,255,0.16)` | 选中态（加深）            |
-| `colorBorderHover`        | `#6c6e72`               | 边框 hover                |
-| `colorBorderFocus`        | `#69b1ff`               | 边框 focus（提亮）        |
-| `colorMask`               | `rgba(0,0,0,0.9)`       | 暗色遮罩                  |
-| `colorOverlay`            | `rgba(0,0,0,0.5)`       | 通用遮罩                  |
-| `shadowPanel`             | 见 §4.2.6               | 面板阴影                  |
-| `shadowRaised`            | 见 §4.2.6               | 强提升阴影                |
-| `shadowLight`             | 见 §4.2.6               | 轻阴影                    |
-| `shadowLighter`           | 见 §4.2.6               | 更轻阴影                  |
-| `shadowDark`              | 见 §4.2.6               | 重阴影                    |
+| 字段                      | 色值                        | 说明                            |
+| ------------------------- | --------------------------- | ------------------------------- |
+| `colorBgPage`             | `#141414`                   | 页面背景                        |
+| `colorBgCard`             | `#1f1f1f`                   | 卡片/默认表面                   |
+| `colorBgElevated`         | `#262626`                   | 提升表面                        |
+| `colorTextPrimary`        | `#e8e8e8`                   | 主文本                          |
+| `colorTextSecondary`      | `#bfbfbf`                   | 次要文本                        |
+| `colorTextMuted`          | `#8c8c8c`                   | 辅助文本                        |
+| `colorBorder`             | `#434343`                   | 默认边框                        |
+| `colorBorderStrong`       | `#595959`                   | 强调边框                        |
+| `colorBrandPrimary`       | `#1677ff`                   | 品牌主色（与 light 一致）       |
+| `colorBrandPrimaryHover`  | `#69b1ff`                   | 主色 hover（提亮）              |
+| `colorBrandPrimaryActive` | `#0958d9`                   | 主色 active                     |
+| `colorSuccess`            | `#73d13d`                   | 成功（提亮）                    |
+| `colorWarning`            | `#ffc53d`                   | 警告（提亮）                    |
+| `colorError`              | `#ff7875`                   | 错误（提亮）                    |
+| `colorInfo`               | `#69b1ff`                   | 信息（提亮）                    |
+| `shadowPanel`             | 见 §4.2.6                   | 面板阴影（透明度加重）          |
+| `shadowRaised`            | 见 §4.2.6                   | 强提升阴影（透明度加重）        |
+| `radiusSm`                | `2px`                       | 小圆角                          |
+| `radiusMd`                | `6px`                       | 中圆角                          |
+| `radiusLg`                | `8px`                       | 大圆角                          |
+| `spacingPanelX`           | `24px`                      | 面板水平间距                    |
+| `spacingPanelY`           | `24px`                      | 面板垂直间距                    |
+| `colorBgHover`            | `rgba(255, 255, 255, 0.08)` | 背景 hover（方向反转）          |
+| `colorBgPressed`          | `rgba(255, 255, 255, 0.12)` | 背景 pressed（方向反转）        |
+| `colorBgSelected`         | `rgba(22, 119, 255, 0.16)`  | 选中态（透明度加深）            |
+| `colorBorderHover`        | `#434343`                   | 边框 hover                      |
+| `colorBorderFocus`        | `#69b1ff`                   | 边框 focus（提亮）              |
+| `colorDestructive`        | `#ef4444`                   | 危险色（与 light 一致）         |
+| `colorDestructiveHover`   | `#dc2626`                   | 危险色 hover（与 light 一致）   |
+| `colorDestructivePressed` | `#b91c1c`                   | 危险色 pressed（与 light 一致） |
 
 ##### 4.2.6 阴影色值
 
-扩展 `shadows.ts` 加入以下四级阴影，light 与 dark 共享方向但调整透明度：
+`shadows.ts` 当前定义五级通用阴影：`sm`、`base`、`md`、`lg`、`xl`。`ThemeSnapshot` 只引用其中 `shadowPanel`（映射到 `shadows.base`）和 `shadowRaised`（映射到 `shadows.lg`）两个字段用于运行时切换。暗色模式下由 `deriveDarkFromLight()` 提高透明度以保证暗背景可见。
 
-| Token           | Light                                                                                                     | Dark                                                                                                      |
-| --------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `shadowPanel`   | `0px 12px 32px 4px rgba(0,0,0,0.04), 0px 8px 20px rgba(0,0,0,0.08)`                                       | `0px 12px 32px 4px rgba(0,0,0,0.36), 0px 8px 20px rgba(0,0,0,0.42)`                                       |
-| `shadowRaised`  | `0px 16px 48px 16px rgba(0,0,0,0.08), 0px 12px 32px rgba(0,0,0,0.12), 0px 8px 16px -8px rgba(0,0,0,0.16)` | `0px 16px 48px 16px rgba(0,0,0,0.36), 0px 12px 32px rgba(0,0,0,0.42), 0px 8px 16px -8px rgba(0,0,0,0.48)` |
-| `shadowLight`   | `0px 0px 12px rgba(0,0,0,0.12)`                                                                           | `0px 0px 12px rgba(0,0,0,0.42)`                                                                           |
-| `shadowLighter` | `0px 0px 6px rgba(0,0,0,0.12)`                                                                            | `0px 0px 6px rgba(0,0,0,0.42)`                                                                            |
-| `shadowDark`    | 同 `shadowRaised`                                                                                         | 同 dark `shadowRaised`                                                                                    |
+| Token          | Light（`shadows.ts` 原始值）                                             | Dark（`deriveDarkFromLight` 调整后）                                |
+| -------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `shadowPanel`  | `0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)`      | `0 1px 2px 0 rgba(0, 0, 0, 0.35), 0 1px 3px 0 rgba(0, 0, 0, 0.25)`  |
+| `shadowRaised` | `0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)` | `0 4px 12px 0 rgba(0, 0, 0, 0.35), 0 2px 6px 0 rgba(0, 0, 0, 0.25)` |
+
+> **说明**：`shadowLight`、`shadowLighter`、`shadowDark` 等 Token 当前未在 `shadows.ts` 中定义，也未进入 `ThemeSnapshot`。如需扩展，应在 `shadows.ts` 新增静态 token 后再在 `ThemeSnapshot` 中引用。当前设计文档中关于这些字段的表格属于超前规划，与实现不符，已删除。
 
 ### 4.3 暗色主题自动派生
 
 #### 4.3.1 设计原则
 
-- 暗色主题由亮色主题**算法派生**，而非硬编码
-- 新增主题变体时只需定义亮色快照，暗色自动生成
-- 派生函数为纯函数，输入 `ThemeSnapshot`，输出 `ThemeSnapshot`
-- 暗色中性色使用**近白叠印**方式：将接近白色的色调按透明度压到暗色表面上，合成为不透明 hex
+- 暗色主题由亮色主题**自动派生**，新增主题变体时只需定义亮色快照，暗色自动生成
+- 派生函数为纯函数，输入 `ThemeSnapshot`，输出 `ThemeSnapshot`，不修改输入
+- 暗色值通过**直接映射**而非运行时叠印算法生成，色值在 `deriveDarkFromLight()` 中显式声明，确保可审计、可测试
+- 交互态叠加方向反转：亮色 `rgba(0,0,0,*)` → 暗色 `rgba(255,255,255,*)`
 
-#### 4.3.2 叠印公式
+#### 4.3.2 派生规则
 
-```
-Result = Upper * alpha + Base * (1 - alpha)
-```
+以下为 `deriveDarkFromLight()` 的实际派生映射，与 `packages/design-tokens/src/theme/derive-dark.ts` 保持一致：
 
-其中 `Upper` 为近白色调，`Base` 为暗色表面（`#141414` 或 `#0a0a0a`），`alpha` 为透明度。`deriveDarkFromLight()` 内部提供 `mixHex(upper, base, alpha)` 工具实现该合成。
+| 字段                      | 派生规则                                                                  |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `colorBgPage`             | 固定 `#141414`（`neutral[900]` 近似）                                     |
+| `colorBgCard`             | 固定 `#1f1f1f`（`neutral[800]` + 微调）                                   |
+| `colorBgElevated`         | 固定 `#262626`（`neutral[700]`）                                          |
+| `colorTextPrimary`        | 固定 `#e8e8e8`（反色层级最高对比度）                                      |
+| `colorTextSecondary`      | 固定 `#bfbfbf`                                                            |
+| `colorTextMuted`          | 固定 `#8c8c8c`                                                            |
+| `colorBorder`             | 固定 `#434343`（`neutral[700]`）                                          |
+| `colorBorderStrong`       | 固定 `#595959`（`neutral[600]`）                                          |
+| `colorBrandPrimary`       | 保持与 light 一致 `#1677ff`                                               |
+| `colorBrandPrimaryHover`  | 提亮 `#69b1ff`                                                            |
+| `colorBrandPrimaryActive` | 保持 `#0958d9`                                                            |
+| `colorSuccess`            | 提亮 `#73d13d`                                                            |
+| `colorWarning`            | 提亮 `#ffc53d`                                                            |
+| `colorError`              | 提亮 `#ff7875`                                                            |
+| `colorInfo`               | 提亮 `#69b1ff`（同 `colorBrandPrimaryHover`）                             |
+| `colorBgHover`            | 反转方向 `rgba(255, 255, 255, 0.08)`                                      |
+| `colorBgPressed`          | 反转方向 `rgba(255, 255, 255, 0.12)`                                      |
+| `colorBgSelected`         | 加深透明度 `rgba(22, 119, 255, 0.16)`                                     |
+| `colorBorderHover`        | 固定 `#434343`（同 `colorBorder`）                                        |
+| `colorBorderFocus`        | 提亮 `#69b1ff`（同 `colorBrandPrimaryHover`）                             |
+| `colorDestructive`        | 保持与 light 一致 `#ef4444`                                               |
+| `colorDestructiveHover`   | 保持与 light 一致 `#dc2626`                                               |
+| `colorDestructivePressed` | 保持与 light 一致 `#b91c1c`                                               |
+| `shadowPanel`             | 提高透明度：`0 1px 2px 0 rgba(0,0,0,0.35), 0 1px 3px 0 rgba(0,0,0,0.25)`  |
+| `shadowRaised`            | 提高透明度：`0 4px 12px 0 rgba(0,0,0,0.35), 0 2px 6px 0 rgba(0,0,0,0.25)` |
 
-各语义使用的近白叠印基色与透明度：
+> **设计说明**：早期设计曾使用 `mixHex()` 叠印公式（`Result = Upper * alpha + Base * (1 - alpha)`）动态计算暗色值，但实现中选择了直接硬编码映射，原因：(1) 色值可审计、可测试；(2) 避免运行时计算开销；(3) `write-theme-init.mjs` 同步维护时无需复现叠印逻辑。如后续需增加更多暗色字段，可在 `deriveDarkFromLight()` 中新增映射行。
 
-| 语义     | 上层色    | 透明度序列                              | 用途                                                    |
-| -------- | --------- | --------------------------------------- | ------------------------------------------------------- |
-| 文本灰阶 | `#f0f5ff` | 0.95 / 0.85 / 0.65 / 0.55 / 0.4         | primary / regular / secondary / placeholder / disabled  |
-| 边框灰阶 | `#f5f8ff` | 0.35 / 0.30 / 0.25 / 0.20 / 0.15 / 0.10 | darker / dark / default / light / lighter / extra-light |
-| 填充灰阶 | `#fafcff` | 0.20 / 0.16 / 0.12 / 0.08 / 0.04 / 0.02 | darker / dark / default / light / lighter / extra-light |
+#### 4.3.3 文件
 
-#### 4.3.3 派生规则
+`packages/design-tokens/src/theme/derive-dark.ts`（已实现）
 
-| 字段                                                                            | 派生规则                                                |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `colorBgPage`                                                                   | 固定 `#0a0a0a`                                          |
-| `colorBgCard`                                                                   | 固定 `#141414`                                          |
-| `colorBgElevated` / `colorBgOverlay`                                            | 固定 `#1d1e1f`                                          |
-| `colorBgBlank`                                                                  | `transparent`                                           |
-| `colorTextPrimary`                                                              | `mixHex('#f0f5ff', '#141414', 0.95)` → `#cfd3dc`        |
-| `colorTextSecondary` / `colorTextRegular`                                       | `mixHex('#f0f5ff', '#141414', 0.85)` → `#a3a6ad`        |
-| `colorTextMuted`                                                                | `mixHex('#f0f5ff', '#141414', 0.65)` → `#8d9095`        |
-| `colorTextPlaceholder` / `colorTextDisabled`                                    | `mixHex('#f0f5ff', '#141414', 0.55)` → `#6c6e72`        |
-| `colorBorder`                                                                   | `mixHex('#f5f8ff', '#141414', 0.25)` → `#4c4d4f`        |
-| `colorBorderStrong`                                                             | `mixHex('#f5f8ff', '#141414', 0.30)` → `#58585b`        |
-| `colorBorderLight`                                                              | `mixHex('#f5f8ff', '#141414', 0.20)` → `#414243`        |
-| `colorBorderLighter`                                                            | `mixHex('#f5f8ff', '#141414', 0.15)` → `#363637`        |
-| `colorBorderExtraLight`                                                         | `mixHex('#f5f8ff', '#141414', 0.10)` → `#2b2b2c`        |
-| `colorBorderDark`                                                               | 同 `colorBorderStrong`                                  |
-| `colorBorderDarker`                                                             | `mixHex('#f5f8ff', '#141414', 0.35)` → `#525457`        |
-| `colorFill`                                                                     | `mixHex('#fafcff', '#141414', 0.12)` → `#262727`        |
-| `colorFillLight`                                                                | `mixHex('#fafcff', '#141414', 0.08)` → `#1d1d1f`        |
-| `colorFillLighter`                                                              | `mixHex('#fafcff', '#141414', 0.06)` → `#1a1a1c`        |
-| `colorFillExtraLight`                                                           | `mixHex('#fafcff', '#141414', 0.02)` → `#131415`        |
-| `colorFillDark`                                                                 | `mixHex('#fafcff', '#141414', 0.16)` → `#272727`        |
-| `colorFillDarker`                                                               | `mixHex('#fafcff', '#141414', 0.20)` → `#2a2a2b`        |
-| `colorBrandPrimary`                                                             | 保持与 light 一致 `#1677ff`                             |
-| `colorBrandPrimaryHover`                                                        | 提亮 `#69b1ff`                                          |
-| `colorBrandPrimaryActive`                                                       | 保持 `#0958d9`                                          |
-| `colorSuccess` / `colorWarning` / `colorError` / `colorInfo`                    | 在 light 值基础上适度提亮 10-20%                        |
-| `colorDestructive` / `colorDestructiveHover` / `colorDestructivePressed`        | 与 `error` 系列同策略提亮                               |
-| `colorBgHover`                                                                  | 同 `colorFillLight`                                     |
-| `colorBgPressed`                                                                | 同 `colorFill`                                          |
-| `colorBgSelected`                                                               | `rgba(22,119,255,0.16)`（加深透明度）                   |
-| `colorBorderHover`                                                              | `mixHex('#f5f8ff', '#141414', 0.45)` → `#6c6e72`        |
-| `colorBorderFocus`                                                              | 同 `colorBrandPrimaryHover` `#69b1ff`                   |
-| `colorMask`                                                                     | `rgba(0,0,0,0.9)`（亮色为白色遮罩，暗色翻转为黑色遮罩） |
-| `colorOverlay`                                                                  | `rgba(0,0,0,0.5)`（明暗一致）                           |
-| `shadowPanel` / `shadowRaised` / `shadowLight` / `shadowLighter` / `shadowDark` | 提高透明度，见 §4.2.6                                   |
-
-#### 4.3.4 新增文件
-
-`packages/design-tokens/src/theme/derive-dark.ts`
-
-#### 4.3.5 注册表更新
-
-| 字段                                | 派生规则                                     |
-| ----------------------------------- | -------------------------------------------- |
-| `colorBgPage`                       | 使用 `neutral[900]` 等价色 (`#141414`)       |
-| `colorBgCard`                       | 使用 `neutral[800]` 等价色                   |
-| `colorBgElevated`                   | 使用 `neutral[700]` 等价色                   |
-| `colorTextPrimary`                  | 使用亮色 `textTertiary` 反转策略 (`#e8e8e8`) |
-| `colorTextSecondary`                | 比主文本降低对比度                           |
-| `colorTextMuted`                    | 进一步降低对比度                             |
-| `colorBorder`                       | neutral 中段偏暗                             |
-| `colorBorderStrong`                 | 比 border 略亮                               |
-| `colorBrandPrimary`                 | 保持主色不变（或微调提亮）                   |
-| `colorBrandPrimaryHover`            | 提亮 15-20%                                  |
-| `colorBrandPrimaryActive`           | 保持不变或微暗                               |
-| 语义色 (success/warning/error/info) | 提亮 15-20% 以保证暗背景对比度               |
-| `shadowPanel/shadowRaised`          | 增加阴影透明度 (0.1 → 0.35)                  |
-
-#### 4.3.4 注册表更新
+#### 4.3.4 注册表
 
 ```ts
 // registry.ts
@@ -556,9 +487,9 @@ shadcn/ui 组件期望一组特定的 CSS 变量名（如 `--background`、`--pr
 
 > **关键约束**：桥接变量必须引用 `--theme-*` 运行时变量（由 `applyThemeToDocument()` 在主题切换时更新），**禁止**引用 `--color-*` 静态 token（静态 token 在 light/dark 模式下值不变，会导致暗色模式失效）。
 
-#### 4.6.2 新增文件
+#### 4.6.2 文件
 
-`packages/design-tokens/src/shadcn-bridge.ts`
+`packages/design-tokens/src/shadcn-bridge.ts`（已实现）
 
 #### 4.6.3 桥接映射表
 
@@ -583,6 +514,7 @@ shadcn/ui 组件期望一组特定的 CSS 变量名（如 `--background`、`--pr
 | `--border`                 | `var(--theme-color-border)`         | 边框色（运行时切换）     |
 | `--input`                  | `var(--theme-color-border)`         | 输入框边框               |
 | `--ring`                   | `var(--theme-color-border-focus)`   | 聚焦环色（运行时切换）   |
+| `--radius`                 | `var(--theme-radius-md)`            | 默认圆角（运行时切换）   |
 
 桥接变量统一由 `to-css.ts` 的 `generateCssVarsString()` 输出，确保在 `:root` 中同时包含 design-tokens 变量和 shadcn/ui 桥接变量。
 
@@ -596,7 +528,7 @@ Tailwind 工具类 (bg-primary)
         → applyThemeToDocument() 在主题切换时重新注入
 ```
 
-主题切换时，`applyThemeToDocument` 重新注入 `--color-primary` 的值，`--primary` 通过 `var()` 引用自动更新，shadcn/ui 组件视觉无需额外处理。
+主题切换时，`applyThemeToDocument` 重新注入 `--theme-color-brand-primary` 的值，`--primary` 通过 `var()` 引用自动更新，shadcn/ui 组件视觉无需额外处理。
 
 ---
 
@@ -640,6 +572,7 @@ Tailwind 工具类 (bg-primary)
 | `@radix-ui/react-collapsible`   | Collapsible        |
 | `@radix-ui/react-slider`        | Slider             |
 | `@radix-ui/react-aspect-ratio`  | AspectRatio        |
+| `@radix-ui/react-label`         | Label              |
 
 **额外依赖（peer，按需引入）：**
 
@@ -675,17 +608,17 @@ export function cn(...inputs: ClassValue[]) {
 
 ### 5.3 components.json 配置
 
-新建 `packages/shared-ui/components.json`：
+`packages/shared-ui/components.json` 实际配置：
 
 ```json
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "default",
+  "style": "new-york",
   "rsc": false,
   "tsx": true,
   "tailwind": {
-    "config": "../../apps/react-app/tailwind.config.ts",
-    "css": "src/style.css",
+    "config": "",
+    "css": "../../apps/react-app/src/styles/tailwind.css",
     "baseColor": "slate",
     "cssVariables": true,
     "prefix": ""
@@ -696,26 +629,34 @@ export function cn(...inputs: ClassValue[]) {
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
-  }
+  },
+  "iconLibrary": "lucide"
 }
 ```
 
 说明：
 
-- `style: "default"` — 更圆润柔和的风格，用户选定
+- `style: "new-york"` — New York 风格（相比 default 风格更紧凑、棱角分明）
 - `rsc: false` — 非 Next.js RSC 项目
 - `cssVariables: true` — 使用 CSS 变量主题
 - `baseColor: "slate"` — 基色为 slate 系
+- `iconLibrary: "lucide"` — 使用 lucide-react 图标库
+- `tailwind.config: ""` — Tailwind 配置由 apps/react-app 统一管理，shared-ui 不独立配置
+- `tailwind.css: "../../apps/react-app/src/styles/tailwind.css"` — CSS 入口指向 app 的 Tailwind CSS 文件
 
 ### 5.4 路径别名
 
-- `packages/shared-ui/tsconfig.json` 添加 `paths: { "@/*": ["./src/*"] }`
-- `packages/shared-ui/vite.config.ts` 添加 `resolve.alias: { '@': path.resolve(__dirname, 'src') }`
-- 确保 vitest 配置同步
+- `packages/shared-ui/tsconfig.json` 已配置 `paths: { "@/*": ["./src/*"] }`
+- `packages/shared-ui/vite.config.ts` 已配置 `resolve.alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) }`
+- vitest 配置已同步
+
+### 5.4.1 图标库
+
+`lucide-react` 作为全局图标库，覆盖设计稿中展示的全部图标分类（导航、操作、社交、媒体、界面、其他等）。组件内图标通过 `cn()` + Tailwind 尺寸工具类控制，颜色继承 CSS 变量。
 
 ### 5.5 Tailwind CSS 内容路径
 
-`apps/react-app` 的 Tailwind 配置已使用 `../../packages/shared-ui/src/**/*.{ts,tsx,css}` 覆盖 shared-ui 目录，新增 `components/ui/` 子目录无需额外配置。
+本项目使用 Tailwind CSS v4（`@tailwindcss/vite`），内容发现为自动扫描机制。`apps/react-app/tailwind.config.ts` 的 `content` 数组包含 `../../packages/shared-ui/src/**/*.{ts,tsx,css}`，确保 shared-ui 中新增的 `components/ui/` 子目录无需额外配置即可被 Tailwind 扫描到工具类。
 
 ### 5.6 共存策略
 
@@ -763,15 +704,15 @@ export function cn(...inputs: ClassValue[]) {
 import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import { cn from '../../lib/utils'
 
 const buttonVariants = cva(
   // 基础类 — 所有变体共享
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
         outline:
           'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
@@ -793,27 +734,26 @@ const buttonVariants = cva(
   },
 )
 
-export interface ButtonProps
+interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  ref?: React.Ref<HTMLButtonElement>
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button'
-    return (
-      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
-    )
-  },
-)
-Button.displayName = 'Button'
+function Button({ ref, className, variant, size, asChild = false, ...props }: ButtonProps) {
+  const Comp = asChild ? Slot : 'button'
+  return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+}
 
 export { Button, buttonVariants }
+export type { ButtonProps }
 ```
+
+> **React 19 注意**：本项目使用 React 19，组件通过 `ref` prop 接收引用（不再需要 `React.forwardRef` 包裹）。如需在 React 18 项目中使用，需改回 `React.forwardRef` 模式。
 
 **强制约束**：
 
-1. 使用 `React.forwardRef` 支持引用转发
+1. 使用 React 19 `ref` prop 模式支持引用转发（不再使用 `React.forwardRef`）
 2. 使用 `cva` 管理变体，禁止手动拼接条件类名
 3. 使用 `cn()` 合并类名，禁止直接模板字符串拼接
 4. 导出组件 + variants（如 `buttonVariants`）供组合使用
@@ -864,24 +804,31 @@ CRUD 视图必需的交互组件，共 12 个。
 
 ### 6.4 Tier 3 — 高级组件
 
-锦上添花的高级组件，共 14 个。
+锦上添花的高级组件，共 15 个。其中 Form、Command、Drawer、Steps 为待实现组件。
 
-| 组件            | Radix 原语                     | Props 要点                                              | 备注                                                              |
-| --------------- | ------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------- |
-| **Avatar**      | `@radix-ui/react-avatar`       | `src`, `alt`, `fallback`                                | 子组件: Image / Fallback                                          |
-| **Progress**    | `@radix-ui/react-progress`     | `value`, `max`                                          | —                                                                 |
-| **ScrollArea**  | `@radix-ui/react-scroll-area`  | `orientation`                                           | 子组件: Viewport / ScrollBar / Thumb                              |
-| **Accordion**   | `@radix-ui/react-accordion`    | `type`, `collapsible`                                   | 子组件: Item / Trigger / Content                                  |
-| **Toast**       | `@radix-ui/react-toast`        | `duration`, `variant`                                   | 含 ToastProvider / ToastViewport / useToast hook                  |
-| **Toggle**      | `@radix-ui/react-toggle`       | `pressed`, `onPressedChange`, `variant`, `size`         | variant: default / outline; size: default / sm / lg               |
-| **ToggleGroup** | `@radix-ui/react-toggle-group` | `type`, `value`, `onValueChange`                        | type: single / multiple                                           |
-| **Collapsible** | `@radix-ui/react-collapsible`  | `open`, `onOpenChange`                                  | 子组件: Trigger / Content                                         |
-| **Slider**      | `@radix-ui/react-slider`       | `value`, `onValueChange`, `min`, `max`, `step`          | —                                                                 |
-| **Pagination**  | — (自定义)                     | `page`, `pageSize`, `total`, `onChange`                 | —                                                                 |
-| **Skeleton**    | — (自定义)                     | `className`                                             | CSS 动画占位                                                      |
-| **Drawer**      | `vaul`                         | `direction`, `open`, `onOpenChange`                     | 子组件: Trigger / Content / Header / Footer / Title / Description |
-| **Command**     | `cmdk`                         | 子组件: Input / List / Empty / Group / Item / Separator | 命令面板                                                          |
-| **Form**        | `react-hook-form` + `zod`      | `form`, `onSubmit`                                      | 子组件: Field / Label / Control / Description / Message           |
+| 组件            | Radix 原语                     | Props 要点                                              | 状态      | 备注                                                              |
+| --------------- | ------------------------------ | ------------------------------------------------------- | --------- | ----------------------------------------------------------------- |
+| **Avatar**      | `@radix-ui/react-avatar`       | `src`, `alt`, `fallback`                                | ✅ 已实现 | 子组件: Image / Fallback                                          |
+| **Progress**    | `@radix-ui/react-progress`     | `value`, `max`                                          | ✅ 已实现 | —                                                                 |
+| **ScrollArea**  | `@radix-ui/react-scroll-area`  | `orientation`                                           | ✅ 已实现 | 子组件: Viewport / ScrollBar / Thumb                              |
+| **Accordion**   | `@radix-ui/react-accordion`    | `type`, `collapsible`                                   | ✅ 已实现 | 子组件: Item / Trigger / Content                                  |
+| **Toast**       | `@radix-ui/react-toast`        | `duration`, `variant`                                   | ✅ 已实现 | 含 ToastProvider / ToastViewport / useToast hook                  |
+| **Toggle**      | `@radix-ui/react-toggle`       | `pressed`, `onPressedChange`, `variant`, `size`         | ✅ 已实现 | variant: default / outline; size: default / sm / lg               |
+| **ToggleGroup** | `@radix-ui/react-toggle-group` | `type`, `value`, `onValueChange`                        | ✅ 已实现 | type: single / multiple                                           |
+| **Collapsible** | `@radix-ui/react-collapsible`  | `open`, `onOpenChange`                                  | ✅ 已实现 | 子组件: Trigger / Content                                         |
+| **Slider**      | `@radix-ui/react-slider`       | `value`, `onValueChange`, `min`, `max`, `step`          | ✅ 已实现 | —                                                                 |
+| **Pagination**  | — (自定义)                     | `page`, `pageSize`, `total`, `onChange`                 | ✅ 已实现 | —                                                                 |
+| **Skeleton**    | — (自定义)                     | `className`                                             | ✅ 已实现 | CSS 动画占位                                                      |
+| **AspectRatio** | `@radix-ui/react-aspect-ratio` | `ratio`                                                 | ✅ 已实现 | —                                                                 |
+| **Drawer**      | `vaul`                         | `direction`, `open`, `onOpenChange`                     | ⏳ 待实现 | 子组件: Trigger / Content / Header / Footer / Title / Description |
+| **Command**     | `cmdk`                         | 子组件: Input / List / Empty / Group / Item / Separator | ⏳ 待实现 | 命令面板                                                          |
+| **Form**        | `react-hook-form` + `zod`      | `form`, `onSubmit`                                      | ⏳ 待实现 | 子组件: Field / Label / Control / Description / Message           |
+| **Steps**       | — (自定义)                     | `current`, `direction`, `status`                        | ⏳ 待实现 | 步骤指示器，设计稿中有展示                                        |
+
+> **待实现组件说明**：
+>
+> - Drawer、Command、Form 的底层库（`vaul`、`cmdk`、`react-hook-form`）以 **peerDependency** 形式声明，当前宿主应用未安装，待业务需要时再安装并实现。
+> - Steps 为纯自定义组件（无 Radix 原语），设计稿中有展示，待后续迭代实现。
 
 ### 6.5 组件导出结构
 
@@ -912,15 +859,19 @@ packages/shared-ui/src/
       scroll-area.tsx
       accordion.tsx
       toast.tsx
+      toaster.tsx
       toggle.tsx
       toggle-group.tsx
       collapsible.tsx
       slider.tsx
       pagination.tsx
       skeleton.tsx
-      drawer.tsx
-      command.tsx
-      form.tsx
+      aspect-ratio.tsx
+      # ⏳ 待后续迭代实现
+      # drawer.tsx          (vaul)
+      # command.tsx         (cmdk)
+      # form.tsx            (react-hook-form + zod)
+      # steps.tsx           (自定义，设计稿中有展示)
       index.ts                  # barrel: export all ui components
     AppShell.tsx                 # 现有 .repo-* 组件（不变）
     AdminShell.tsx
@@ -968,13 +919,18 @@ packages/shared-ui/src/
 
 ```
 ComponentShowcaseView
-├── ThemeShowcase          — 主题切换 + 色板 + 排版
-├── ButtonShowcase         — 按钮变体矩阵
-├── FormShowcase           — 表单控件组合
-├── DataDisplayShowcase    — 数据展示组件
-├── FeedbackShowcase       — 反馈组件
-├── NavigationShowcase     — 导航组件
-└── AdvancedShowcase       — 高级组件
+├── ThemeShowcase          — 主题切换（light/dark/system + default/compact）
+├── ButtonShowcase         — 按钮变体 × 尺寸矩阵
+├── InputShowcase          — Input / Textarea / Label
+├── CardShowcase           — Card 子组件组合
+├── BadgeShowcase          — Badge 各 variant
+├── SelectShowcase         — Select 下拉选择
+├── CheckboxRadioShowcase  — Checkbox / RadioGroup / Switch
+├── DialogShowcase         — Dialog / AlertDialog
+├── TableShowcase          — Table 基础表格
+├── TabsShowcase           — Tabs 受控展示
+├── AdvancedShowcase       — Accordion / Avatar / Progress / Slider / Toggle / Collapsible / Tooltip / Skeleton
+└── ExceptionShowcase      — ExceptionState（403 / 404 / 500 / error）
 ```
 
 ### 7.3 各展示分区内容
@@ -982,55 +938,72 @@ ComponentShowcaseView
 #### ThemeShowcase
 
 - **模式切换器**：使用现有 `ThemeModeSwitch` 组件，切换 light/dark/system
-- **主题名切换器**：新增下拉选择，切换 default/compact
-- **色板网格**：网格展示所有 CSS 变量色值，每个色块显示变量名和当前计算值
-- **排版刻度**：按 `fontSize` token 渲染不同字号文本
+- **主题名切换器**：使用 Select 组件，切换 default/compact
 
 #### ButtonShowcase
 
-- 变体 × 尺寸矩阵：6 个 variant × 4 个 size = 24 种组合
+- 变体展示：default / secondary / destructive / outline / ghost / link
+- 尺寸展示：sm / default / lg / icon
 - 禁用态展示
-- `asChild` 组合用法
-- 与旧 `.page-primary-button` 的对照说明
 
-#### FormShowcase
+#### InputShowcase
 
-- Input 各 size + 禁用/错误态
-- Select 下拉选择
-- Checkbox / RadioGroup / Switch
+- Input 各状态（默认 / 禁用）
 - Textarea
-- 完整表单示例（含校验）
+- Label 配合使用
 
-#### DataDisplayShowcase
+#### CardShowcase
 
-- Card 各子组件组合
-- Badge 各 variant
-- Table 基础表格（使用与 UserListView 同源数据）
-- Avatar + Tooltip + Popover
+- Card + CardHeader / CardTitle / CardDescription / CardContent / CardFooter 组合
+- Card 内嵌 Switch 示例
 
-#### FeedbackShowcase
+#### BadgeShowcase
 
-- Dialog / AlertDialog 触发按钮
-- Toast 通知示例
-- Progress 进度条
-- Skeleton 加载占位
-- Drawer 侧面板
+- Badge 各 variant：default / secondary / destructive / outline
 
-#### NavigationShowcase
+#### SelectShowcase
+
+- Select 下拉选择受控用法
+
+#### CheckboxRadioShowcase
+
+- Checkbox 受控 / 非受控
+- RadioGroup 选项组
+- Switch 开关
+
+#### DialogShowcase
+
+- Dialog 触发 / 内容 / 关闭
+- AlertDialog 确认操作
+
+#### TableShowcase
+
+- Table 基础数据表格（含 Badge 状态列）
+
+#### TabsShowcase
 
 - Tabs 受控 / 非受控
-- Pagination 分页
+- TabsContent 内嵌 Card + Input 表单
 
 #### AdvancedShowcase
 
-- Command 命令面板
-- Accordion / Collapsible
-- ScrollArea / Slider
-- Form 完整校验表单
+- Accordion 折叠面板
+- Avatar 头像
+- Progress 进度条
+- Slider 滑块
+- Toggle / ToggleGroup 切换
+- Collapsible 折叠
+- Tooltip 提示
+- Skeleton 加载占位
+
+#### ExceptionShowcase
+
+- ExceptionState 各 variant：403 / 404 / 500 / error
+- 各 variant 的标题、描述、操作按钮配置
 
 ### 7.4 辅助组件
 
-**ShowcaseSection**：分区容器，基于 `DataPanel` 实现。
+**ShowcaseSection**：分区容器，直接在 `ComponentShowcaseView.tsx` 中定义为内联组件，不基于 DataPanel。
 
 ```tsx
 interface ShowcaseSectionProps {
@@ -1040,42 +1013,25 @@ interface ShowcaseSectionProps {
 }
 ```
 
-**ComponentRow**：单组件行标注。
+> **说明**：`ComponentRow` 和 `CodeBlock` 辅助组件在当前实现中未使用。每个展示分区只包含实时渲染的组件，不含代码片段展示。如后续需补充用法文档，可添加 CodeBlock 组件。
+> code: string // 源代码字符串
+> language?: string // 语法高亮语言，默认 'tsx'
+> }
 
-```tsx
-interface ComponentRowProps {
-  label: string
-  children: ReactNode
-}
 ```
-
-**CodeBlock**：代码示例展示组件，用于展示每个组件的用法代码片段。
-
-```tsx
-interface CodeBlockProps {
-  code: string // 源代码字符串
-  language?: string // 语法高亮语言，默认 'tsx'
-}
-```
-
-每个展示分区应包含：
-
-1. **实时渲染**的组件
-2. 对应的**源代码片段**（通过 CodeBlock 展示，可复制）
-3. 关键 **Props 说明**
-
-这使展示页不仅是视觉参考，更是开发者可复制粘贴的用法文档。
 
 ### 7.5 主题切换增强
 
-扩展 `apps/react-app/src/stores/theme.ts`：
+`apps/react-app/src/stores/theme.ts` 已实现完整的主题切换 store（基于 Zustand）：
 
-- 新增 `themeName: ThemeName` 状态，默认 `'default'`
-- 新增 `setThemeName(name: ThemeName)` action
-- `setThemeName` 调用 `applyThemeToDocument()` 重新注入 CSS 变量
-- 在 ThemeProvider 中同步更新 context value
+- `themeName: ThemeName` 状态，默认 `'default'`
+- `setThemeName(name: ThemeName)` action，调用 `applyThemeToDocument()` 重新注入 CSS 变量
+- `preference: ThemePreference` 状态（`'light'` / `'dark'` / `'system'`）
+- `setPreference(preference)` action，自动解析 mode 并同步 `localStorage`
+- `mode: ThemeMode` 派生状态（由 preference + 系统偏好解析得到）
+- `startSystemSync()` / `stopSystemSync()` 系统主题变化订阅
 
-展示页面可通过切换器实时观察所有组件在 default/compact 主题和 light/dark 模式下的视觉差异。
+展示页面通过 `ThemeModeSwitch` + Select 切换器实时观察所有组件在 default/compact 主题和 light/dark 模式下的视觉差异。
 
 ---
 
@@ -1087,13 +1043,13 @@ interface CodeBlockProps {
 - `transitions.ts` 从 `motion.ts` 派生，禁止独立定义 duration/easing 值
 - 颜色系统新增字段中，**静态不变的**（如 `primaryScale`、`secondary` 系列色值）作为静态 token 输出；**light/dark 模式下值不同的**（如交互态颜色 `colorBgHover`/`colorBgPressed` 等）必须纳入 ThemeSnapshot 作为运行时可切换字段
 - ThemeSnapshot 新增字段均为**运行时可切换**（通过 `--theme-*` CSS 变量注入）
-- 暗色主题通过 `deriveDarkFromLight()` 派生，禁止手动维护暗色快照；派生函数须正确处理交互态颜色的反转（`rgba(0,0,0,*)` → `rgba(255,255,255,*)`）
+- 暗色主题通过 `deriveDarkFromLight()` 派生，禁止手动维护暗色快照；派生函数使用直接映射而非运行时叠印算法；交互态颜色叠加方向反转（`rgba(0,0,0,*)` → `rgba(255,255,255,*)`）；destructive 系列保持与 light 一致不提亮
 - 桥接变量 (`--background`, `--primary` 等) 始终通过 `var(--theme-*)` 引用运行时变量，禁止引用 `var(--color-*)` 静态 token 或重复声明值
 - `error` 用于状态展示，`destructive` 用于危险操作，两者同属红色系但语义不同
 
 ### 8.2 组件库契约
 
-- 所有新组件必须使用 shadcn/ui 模式（`forwardRef` + `cva` + `cn()`）
+- 所有新组件必须使用 shadcn/ui 模式（React 19 `ref` prop + `cva` + `cn()`）
 - `asChild` 仅限需要多态渲染的组件（Button、Dialog.Trigger 等），纯展示组件不需要
 - 组件样式全部通过 CSS 变量和 Tailwind 工具类控制，禁止硬编码颜色/字号
 - 组件文件放入 `packages/shared-ui/src/components/ui/`，通过 barrel export 对外暴露
@@ -1110,9 +1066,10 @@ interface CodeBlockProps {
 
 ### 8.4 展示页契约
 
-- 展示页路由 `/components` 仅在开发环境可访问
-- 展示页组件放入 `apps/react-app/src/views/showcase/`
+- 展示页路由 `/components` 位于 `apps/react-app/src/router/index.tsx`，路径为 `/components`
+- 展示页组件放入 `apps/react-app/src/views/showcase/ComponentShowcaseView.tsx`
 - 展示页不引入额外生产依赖
+- 不纳入生产部署的正式菜单体系，仅作为开发辅助页面通过 URL 直接访问
 
 ---
 
@@ -1140,3 +1097,4 @@ interface CodeBlockProps {
 | 架构设计方案 §6.3 shared-ui      | 本文档 §6 扩展了组件封装模式                                          |
 | Phase0 详细设计 §4 主题与共享 UI | 本文档 §4 扩展了 token 类别和主题变体，§4.6 新增了 shadcn/ui 桥接契约 |
 | Phase0 详细设计 §4.3 正式契约    | 本文档 §8 新增了组件库和依赖契约                                      |
+```

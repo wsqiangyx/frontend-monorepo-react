@@ -87,6 +87,32 @@ pnpm check:status            # Verify STATUS.yaml alignment with root scripts/te
 pnpm sync:mock-worker        # Sync MSW worker artifacts
 ```
 
+## Superpowers + ECC 冲突处理
+
+本仓库同时使用 Superpowers skills 与 ECC agents（`~/.claude/rules/common/agents.md`）。两者在 code-review、planning、TDD、security、verification 五个维度存在能力重叠。以下为项目级优先级规则：
+
+### 优先级选择
+
+| 场景         | 默认使用                       | 升级为 ECC                                                          |
+| ------------ | ------------------------------ | ------------------------------------------------------------------- |
+| 代码审查     | `/code-review`（Superpowers）  | `@security-reviewer`（仅涉及 auth / 支付 / 用户数据 / 外部 API 时） |
+| 实施规划     | `/write-plan`（Superpowers）   | `@planner`（跨包架构变更）/ `@architect`（新增 ADR 或多目录重构）   |
+| TDD          | `/tdd`（Superpowers）          | —                                                                   |
+| 安全扫描     | `@security-reviewer`（ECC）    | —                                                                   |
+| 变更验证     | `/verify`（Superpowers）       | —                                                                   |
+| 构建失败     | `@build-error-resolver`（ECC） | —                                                                   |
+| E2E 测试     | `@e2e-runner`（ECC）           | —                                                                   |
+| 重构清理     | `@refactor-cleaner`（ECC）     | —                                                                   |
+| 文档更新     | `@doc-updater`（ECC）          | —                                                                   |
+| 语言特定审查 | 对应 reviewer（ECC）           | —                                                                   |
+
+### 本项目硬约束
+
+- 所有 agent / skill **必须**使用项目脚本执行验证：`pnpm verify`、`pnpm test`、`pnpm typecheck`、`pnpm build`。不得自行推断命令。
+- 单包操作使用 `pnpm -F <workspace> <script>`，不直接 cd 进子包执行裸命令。
+- 禁止在同一轮次中重复触发功能重叠的 agent / skill（如同时调用 `/code-review` 和 `@code-reviewer`）。
+- 修改涉及 `packages/shared-utils`、`packages/shared-service`、`packages/design-tokens`、`packages/mock`、`packages/shared-ui` 任一包的公共契约时，先查阅 `AGENTS.md` 对应约束再选择 agent。
+
 ## Architecture
 
 ```
