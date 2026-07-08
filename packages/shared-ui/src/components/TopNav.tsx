@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { PlatformSession } from '@repo/shared-service'
+import { cn } from '../lib/utils'
 
 interface TopNavProps extends HTMLAttributes<HTMLElement> {
   session: PlatformSession
@@ -11,13 +12,23 @@ export function TopNav({ session, onLogout, extra, className, ...rest }: TopNavP
   const displayName = session.user.displayName || session.user.username
 
   return (
-    <header className={['repo-top-nav', className].filter(Boolean).join(' ')} {...rest}>
-      <div className="repo-top-nav-brand">Admin</div>
-      <div className="repo-top-nav-extra">{extra}</div>
-      <div className="repo-top-nav-user">
-        <span className="repo-top-nav-username">{displayName}</span>
+    <header
+      className={cn(
+        'flex items-center justify-between h-16 px-6 border-b bg-background',
+        className,
+      )}
+      {...rest}
+    >
+      <div className="text-lg font-bold">Admin</div>
+      <div>{extra}</div>
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-muted-foreground">{displayName}</span>
         {onLogout ? (
-          <button type="button" className="repo-top-nav-logout" onClick={onLogout}>
+          <button
+            type="button"
+            className="text-sm text-destructive hover:text-destructive/80 transition-colors"
+            onClick={onLogout}
+          >
             Logout
           </button>
         ) : null}

@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
+import { cn } from '../lib/utils'
 
 type ExceptionVariant = '403' | '404' | '500' | 'error'
 
@@ -25,10 +26,18 @@ export function ExceptionState({
   ...rest
 }: ExceptionStateProps) {
   return (
-    <div className={['repo-exception-state', className].filter(Boolean).join(' ')} {...rest}>
-      <div className="repo-exception-state-code">{title ?? defaultTitles[variant]}</div>
-      {description ? <p className="repo-exception-state-desc">{description}</p> : null}
-      {action ? <div className="repo-exception-state-action">{action}</div> : null}
+    <div
+      className={cn(
+        'flex flex-col items-center justify-center gap-3 py-12 px-4 text-center',
+        className,
+      )}
+      {...rest}
+    >
+      <div className="text-6xl font-bold text-muted-foreground">
+        {title ?? defaultTitles[variant]}
+      </div>
+      {description ? <p className="text-muted-foreground">{description}</p> : null}
+      {action ? <div className="mt-2">{action}</div> : null}
     </div>
   )
 }

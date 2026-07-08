@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { PlatformMenuNode } from '@repo/shared-service'
+import { cn } from '../lib/utils'
 
 interface SideMenuProps extends Omit<HTMLAttributes<HTMLElement>, 'onSelect'> {
   nodes: PlatformMenuNode[]
@@ -23,21 +24,22 @@ export function SideMenu({
     const hasChildren = node.children && node.children.length > 0
 
     return (
-      <li key={node.key} className="repo-side-menu-item">
+      <li key={node.key}>
         <button
           type="button"
-          className={['repo-side-menu-link', isActive ? 'repo-side-menu-link-active' : '']
-            .filter(Boolean)
-            .join(' ')}
+          className={cn(
+            'flex items-center gap-2 w-full px-4 py-2 text-sm text-left transition-colors hover:bg-muted',
+            isActive && 'bg-muted font-medium text-foreground',
+            !isActive && 'text-muted-foreground',
+            node.disabled && 'opacity-50 cursor-not-allowed',
+          )}
           disabled={node.disabled}
           onClick={() => onSelect?.(node)}
         >
-          {node.icon ? <span className="repo-side-menu-icon">{node.icon}</span> : null}
+          {node.icon ? <span className="flex-shrink-0">{node.icon}</span> : null}
           <span>{node.title}</span>
         </button>
-        {hasChildren ? (
-          <ul className="repo-side-menu-sub">{node.children!.map(renderNode)}</ul>
-        ) : null}
+        {hasChildren ? <ul className="ml-4">{node.children!.map(renderNode)}</ul> : null}
       </li>
     )
   }
@@ -45,9 +47,9 @@ export function SideMenu({
   const visibleNodes = nodes.filter((n) => !n.hidden)
 
   return (
-    <nav className={['repo-side-menu', className].filter(Boolean).join(' ')} {...rest}>
-      <ul className="repo-side-menu-list">{visibleNodes.map(renderNode)}</ul>
-      {footer ? <div className="repo-side-menu-footer">{footer}</div> : null}
+    <nav className={cn('flex flex-col w-64 h-full border-r bg-background', className)} {...rest}>
+      <ul className="flex-1 overflow-auto py-2">{visibleNodes.map(renderNode)}</ul>
+      {footer ? <div className="border-t p-4">{footer}</div> : null}
     </nav>
   )
 }

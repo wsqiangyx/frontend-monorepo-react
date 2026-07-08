@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from 'react'
+import { cn } from '../lib/utils'
 
 interface BreadcrumbItem {
   title: string
@@ -15,20 +16,20 @@ export function AppBreadcrumb({ items, className, ...rest }: AppBreadcrumbProps)
   return (
     <nav
       aria-label="Breadcrumb"
-      className={['repo-breadcrumb', className].filter(Boolean).join(' ')}
+      className={cn('flex items-center space-x-2 text-sm text-muted-foreground', className)}
       {...rest}
     >
       {items.map((item, index) => {
         const isLast = index === items.length - 1
 
         return (
-          <span key={item.path ?? index} className="repo-breadcrumb-item">
+          <span key={item.path ?? index} className="flex items-center">
             {isLast ? (
-              <span className="repo-breadcrumb-current">{item.title}</span>
+              <span className="font-medium text-foreground">{item.title}</span>
             ) : (
               <>
                 <span>{item.title}</span>
-                <span className="repo-breadcrumb-sep">/</span>
+                <span className="mx-2">/</span>
               </>
             )}
           </span>

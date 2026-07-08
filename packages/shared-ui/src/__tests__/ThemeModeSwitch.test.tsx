@@ -50,7 +50,7 @@ describe('ThemeModeSwitch', () => {
 
     const root = screen.getByTestId('switch')
 
-    expect(root).toHaveClass('repo-theme-mode-switch', 'custom-switch')
+    expect(root).toHaveClass('inline-grid', 'gap-2', 'custom-switch')
     expect(root).toHaveAttribute('data-track', 'theme')
     expect(root).toHaveAttribute('role', 'radiogroup')
   })

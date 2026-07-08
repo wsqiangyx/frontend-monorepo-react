@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from 'react'
 import type { MetricTrend } from '@repo/shared-utils/ui-contract'
+import { cn } from '../lib/utils'
 
 interface MetricCardProps extends HTMLAttributes<HTMLDivElement> {
   label: string
@@ -7,6 +8,12 @@ interface MetricCardProps extends HTMLAttributes<HTMLDivElement> {
   trend?: MetricTrend
   trendText?: string
   hint?: string
+}
+
+const trendBorderColors: Record<MetricTrend, string> = {
+  up: 'border-success',
+  down: 'border-error',
+  flat: 'border-border-strong',
 }
 
 export function MetricCard({
@@ -21,14 +28,14 @@ export function MetricCard({
   return (
     <div
       {...rest}
-      className={['repo-metric-card', className].filter(Boolean).join(' ')}
+      className={cn('rounded-md border bg-elevated p-4', trendBorderColors[trend], className)}
       data-testid="metric-card"
       data-trend={trend}
     >
-      <p>{label}</p>
-      <strong>{value}</strong>
-      {trendText ? <p>{trendText}</p> : null}
-      {hint ? <small>{hint}</small> : null}
+      <p className="text-sm text-muted-foreground">{label}</p>
+      <strong className="text-2xl font-bold">{value}</strong>
+      {trendText ? <p className="text-sm text-muted-foreground">{trendText}</p> : null}
+      {hint ? <small className="text-xs text-muted-foreground">{hint}</small> : null}
     </div>
   )
 }

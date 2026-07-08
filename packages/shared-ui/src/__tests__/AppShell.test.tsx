@@ -23,7 +23,7 @@ describe('AppShell', () => {
 
     const shell = screen.getByTestId('shell')
 
-    expect(shell).toHaveClass('repo-app-shell', 'custom-shell')
+    expect(shell).toHaveClass('min-h-screen', 'text-foreground', 'bg-background', 'custom-shell')
     expect(shell).toHaveAttribute('data-track', 'dashboard')
     expect(shell).toHaveStyle({ opacity: '0.8' })
   })

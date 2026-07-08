@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { PlatformSession, PlatformMenuNode, WorkspaceTab } from '@repo/shared-service'
+import { cn } from '../lib/utils'
 import { TopNav } from './TopNav'
 import { SideMenu } from './SideMenu'
 import { TabWorkspace } from './TabWorkspace'
@@ -36,16 +37,16 @@ export function AdminShell({
   ...rest
 }: AdminShellProps) {
   return (
-    <div className={['repo-admin-shell', className].filter(Boolean).join(' ')} {...rest}>
+    <div className={cn('flex flex-col min-h-screen', className)} {...rest}>
       <TopNav session={session} onLogout={onLogout} extra={navExtra} />
-      <div className="repo-admin-shell-body">
+      <div className="flex flex-1 overflow-hidden">
         <SideMenu
           nodes={menuNodes}
           activeKey={activeMenuKey}
           onSelect={onMenuSelect}
           footer={menuFooter}
         />
-        <main className="repo-admin-shell-main">
+        <main className="flex-1 overflow-auto">
           <TabWorkspace
             tabs={tabs}
             activeKey={activeTabKey}

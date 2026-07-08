@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
+import { cn } from '../lib/utils'
 
 interface PageContainerProps extends HTMLAttributes<HTMLDivElement> {
   title?: string
@@ -16,17 +17,17 @@ export function PageContainer({
   ...rest
 }: PageContainerProps) {
   return (
-    <div className={['repo-page-container', className].filter(Boolean).join(' ')} {...rest}>
+    <div className={cn('p-4', className)} {...rest}>
       {title || breadcrumb || extra ? (
-        <div className="repo-page-container-header">
-          <div className="repo-page-container-header-left">
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex flex-col gap-1">
             {breadcrumb}
-            {title ? <h2 className="repo-page-container-title">{title}</h2> : null}
+            {title ? <h2 className="text-xl font-semibold">{title}</h2> : null}
           </div>
-          {extra ? <div className="repo-page-container-header-right">{extra}</div> : null}
+          {extra ? <div>{extra}</div> : null}
         </div>
       ) : null}
-      <div className="repo-page-container-body">{children}</div>
+      <div className="min-h-0">{children}</div>
     </div>
   )
 }

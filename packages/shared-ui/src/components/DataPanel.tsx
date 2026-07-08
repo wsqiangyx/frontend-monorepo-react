@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
+import { cn } from '../lib/utils'
 
 interface DataPanelProps extends HTMLAttributes<HTMLElement> {
   title?: string
@@ -27,16 +28,20 @@ export function DataPanel({
 }: DataPanelProps) {
   return (
     <section
-      className={['repo-data-panel', bordered ? '' : 'repo-data-panel-borderless', className]
-        .filter(Boolean)
-        .join(' ')}
+      className={cn(
+        'rounded-lg border bg-card p-6 shadow-sm',
+        bordered ? '' : 'border-0 shadow-none',
+        className,
+      )}
       {...rest}
     >
       {title || description || toolbar ? (
-        <div className="repo-data-panel-header">
+        <div className="flex items-center justify-between gap-4 mb-4">
           <div>
-            {title ? <h2>{title}</h2> : null}
-            {description ? <p className="repo-data-panel-description">{description}</p> : null}
+            {title ? <h2 className="text-lg font-semibold">{title}</h2> : null}
+            {description ? (
+              <p className="text-sm text-muted-foreground mt-1">{description}</p>
+            ) : null}
           </div>
           {toolbar}
         </div>

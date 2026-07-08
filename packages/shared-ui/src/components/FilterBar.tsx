@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from 'react'
+import { cn } from '../lib/utils'
 
 interface FilterBarProps extends HTMLAttributes<HTMLDivElement> {
   align?: 'start' | 'between'
@@ -17,17 +18,15 @@ export function FilterBar({
 }: FilterBarProps) {
   return (
     <div
-      className={[
-        'repo-filter-bar',
-        align === 'start' ? 'repo-filter-bar-start' : '',
-        wrap ? '' : 'repo-filter-bar-no-wrap',
+      className={cn(
+        'flex flex-wrap items-center gap-4 mb-4',
+        align === 'start' ? 'justify-start' : 'justify-between',
+        !wrap && 'flex-nowrap',
         className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      )}
       {...rest}
     >
-      <div className="repo-filter-bar-content">{children}</div>
+      <div className={cn('flex flex-wrap gap-3', !wrap && 'flex-nowrap')}>{children}</div>
       {actions}
     </div>
   )

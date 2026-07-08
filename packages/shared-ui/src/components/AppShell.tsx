@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { ContentMaxWidth } from '@repo/shared-utils/ui-contract'
+import { cn } from '../lib/utils'
 
 interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   sidebar?: boolean
@@ -7,6 +8,15 @@ interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   header?: ReactNode
   sidebarContent?: ReactNode
   children: ReactNode
+}
+
+const contentWidthClasses: Record<ContentMaxWidth, string> = {
+  sm: 'max-w-screen-sm',
+  md: 'max-w-screen-md',
+  lg: 'max-w-screen-lg',
+  xl: 'max-w-screen-xl',
+  '2xl': 'max-w-screen-2xl',
+  fluid: 'max-w-none',
 }
 
 export function AppShell({
@@ -19,14 +29,10 @@ export function AppShell({
   ...rest
 }: AppShellProps) {
   return (
-    <div className={['repo-app-shell', className].filter(Boolean).join(' ')} {...rest}>
+    <div className={cn('min-h-screen text-foreground bg-background', className)} {...rest}>
       {header}
       {sidebar ? sidebarContent : null}
-      <div
-        className={`repo-app-shell-content ${
-          contentMaxWidth === 'fluid' ? 'repo-app-shell-content-fluid' : ''
-        }`}
-      >
+      <div className={cn('w-full mx-auto py-6 px-6', contentWidthClasses[contentMaxWidth])}>
         {children}
       </div>
     </div>

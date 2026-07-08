@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from 'react'
 import type { ThemePreference } from '@repo/design-tokens/theme'
+import { cn } from '../lib/utils'
 
 interface ThemeModeSwitchProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
   preference: ThemePreference
@@ -32,17 +33,21 @@ export function ThemeModeSwitch({
     <div
       {...rest}
       aria-label={ariaLabel}
-      className={['repo-theme-mode-switch', className].filter(Boolean).join(' ')}
+      className={cn('inline-grid gap-2', className)}
       role="radiogroup"
     >
-      <span className="repo-theme-mode-switch-label">{label}</span>
-      <div className="repo-theme-mode-switch-options">
+      <span className="text-sm font-semibold">{label}</span>
+      <div className="inline-flex gap-1 p-1 bg-elevated border border-border rounded-full">
         {options.map((option) => (
           <button
             key={option.value}
             aria-checked={preference === option.value}
-            className="repo-theme-mode-switch-option"
-            data-active={preference === option.value}
+            className={cn(
+              'px-3 py-1.5 text-sm rounded-full transition-colors',
+              preference === option.value
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
             role="radio"
             tabIndex={preference === option.value ? 0 : -1}
             type="button"
