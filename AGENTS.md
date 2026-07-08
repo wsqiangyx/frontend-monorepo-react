@@ -1,6 +1,10 @@
 # 维护指南
 
-本文件面向后续维护者、自动化工具和编码代理，定义这个仓库中不应被日常修改破坏的边界。
+> 本文件是 **Codex CLI** 的项目级指令文件（project-level instructions）。在 Codex 工作于本仓库时，它会自动读取本文件作为系统上下文。
+>
+> 若你使用 **Claude Code CLI**，项目级指令入口为根目录的 [`CLAUDE.md`](./CLAUDE.md)。两个文件是不同 CLI 工具各自的项目级指令入口，核心维护约束保持一致；Claude Code 用户可直接阅读本文件获取完整仓库约束。
+
+本文件面向后续维护者、自动化工具、编码代理以及 **Codex CLI**，定义这个仓库中不应被日常修改破坏的边界。
 
 ## 文档边界
 
@@ -20,6 +24,8 @@
 - `docs/总体设计/实施计划/`：分阶段实施计划目录
 
 如果修改仓库规则、模板使用方式、初始化步骤、阶段目标、正式公共契约或架构边界，优先修改根 `README.md`、根 `AGENTS.md`、根 `TEMPLATE.md` 与 `docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`。涉及初始化与残留清理流程时，还必须同步 `docs/教程/模板初始化与裁剪指南.md`。涉及主题、共享 UI、国际化或平台基座正式契约时，还必须同步对应分阶段详细设计 / 实施计划文档。
+
+> 当修改本文件（Codex CLI 项目级指令）或根 `CLAUDE.md`（Claude Code CLI 项目级指令）时，应同步更新另一个文件中的核心约束与项目入口说明，并保持 `README.md` 中的 AI 工具指令入口描述一致。
 
 ## 仓库定位
 
@@ -290,7 +296,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 ### `apps/react-app`
 
-- React + shadcn/ui + Tailwind CSS 应用壳
+- React 19 + shadcn/ui + Tailwind CSS v4 应用壳
 - 主题通过 `@repo/shared-ui` 的 `ThemeProvider` 接入
 - app 内主题状态通过 Zustand store 管理
 - HTTP 客户端工厂在 `services/http-client.ts`，通过 `createPlatformClient()` 创建统一实例
@@ -301,7 +307,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 ### `apps/react-screen-designer`
 
-- 当前工作区内存在的专题子应用目录
+- 当前 `STATUS.yaml` 中已登记但磁盘上尚未创建的专题子应用占位目录
 - 对应 `docs/子应用/可视化/` 下的专题设计与实施文档
 - 当前尚未纳入根脚本、根测试矩阵与模板默认验收范围
 - 若要把它升级为正式应用，必须先同步更新根 `package.json`、根 `vitest.config.ts`、根 `README.md`、本文件、总体设计主文档与测试规范
@@ -367,7 +373,7 @@ app 在开发态 / 测试态通过 alias 消费源码可以接受，但 package 
 
 ### `apps/taro-miniapp`（ADR-012）
 
-- Taro 3+/4 小程序宿主，使用 React/TSX 语法
+- Taro 3+/4 小程序宿主，使用 React 18 / TSX 语法
 - 输出微信小程序、支付宝小程序、H5，可选输出 React Native
 - 依赖 `@repo/cross-platform-utils`、`@repo/cross-platform-ui`、`@repo/cross-platform-mock`
 - 复用 `@repo/shared-service` 与 `@repo/shared-utils` 的平台内核和类型契约

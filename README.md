@@ -10,6 +10,13 @@
 - 总体设计：[`docs/总体设计/React 中后台前端平台 Monorepo 架构设计方案.md`](./docs/总体设计/React%20中后台前端平台%20Monorepo%20架构设计方案.md)
 - 初始化与裁剪手册：[`docs/教程/模板初始化与裁剪指南.md`](./docs/教程/模板初始化与裁剪指南.md)
 - 维护约束：[`AGENTS.md`](./AGENTS.md)
+- Claude Code 指令：[`CLAUDE.md`](./CLAUDE.md)
+
+> **AI 工具指令入口**：
+>
+> - Codex CLI 自动读取 [`AGENTS.md`](./AGENTS.md) 作为项目级指令。
+> - Claude Code CLI 自动读取 [`CLAUDE.md`](./CLAUDE.md) 作为项目级指令。
+> - 两个文件是不同 CLI 工具各自的项目级指令入口，核心维护约束保持一致。`AGENTS.md` 同时是仓库的权威维护约束文档。
 
 ## 当前定位
 
