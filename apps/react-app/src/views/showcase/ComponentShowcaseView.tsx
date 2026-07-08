@@ -67,8 +67,37 @@ import {
   RadioGroup,
   RadioGroupItem,
   ThemeModeSwitch,
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  Steps,
+  StepItem,
 } from '@repo/shared-ui'
 import { useThemeStore } from '@/stores/theme'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from '@repo/shared-ui'
 
 function ShowcaseSection({
   title,
@@ -291,6 +320,37 @@ function DialogShowcase() {
   )
 }
 
+function DrawerShowcase() {
+  return (
+    <ShowcaseSection title="Drawer" description="Drawer panels for mobile-friendly overlays.">
+      <div className="flex flex-wrap gap-3">
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button variant="outline">Open Drawer</Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Move Goal</DrawerTitle>
+              <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4 pb-0">
+              <p className="text-sm text-muted-foreground">
+                This is a drawer component using vaul. It slides up from the bottom on mobile.
+              </p>
+            </div>
+            <DrawerFooter>
+              <Button>Submit</Button>
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
+    </ShowcaseSection>
+  )
+}
+
 function TableShowcase() {
   return (
     <ShowcaseSection title="Table" description="Data tables for lists.">
@@ -479,6 +539,130 @@ function AdvancedShowcase() {
   )
 }
 
+function CommandShowcase() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <ShowcaseSection title="Command" description="Command palette (⌘K style) using cmdk.">
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Open Command Menu
+      </Button>
+      <CommandDialog open={open} onOpenChange={setOpen}>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Suggestions">
+            <CommandItem>
+              Calendar
+              <CommandShortcut>⌘C</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              Search Emoji
+              <CommandShortcut>⌘E</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              Calculator
+              <CommandShortcut>⌘C</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Settings">
+            <CommandItem>
+              Profile
+              <CommandShortcut>⌘P</CommandShortcut>
+            </CommandItem>
+            <CommandItem>
+              Settings
+              <CommandShortcut>⌘S</CommandShortcut>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </ShowcaseSection>
+  )
+}
+
+function StepsShowcase() {
+  return (
+    <ShowcaseSection title="Steps" description="Step indicator for multi-step flows.">
+      <div className="space-y-8">
+        <div>
+          <p className="mb-3 text-sm text-muted-foreground">Horizontal (current=2)</p>
+          <Steps current={2}>
+            <StepItem stepNumber={1} title="Account" description="Set up your account" />
+            <StepItem stepNumber={2} title="Security" description="Configure security" />
+            <StepItem stepNumber={3} title="Done" description="Completed" />
+          </Steps>
+        </div>
+        <div>
+          <p className="mb-3 text-sm text-muted-foreground">Vertical (current=1)</p>
+          <Steps current={1} direction="vertical">
+            <StepItem stepNumber={1} title="Step One" description="This is the first step." />
+            <StepItem stepNumber={2} title="Step Two" description="This is the second step." />
+            <StepItem stepNumber={3} title="Step Three" description="This is the last step." />
+          </Steps>
+        </div>
+      </div>
+    </ShowcaseSection>
+  )
+}
+
+const formSchema = z.object({
+  username: z.string().min(2, { message: 'Username must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+})
+
+function FormShowcase() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { username: '', email: '' },
+  })
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    alert(JSON.stringify(values, null, 2))
+  }
+
+  return (
+    <ShowcaseSection title="Form" description="Form validation with react-hook-form + zod.">
+      <div className="max-w-sm">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter username" {...field} />
+                  </FormControl>
+                  <FormDescription>This is your public display name.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="name@example.com" {...field} />
+                  </FormControl>
+                  <FormDescription>We will never share your email.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      </div>
+    </ShowcaseSection>
+  )
+}
+
 function ThemeShowcase() {
   const preference = useThemeStore((state) => state.preference)
   const setPreference = useThemeStore((state) => state.setPreference)
@@ -535,8 +719,12 @@ export default function ComponentShowcaseView() {
       <SelectShowcase />
       <CheckboxRadioShowcase />
       <DialogShowcase />
+      <DrawerShowcase />
       <TableShowcase />
       <TabsShowcase />
+      <CommandShowcase />
+      <StepsShowcase />
+      <FormShowcase />
       <AdvancedShowcase />
     </div>
   )
