@@ -27,9 +27,16 @@ export type MetricTrend = 'up' | 'down' | 'flat'
 
 export const metricTrendValues = ['up', 'down', 'flat'] as const satisfies readonly MetricTrend[]
 
-export type ContentMaxWidth = 'fluid' | 'xl'
+export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'fluid'
 
-export const contentMaxWidthValues = ['fluid', 'xl'] as const satisfies readonly ContentMaxWidth[]
+export const contentMaxWidthValues = [
+  'sm',
+  'md',
+  'lg',
+  'xl',
+  '2xl',
+  'fluid',
+] as const satisfies readonly ContentMaxWidth[]
 
 export interface ThemeModeSwitchCopy {
   label: string

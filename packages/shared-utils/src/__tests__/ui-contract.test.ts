@@ -25,6 +25,6 @@ describe('@repo/shared-utils/ui-contract', () => {
   })
 
   it('should export contentMaxWidthValues', () => {
-    expect(contentMaxWidthValues).toEqual(['fluid', 'xl'])
+    expect(contentMaxWidthValues).toEqual(['sm', 'md', 'lg', 'xl', '2xl', 'fluid'])
   })
 })
