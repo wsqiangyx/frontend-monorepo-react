@@ -107,3 +107,37 @@ export {
   PaginationNext,
   PaginationPrevious,
 } from './pagination'
+export {
+  Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerClose,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+} from './drawer'
+export {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+} from './command'
+export { Steps, StepItem, type StepsProps, type StepItemProps } from './steps'
+export {
+  useFormField,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
+} from './form'
