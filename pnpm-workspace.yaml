@@ -71,7 +71,7 @@ catalog:
 
   # —— UI 组件库 ——
   # shadcn/ui 通过 CLI 代码生成，不通过 catalog 声明
-  lucide-react: '^0.469'
+  lucide-react: '^0.577'
 
   # —— 网络 & Mock ——
   msw: '^2.5'
