@@ -13,16 +13,21 @@
     "test:coverage": "node ../../scripts/vitest.cjs run --coverage"
   },
   "dependencies": {
-    "@repo/shared-service": "workspace:*",
-    "@repo/shared-utils": "workspace:*",
-    "@repo/shared-ui": "workspace:*",
+    "@hookform/resolvers": "catalog:",
     "@repo/design-tokens": "workspace:*",
+    "@repo/shared-service": "workspace:*",
+    "@repo/shared-ui": "workspace:*",
+    "@repo/shared-utils": "workspace:*",
     "@tanstack/react-query": "catalog:",
+    "cmdk": "catalog:",
     "ky": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-hook-form": "catalog:",
     "react-router-dom": "catalog:",
+    "vaul": "catalog:",
+    "zod": "catalog:",
     "zustand": "catalog:"
   },
   "devDependencies": {
