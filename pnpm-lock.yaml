@@ -151,8 +151,8 @@ catalogs:
       specifier: ^0.469
       version: 0.469.0
     msw:
-      specifier: ^2.5
-      version: 2.13.6
+      specifier: ^2.15
+      version: 2.15.0
     react:
       specifier: 19.2.5
       version: 19.2.5
@@ -185,11 +185,11 @@ catalogs:
       version: 5.0.13
 
 overrides:
+  eslint: 9.39.4
+  jsdom: 29.1.0
+  sass: 1.99.0
   typescript: 6.0.3
   vitest: 4.1.5
-  eslint: 9.39.4
-  sass: 1.99.0
-  jsdom: 29.1.0
 
 importers:
 
@@ -263,7 +263,7 @@ importers:
         version: 8.59.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
       vitest:
         specifier: 4.1.5
-        version: 4.1.5(@types/node@24.12.2)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.0)(msw@2.13.6(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))
+        version: 4.1.5(@types/node@24.12.2)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.0)(msw@2.15.0(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))
 
   apps/react-app:
     dependencies:
@@ -427,7 +427,7 @@ importers:
         version: link:../shared-utils
       msw:
         specifier: 'catalog:'
-        version: 2.13.6(@types/node@24.12.2)(typescript@6.0.3)
+        version: 2.15.0(@types/node@24.12.2)(typescript@6.0.3)
 
   packages/shared-service:
     dependencies:
@@ -5432,8 +5432,8 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  msw@2.13.6:
-    resolution: {integrity: sha512-GAJbQy8Ra/Ydjt0Hb2MGT2qhzd83J3+QZMHdH85uW7r/XkKc846+Ma2PLif5hGvTm5Yqa+wkcstpim0WeLZU9g==}
+  msw@2.15.0:
+    resolution: {integrity: sha512-2wQAmKkQKxRuXvYJxVhPGG0wZNBQyD06oJvxqw90XqLvptdqxdlHrFUfEteKkpaNORX3Xzc+HtEl/q0nfmN2wQ==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -9767,7 +9767,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.5(@types/node@24.12.2)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.0)(msw@2.13.6(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))
+      vitest: 4.1.5(@types/node@24.12.2)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.0)(msw@2.15.0(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))
 
   '@vitest/expect@4.1.5':
     dependencies:
@@ -9778,13 +9778,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.5(msw@2.13.6(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.5(msw@2.15.0(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.5
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      msw: 2.13.6(@types/node@24.12.2)(typescript@6.0.3)
+      msw: 2.15.0(@types/node@24.12.2)(typescript@6.0.3)
       vite: 8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.5':
@@ -12640,7 +12640,7 @@ snapshots:
 
   ms@2.1.3: {}
 
-  msw@2.13.6(@types/node@24.12.2)(typescript@6.0.3):
+  msw@2.15.0(@types/node@24.12.2)(typescript@6.0.3):
     dependencies:
       '@inquirer/confirm': 6.0.13(@types/node@24.12.2)
       '@mswjs/interceptors': 0.41.9
@@ -14463,10 +14463,10 @@ snapshots:
       terser: 5.48.0
       yaml: 2.9.0
 
-  vitest@4.1.5(@types/node@24.12.2)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.0)(msw@2.13.6(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0)):
+  vitest@4.1.5(@types/node@24.12.2)(@vitest/coverage-v8@4.1.5)(jsdom@29.1.0)(msw@2.15.0(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.5
-      '@vitest/mocker': 4.1.5(msw@2.13.6(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.5(msw@2.15.0(@types/node@24.12.2)(typescript@6.0.3))(vite@8.0.10(@types/node@24.12.2)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(stylus@0.64.0)(terser@5.48.0)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.5
       '@vitest/runner': 4.1.5
       '@vitest/snapshot': 4.1.5

@@ -74,7 +74,7 @@ catalog:
   lucide-react: '^0.469'
 
   # —— 网络 & Mock ——
-  msw: '^2.5'
+  msw: '^2.15'
   react: '19.2.5'
   react-dom: '19.2.5'
   react-hook-form: '^7.81.0'
