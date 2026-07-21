@@ -61,7 +61,7 @@ catalogs:
       specifier: ^1.1
       version: 1.3.0
     '@radix-ui/react-switch':
-      specifier: ^1.1
+      specifier: ^1.3
       version: 1.3.3
     '@radix-ui/react-tabs':
       specifier: ^1.1
@@ -185,11 +185,11 @@ catalogs:
       version: 5.0.13
 
 overrides:
+  eslint: 9.39.4
+  jsdom: 29.1.0
+  sass: 1.99.0
   typescript: 6.0.3
   vitest: 4.1.5
-  eslint: 9.39.4
-  sass: 1.99.0
-  jsdom: 29.1.0
 
 importers:
 
